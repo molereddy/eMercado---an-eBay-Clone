@@ -23,7 +23,7 @@ CREATE TABLE customer (
 	city varchar(20),
 	state varchar(20),
 	balance float,
-	amount_on_hold float check(amount_on_hold>=balance),
+	amount_on_hold float check(amount_on_hold<=balance),
 	sales int,
 	sales_rating float check(sales_rating between 0 and 5),
 	rated_sales int check(sales>=rated_sales),
