@@ -1,0 +1,7 @@
+datsets:
+https://www.kaggle.com/kaggle/us-baby-names
+https://data.world/promptcloud/product-details-on-flipkart-com
+
+information:
+https://trac.osgeo.org/postgis/wiki/UsersWikiPostGIS24UbuntuPGSQL10Apt
+https://postgis.net/docs/postgis_usage.html
