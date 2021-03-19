@@ -41,7 +41,7 @@ CREATE TABLE auction_item (
 	status varchar(20) check(status='open' or status='closed' or status='auctioned' or 
 		status='shipping' or status='shipped' or status='out-for-delivery' or status='delivered'),
 	physical_product boolean,
-	quantity int check(quantity>0),
+	quantity int default 1 check(quantity>0),
 	delivery_factor float check(delivery_factor>=0),
 	best_bidder int,
 	best_bid float check(best_price is null or best_price>=price),
@@ -62,7 +62,7 @@ CREATE TABLE direct_sale_item (
 	status varchar(25) check(status='open' or status='closed' or status='sold' or 
 		status='shipping' or status='shipped' or status='out-for-delivery' or status='delivered'),
 	physical_product boolean,
-	quantity int check(quantity>0),
+	quantity int default 1 check(quantity>0),
 	delivery_factor float check(delivery_factor>=0),
 	buyer_id int,
 	primary key(ditem_id),
