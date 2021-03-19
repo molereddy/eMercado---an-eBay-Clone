@@ -58,10 +58,12 @@ with open('Datagen/auction_item.csv', 'w') as f:
     	header = next(csvreader)  
     	idx = 1
     	for row in csvreader: #discounted price is used as (base) price
+    		if (row[7]==""):
+    			continue
     		custid = random.randint(1,seednumcust)
     		qty = random.randint(1,seedqtymax)
     		df = random.randint(0,seeddfmax)
-    		csvwriter.writerow([idx,row[0],row[3],row[10],row[7],custid,'open','true',qty,df,'NULL','NULL',seedstarttime,seedendtime])
+    		csvwriter.writerow([idx,row[0],row[3],row[10].replace('\n', ' ').replace('"','\''),row[7],custid,'open','true',qty,df,'NULL','NULL',seedstarttime,seedendtime])
     		idx += 1
 
 with open('Datagen/direct_sale_item.csv', 'w') as f:
@@ -73,10 +75,12 @@ with open('Datagen/direct_sale_item.csv', 'w') as f:
     	header = next(csvreader)  
     	idx = 1
     	for row in csvreader: #retail price is used as price
+    		if (row[6]==""):
+    			continue
     		custid = random.randint(1,seednumcust)
     		qty = random.randint(1,seedqtymax)
     		df = random.randint(0,seeddfmax)
-    		csvwriter.writerow([idx,row[0],row[3],row[10],row[6],custid,'open','true',qty,df,'NULL'])
+    		csvwriter.writerow([idx,row[0],row[3],row[10].replace('\n', ' ').replace('"','\''),row[6],custid,'open','true',qty,df,'NULL'])
     		idx += 1
             
 
