@@ -10,7 +10,7 @@ DROP TABLE if exists person;
 CREATE TABLE person (
 	person_id int,
 	name varchar(25),
-	email varchar(50),
+	email varchar(50) not null unique,
 	password_hashed varchar(64),
 	phone_no varchar(15),
 	role varchar(10) check(role = 'manager' or role = 'customer' or role = 'admin'),
@@ -70,14 +70,14 @@ CREATE TABLE direct_sale_item (
 
 CREATE TABLE auction_item_tags (
 	aitem_id int,
-	tag varchar(15),
+	tag varchar(100),
 	primary key(aitem_id,tag),
 	foreign key(aitem_id) references auction_item on delete cascade
 );
 
 CREATE TABLE direct_sale_item_tags (
 	ditem_id int,
-	tag varchar(15),
+	tag varchar(100),
 	primary key(ditem_id,tag),
 	foreign key(ditem_id) references direct_sale_item on delete cascade
 );
