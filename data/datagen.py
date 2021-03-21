@@ -43,28 +43,28 @@ with open('Data/namesnoduplicates.csv', 'w') as f:
 
 with open('Datagen/person.csv', 'w') as f:
     with open('Data/namesnoduplicates.csv', mode='r') as infile:
-    	fields = ['person_id', 'name', 'email', 'password_hashed', 'phone_no', 'role']
+    	fields = ['person_id', 'name', 'email', 'password_hashed', 'phone_no', 'location', 'balance', 'amount_on_hold']
     	csvwriter = csv.writer(f)  
     	csvwriter.writerow(fields)
     	csvreader = csv.reader(infile)
     	header = next(csvreader)  
     	for row in csvreader:
     		phno = random.randint(seedphnomin,seedphnomax)
-    		csvwriter.writerow([row[0],row[1],row[1]+'@emercado.com',seedpassword,phno,'customer'])
+    		csvwriter.writerow([row[0],row[1],row[1]+'@emercado.com',seedpassword,phno,seedlocation,seedbalance,0.0])
     		if(seednumcust<=int(row[0])):
     			break
 
-with open('Datagen/customer.csv', 'w') as f:
-    with open('Data/namesnoduplicates.csv', mode='r') as infile:
-    	fields = ['person_id', 'location', 'balance', 'amount_on_hold', 'sales', 'sales_rating', 'rated_sales']
-    	csvwriter = csv.writer(f)  
-    	csvwriter.writerow(fields)
-    	csvreader = csv.reader(infile)
-    	header = next(csvreader)  
-    	for row in csvreader:
-    		csvwriter.writerow([row[0],seedlocation,seedbalance,0.0,0,0.0,0])
-    		if(seednumcust<=int(row[0])):
-    			break
+# with open('Datagen/customer.csv', 'w') as f:
+#     with open('Data/namesnoduplicates.csv', mode='r') as infile:
+#     	fields = ['person_id', 'location', 'balance', 'amount_on_hold', 'sales', 'sales_rating', 'rated_sales']
+#     	csvwriter = csv.writer(f)  
+#     	csvwriter.writerow(fields)
+#     	csvreader = csv.reader(infile)
+#     	header = next(csvreader)  
+#     	for row in csvreader:
+#     		csvwriter.writerow([row[0],seedlocation,seedbalance,0.0,0,0.0,0])
+#     		if(seednumcust<=int(row[0])):
+#     			break
 
 
 with open('Datagen/auction_item.csv', 'w') as f:

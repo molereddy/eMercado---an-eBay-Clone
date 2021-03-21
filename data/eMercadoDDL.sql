@@ -3,12 +3,11 @@ DROP TABLE if exists direct_sale_item_tags;
 DROP TABLE if exists auction_item_tags;
 DROP TABLE if exists direct_sale_item;
 DROP TABLE if exists auction_item;
-DROP TABLE if exists customer;
 DROP TABLE if exists person;
 
 
 CREATE TABLE person (
-	person_id serial int,
+	person_id serial,
 	name varchar(25),
 	email varchar(50) not null unique,
 	password_hashed varchar(64),
@@ -22,7 +21,7 @@ CREATE TABLE person (
 
 
 CREATE TABLE auction_item (
-	aitem_id serial int,
+	aitem_id serial,
 	identifier varchar(32),
 	name varchar(150),
 	description text,
@@ -38,12 +37,12 @@ CREATE TABLE auction_item (
 	start_time timestamp,
 	close_time timestamp check(close_time>start_time),
 	primary key(aitem_id), 
-	foreign key(best_bidder) references customer on delete set null,
-	foreign key(seller_id) references customer on delete cascade
+	foreign key(best_bidder) references person on delete set null,
+	foreign key(seller_id) references person on delete cascade
 );
 
 CREATE TABLE direct_sale_item (
-	ditem_id serial int,
+	ditem_id serial,
 	identifier varchar(32),
 	name varchar(150),
 	description text,
@@ -56,8 +55,8 @@ CREATE TABLE direct_sale_item (
 	delivery_factor float check(delivery_factor>=0),
 	buyer_id int,
 	primary key(ditem_id),
-	foreign key(seller_id) references customer on delete cascade,
-	foreign key(buyer_id) references customer on delete set null
+	foreign key(seller_id) references person on delete cascade,
+	foreign key(buyer_id) references person on delete set null
 );
 
 CREATE TABLE auction_item_tags (
@@ -85,5 +84,5 @@ CREATE TABLE bid (
 	time timestamp,
 	primary key(aitem_id,person_id),
 	foreign key(aitem_id) references auction_item on delete cascade,
-	foreign key(person_id) references customer on delete cascade
+	foreign key(person_id) references person on delete cascade
 );
