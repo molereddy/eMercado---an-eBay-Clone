@@ -10,11 +10,7 @@ DROP TABLE if exists person;
 CREATE TABLE person (
 	person_id serial int,
 	name varchar(25),
-<<<<<<< HEAD
-	email varchar(50) unique,
-=======
 	email varchar(50) not null unique,
->>>>>>> 7843576433c5792c6427ebd3ba10d2558bfe625f
 	password_hashed varchar(64),
 	phone_no varchar(15),
 	location geography(point,4326),
@@ -65,31 +61,17 @@ CREATE TABLE direct_sale_item (
 );
 
 CREATE TABLE auction_item_tags (
-<<<<<<< HEAD
 	identifier int,
-	tag varchar(15),
+	tag varchar(100),
 	primary key(identifier,tag),
 	foreign key(identifier) references auction_item on delete cascade
 );
 
 CREATE TABLE direct_sale_item_tags (
 	identifier int,
-	tag varchar(15),
+	tag varchar(100),
 	primary key(identifier,tag),
 	foreign key(identifier) references direct_sale_item on delete cascade
-=======
-	aitem_id int,
-	tag varchar(100),
-	primary key(aitem_id,tag),
-	foreign key(aitem_id) references auction_item on delete cascade
-);
-
-CREATE TABLE direct_sale_item_tags (
-	ditem_id int,
-	tag varchar(100),
-	primary key(ditem_id,tag),
-	foreign key(ditem_id) references direct_sale_item on delete cascade
->>>>>>> 7843576433c5792c6427ebd3ba10d2558bfe625f
 );
 
 -- need to ensure that on-hold balances are updated when products kept ofr sale are deleted
