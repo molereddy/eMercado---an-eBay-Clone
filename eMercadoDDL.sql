@@ -8,29 +8,21 @@ DROP TABLE if exists person;
 
 
 CREATE TABLE person (
-	person_id int,
+	person_id serial int,
 	name varchar(25),
-	email varchar(50),
+	email varchar(50) unique,
 	password_hashed varchar(64),
 	phone_no varchar(15),
-	role varchar(10) check(role = 'manager' or role = 'customer' or role = 'admin'),
-	primary key(person_id)
-);
-
-CREATE TABLE customer (
-	person_id int,
 	location geography(point,4326),
 	balance float,
 	amount_on_hold float check(amount_on_hold<=balance),
-	sales int,
-	sales_rating float check(sales_rating between 0 and 5),
-	rated_sales int check(sales>=rated_sales),
-	primary key(person_id),
-	foreign key(person_id) references person on delete cascade
+	primary key(person_id)
 );
 
+
+
 CREATE TABLE auction_item (
-	aitem_id int,
+	aitem_id serial int,
 	identifier varchar(32),
 	name varchar(150),
 	description text,
@@ -51,7 +43,7 @@ CREATE TABLE auction_item (
 );
 
 CREATE TABLE direct_sale_item (
-	ditem_id int,
+	ditem_id serial int,
 	identifier varchar(32),
 	name varchar(150),
 	description text,
@@ -69,26 +61,27 @@ CREATE TABLE direct_sale_item (
 );
 
 CREATE TABLE auction_item_tags (
-	aitem_id int,
+	identifier int,
 	tag varchar(15),
-	primary key(aitem_id,tag),
-	foreign key(aitem_id) references auction_item on delete cascade
+	primary key(identifier,tag),
+	foreign key(identifier) references auction_item on delete cascade
 );
 
 CREATE TABLE direct_sale_item_tags (
-	ditem_id int,
+	identifier int,
 	tag varchar(15),
-	primary key(ditem_id,tag),
-	foreign key(ditem_id) references direct_sale_item on delete cascade
+	primary key(identifier,tag),
+	foreign key(identifier) references direct_sale_item on delete cascade
 );
 
+-- need to ensure that on-hold balances are updated when products kept ofr sale are deleted
 CREATE TABLE bid (
 	aitem_id int,
 	person_id int,
 	auto_mode boolean,
 	bid_limit float,
 	bid_value float,
-	status varchar(20) check(status='rejected, removed' or status='running' or status='accepted' or status='rejected'),
+	status varchar(20) check(status='rejected, removed' or status='running' or status='accepted'),
 	time timestamp,
 	primary key(aitem_id,person_id),
 	foreign key(aitem_id) references auction_item on delete cascade,
