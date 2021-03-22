@@ -86,3 +86,10 @@ CREATE TABLE bid (
 	foreign key(aitem_id) references auction_item on delete cascade,
 	foreign key(person_id) references person on delete cascade
 );
+
+
+CREATE INDEX auslr_idx ON auction_item(seller_id);
+CREATE INDEX dsslr_idx ON direct_sale_item(seller_id);
+CREATE INDEX dsbyr_idx ON direct_sale_item(buyer_id);
+CREATE INDEX autag_idx ON auction_item_tags(tag);
+CREATE INDEX dstag_idx ON direct_sale_item_tags(tag);
