@@ -73,7 +73,7 @@ CREATE TABLE direct_sale_item_tags (
 	foreign key(identifier) references direct_sale_item on delete cascade
 );
 
--- need to ensure that on-hold balances are updated when products kept ofr sale are deleted
+-- need to ensure that on-hold balances are updated when products kept on sale are deleted
 CREATE TABLE bid (
 	aitem_id int,
 	person_id int,
