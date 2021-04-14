@@ -1,10 +1,11 @@
+DROP table if exists direct_item_messages;
+DROP table if exists auction_item_messages;
 DROP TABLE if exists bid;
 DROP TABLE if exists direct_sale_item_tags;
 DROP TABLE if exists auction_item_tags;
 DROP TABLE if exists direct_sale_item;
 DROP TABLE if exists auction_item;
 DROP TABLE if exists person;
-
 
 CREATE TABLE person (
 	person_id serial,
@@ -87,7 +88,30 @@ CREATE TABLE bid (
 	foreign key(person_id) references person on delete cascade
 );
 
+CREATE TABLE direct_item_messages(
+	message_id 	serial,
+	person_id	int,
+	ditem_id	int,
+	title		varchar(30),
+	message_text text,
+	primary key(message_id),
+	foreign key(ditem_id) references direct_sale_item on delete cascade,
+	foreign key(person_id) references person on delete cascade
+);
 
+CREATE TABLE direct_item_messages(
+	message_id 	serial,
+	person_id	int,
+	ditem_id	int,
+	title		varchar(30),
+	message_text text,
+	primary key(message_id),
+	foreign key(ditem_id) references direct_sale_item on delete cascade,
+	foreign key(person_id) references person on delete cascade
+);
+
+CREATE index receipt_user_1 ON direct_item_messages(user_id);
+CREATE index receipt_user_2 ON auction_item_messages(user_id);
 CREATE INDEX auslr_idx ON auction_item(seller_id);
 CREATE INDEX dsslr_idx ON direct_sale_item(seller_id);
 CREATE INDEX dsbyr_idx ON direct_sale_item(buyer_id);
