@@ -1,0 +1,135 @@
+<%- include('../includes/head.ejs') %>
+<link rel="stylesheet" href="/css/forms.css">
+<link rel="stylesheet" href="/css/product.css">
+</head>
+
+<body>
+
+
+<main>
+
+    <h1>Logged in as <%=current_id%></h1>
+
+    <h1>Auction Product Details Page</h1>
+
+    <h1> Product id =  <%=product_id%> </h1>
+
+    <h1> Product type = <%=product_type%> </h1>
+
+    <h1> base price = <%=product_base_price%> </h1>
+
+    <h1> current best bid = <%=product_curent_best_bid%> </h1>
+
+    <h1> current best bidder = <%=product_curent_best_bidder%> </h1>
+
+    <h1> status = <%=product_status%> </h1>
+
+    <h1> sale start time = <%=product_sale_start_time%> </h1>
+
+    <h1> sale end time = <%=product_sale_end_time%> </h1>
+
+
+
+    <% if (product_viewer == "buyer")  {%>
+
+            <!-- <% if (product_status == "open")  {%> -->
+
+            <form action="http://localhost:3000/auction-product-details-place-bid" method="post">
+                <div class="form-control">
+                   <label for="your_bid">Your Bid</label>
+                  <input type="text" name="your_bid" id="your_bid" value=" <%= product_your_bid %> ">
+
+                  <label for="auto_mode">Auto Mode</label>
+                  <input type="text" name="auto_mode" id="auto_mode"  value=" <%= product_auto_mode %> ">
+
+                  <label for="bid_limit">Bid Limit</label>
+                  <input type="text" name="bid_limit" id="bid_limit" value=" <%= product_bid_limit %> ">
+
+
+
+                  <input type="hidden" name="product_id" value= <%=product_id %>>
+                  <input type="hidden" name="product_type" value= <%=product_type %>>
+                  <button type="submit">Buy</button>
+                </div>
+
+            </form>
+
+            <!-- <% } %> -->
+                
+                <!-- <button type="submit">Buy</button>
+                <input type="hidden" name="product_id" value= <%=product_id %>>
+                <input type="hidden" name="product_type" value= <%=product_type %>>
+                         -->
+            
+
+            
+
+
+            <% if (product_status == "out-for-delivery" && (current_id ==  product_curent_best_bidder) )  {%>
+
+                <form action="http://localhost:3000/auction-confirm-delivery" method="post">
+                    <button type="submit">Confirm Delivery</button>
+                    <input type="hidden" name="product_id" value= <%=product_id %>>
+                    <input type="hidden" name="product_type" value= <%=product_type %>>
+                            
+                </form>
+            
+                <% } %>
+
+
+    <% } %>
+
+
+
+
+
+
+    <% if (product_viewer == "seller")  {%>
+
+
+        <% if (product_status == "open")  {%>
+
+            <form action="http://localhost:3000/auction-product-details-delete-product" method="post">
+                <button type="submit">Delete Product</button>
+                <input type="hidden" name="product_id" value= <%=product_id %>>
+                <input type="hidden" name="product_type" value= <%=product_type %>>
+                        
+            </form>
+
+
+            <form action="http://localhost:3000/auction-product-details-close-bidding" method="post">
+                <button type="submit">Close Bidding</button>
+                <input type="hidden" name="product_id" value= <%=product_id %>>
+                <input type="hidden" name="product_type" value= <%=product_type %>>
+                        
+            </form>
+
+            <% } %>
+
+            <% if (product_status != "open")  {%>
+
+            <form action="http://localhost:3000/auction-update-status" method="post">
+                <button type="submit">Update Status</button>
+                <input type="hidden" name="product_id" value= <%=product_id %>>
+                <input type="hidden" name="product_type" value= <%=product_type %>>
+                        
+            </form>
+
+            <% } %>
+
+
+    <% } %>
+
+
+
+
+    
+
+
+    <form action="http://localhost:3000/logout" method="post">
+        <button type="submit">Logout</button>
+    </form>
+
+
+</main>
+<%- include('../includes/end.ejs') %>

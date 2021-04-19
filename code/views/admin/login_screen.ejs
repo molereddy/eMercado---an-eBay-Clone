@@ -1,0 +1,46 @@
+<%- include('../includes/head.ejs') %>
+<link rel="stylesheet" href="/css/forms.css">
+<link rel="stylesheet" href="/css/product.css">
+</head>
+
+<body>
+
+
+<main>
+
+    <h1>Login Screen Page</h1>
+
+    <form class="product-form" action="http://localhost:3000/login-screen" method="POST">
+        <div class="form-control">
+            <label for="email">Email</label>
+            <input type="text" name="email" id="email" value="<% if (editing) { %><%= product.email %><% } %>">
+        </div>
+        <div class="form-control">
+            <label for="password">Password</label>
+            <input type="text" name="password" id="password" value="<% if (editing) { %><%= product.password %><% } %>">
+        </div>
+        
+      
+
+        <button class="btn" type="submit">Sign in</button>
+        <button class="btn" type="submit">Sign up</button>
+
+
+
+
+        
+   
+   
+    </form>
+
+
+
+
+
+    <form action="http://localhost:3000/logout" method="post">
+        <button type="submit">Logout</button>
+    </form>
+
+
+</main>
+<%- include('../includes/end.ejs') %>

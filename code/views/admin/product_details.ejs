@@ -1,0 +1,101 @@
+<%- include('../includes/head.ejs') %>
+<link rel="stylesheet" href="/css/forms.css">
+<link rel="stylesheet" href="/css/product.css">
+</head>
+
+<body>
+
+
+<main>
+
+    <h1>Direct Sale Product Details Page</h1>
+
+    <h1> Product id =  <%=product_id%> </h1>
+
+    <h1> Product type = <%=product_type%> </h1>
+
+    <h1> Price = <%=product_price%> </h1>
+
+    <h1> Status = <%=product_status%> </h1>
+
+
+
+    <% if (product_viewer == "buyer")  {%>
+
+            <% if (product_status == "open")  {%>
+
+            <form action="http://localhost:3000/product-details-buy" method="post">
+                <button type="submit">Buy</button>
+                <input type="hidden" name="product_id" value= <%=product_id %>>
+                <input type="hidden" name="product_type" value= <%=product_type %>>
+                        
+            </form>
+
+            <% } %>
+
+
+            <% if (product_status == "out-for-delivery")  {%>
+
+                <form action="http://localhost:3000/product-details-confirm-delivery" method="post">
+                    <button type="submit">Confirm Delivery</button>
+                    <input type="hidden" name="product_id" value= <%=product_id %>>
+                    <input type="hidden" name="product_type" value= <%=product_type %>>
+                            
+                </form>
+            
+                <% } %>
+
+
+    <% } %>
+
+
+
+
+
+
+    <% if (product_viewer == "seller")  {%>
+
+
+        <% if (product_status == "open")  {%>
+
+            <form action="http://localhost:3000/product-details-delete-product" method="post">
+                <button type="submit">Delete Product</button>
+                <input type="hidden" name="product_id" value= <%=product_id %>>
+                <input type="hidden" name="product_type" value= <%=product_type %>>
+                        
+            </form>
+
+            <% } %>
+
+            <% if (product_status != "open")  {%>
+
+            <form action="http://localhost:3000/product-details-update-status" method="post">
+                <button type="submit">Update Status</button>
+                <input type="hidden" name="product_id" value= <%=product_id %>>
+                <input type="hidden" name="product_type" value= <%=product_type %>>
+                        
+            </form>
+
+            <% } %>
+
+
+
+
+       
+
+
+    <% } %>
+
+
+
+
+    
+
+
+    <form action="http://localhost:3000/logout" method="post">
+        <button type="submit">Logout</button>
+    </form>
+
+
+</main>
+<%- include('../includes/end.ejs') %>
