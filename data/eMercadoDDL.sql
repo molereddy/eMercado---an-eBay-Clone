@@ -6,8 +6,6 @@ DROP TABLE if exists auction_item_tags;
 DROP TABLE if exists direct_sale_item;
 DROP TABLE if exists auction_item;
 DROP TABLE if exists person;
-DROP TABLE if exists direct_item_messages;
-DROP TABLE if exists auction_item_messages;
 
 CREATE TABLE person (
 	person_id serial,
