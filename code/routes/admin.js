@@ -7,8 +7,8 @@ const auctionCon = require('../controllers/auction');
 const router = express.Router();
 
 
-router.get('/login-screen',adminCon.get_test);
-router.post('/login-screen',adminCon.post_test);
+router.get('/login-screen',adminCon.get_login);
+router.post('/login-screen',adminCon.post_login);
 
 router.get('/home-screen',adminCon.get_home_screen);
 router.post('/home-screen',adminCon.post_home_screen_search);

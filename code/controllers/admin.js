@@ -5,22 +5,15 @@ var Cookies = require('cookies');
 
 var keys = ['secret key']
 
-exports.get_test = (req,res,next) => {
+exports.get_login = (req,res,next) => {
 
-    // var cookies = new Cookies(req, res, { })
 
-    // Get a cookie
-    // var currentID = cookies.get('CurrentID', { signed: true })
-
-    // if (!currentID) {
-    //     console.log('Get Lost');
-    // } else {
         res.render('admin/login_screen', {
             pageTitle: 'Login Screen',
-            path: '/login-screen',
-            editing: false
+            path: '/login-screen'
+            
         });
-    // }
+
 
 
     
@@ -28,7 +21,7 @@ exports.get_test = (req,res,next) => {
 
 };
 
-exports.post_test = (req,res,next) => {
+exports.post_login = (req,res,next) => {
     const email = req.body.email;
     const password = req.body.password
   
@@ -37,8 +30,13 @@ exports.post_test = (req,res,next) => {
         .get_user()
         .then(results => {
 
-            // console.log(results.rows);
-            // console.log(req);
+            if(results.rows.length ==  0){
+
+                res.redirect('login-screen');
+
+            }
+
+
             req.currentUser =results.rows[0].person_id;
 
             // Create a cookies object
@@ -66,50 +64,21 @@ exports.post_logout = (req,res,next) => {
 
     var cookies = new Cookies(req, res, {keys  : keys });
 
-    cookies.set('CurrentID', {expires: Date.now()});
+    cookies.set('CurrentID', {expires: Date.now()});// for deleting a cookie
 
     var currentID = cookies.get('CurrentID', { signed: true });
 
 
-    if (currentID) {
+    if (currentID) {//cookie will be present here but after redirecting it will not be present
 
         console.log('getting logged out');
 
         res.redirect('login-screen');
 
-        // console.log("success");
-        // console.log(currentID);
-        // res.render('admin/login_screen', {
-        //     pageTitle: 'Add Product',
-        //     path: '/login-screen',
-        //     editing: false
-        // });
 
         }
 
-    // console.log(currentID)
-
-
-        // else{
-
-        //     res.redirect('prods');
-        // }
-
-
-
-    // }
-
-    // Prod.get_all().then(results => 
-    // {
-    //     res.render('admin/login_screen', {
-    //         pageTitle: 'View Products',
-    //         path: '/login-screen',
-       
-    //     });
-    // }
-        
-    //     );
-
+   
 };
 
 
@@ -128,8 +97,8 @@ exports.get_home_screen = (req,res,next) => {
 
         res.render('admin/home_screen', {
             pageTitle: 'Home Screen',
-            path: '/home-screen',
-            editing: false
+            path: '/home-screen'
+           
         });
 
 
@@ -143,7 +112,7 @@ exports.get_home_screen = (req,res,next) => {
 };
 
 
-exports.post_home_screen_search = (req,res,next) => {
+exports.post_home_screen_search = (req,res,next) => {// when search button is pressed 
 
     var cookies = new Cookies(req, res, {keys  : keys })
 
@@ -167,18 +136,14 @@ exports.post_home_screen_search = (req,res,next) => {
 
 
             search_object
-            .get_auction_search_results()
-            .then(auction_results => {
+                .get_auction_search_results()
+                .then(auction_results => {
 
     
-               
-                // console.log(req);
-                // req.currentUser =results.rows[0].email;
-        
                 res.render('admin/search_screen', {
                     pageTitle: 'Search Screen',
                     path: '/search-screen',
-                    editing: false,
+                  
                     direct_products : direct_results,
                     auction_products : auction_results
                 });
@@ -186,14 +151,9 @@ exports.post_home_screen_search = (req,res,next) => {
 
             }).catch(err => console.log(err));
 
-
-
-
-
-
     
-            })
-            .catch(err => console.log(err));
+        }).catch(err => console.log(err));
+
     }
 
 };
@@ -201,7 +161,7 @@ exports.post_home_screen_search = (req,res,next) => {
 
 
 
-exports.get_product_details = (req,res,next) => {
+exports.get_product_details = (req,res,next) => {// when a direct sale product is selected
 
     const product_id = req.body.product_id;
     const product_type = req.body.product_type;
@@ -215,12 +175,8 @@ exports.get_product_details = (req,res,next) => {
         console.log('Get Lost');
     } else {
 
-        console.log(product_id);
-        console.log(product_type);
 
         product_viewer = 'buyer';
-
-        
 
 
         const product_object = new Product( product_id , product_type, currentID );
@@ -242,7 +198,6 @@ exports.get_product_details = (req,res,next) => {
                 res.render('admin/product_details', {
                     pageTitle: 'Product Details',
                     path: '/product-details',
-                    editing: false,
                     product_id : product_id,
                     product_type : product_type,
                     product_price : product_price,
@@ -260,7 +215,7 @@ exports.get_product_details = (req,res,next) => {
 
 
 
-exports.get_product_details_delete_product = (req,res,next) => {
+exports.get_product_details_delete_product = (req,res,next) => {// when seller deletes a product for a direct sale item
 
     const product_id = req.body.product_id;
     const product_type = req.body.product_type;
@@ -296,7 +251,7 @@ exports.get_product_details_delete_product = (req,res,next) => {
 
 
 
-exports.get_product_details_update_status = (req,res,next) => {
+exports.get_product_details_update_status = (req,res,next) => {//when seller presses the update button for a direct sale item
 
     const product_id = req.body.product_id;
     const product_type = req.body.product_type;
@@ -351,53 +306,20 @@ exports.get_product_details_update_status = (req,res,next) => {
             .update_status(product_status)
             .then(() => {
 
-
                 res.redirect(307,'/product-details');
 
 
-
             }).catch(err => console.log(err));
 
 
-               
-                // res.redirect(307, '/product-details');
-
-                // res.render('admin/product_details', {
-                //     pageTitle: 'Product Details',
-                //     path: '/product-details',
-                //     editing: false,
-                //     product_id : product_id,
-                //     product_type : product_type,
-                //     product_price : product_price,
-                //     product_status : product_status,
-                //     product_viewer : product_viewer
-
-                // });
-
-              
-
-
-
             }).catch(err => console.log(err));
-
-
-
-
-
-
-
-
 
     }
-
-
-
-
 
 };
 
 
-exports.get_product_details_buy = (req,res,next) => {
+exports.get_product_details_buy = (req,res,next) => {// when the buyer clicks on the buy button for a direct sale item
 
     const product_id = req.body.product_id;
     const product_type = req.body.product_type;
@@ -438,28 +360,8 @@ exports.get_product_details_buy = (req,res,next) => {
                                     .update_status('sold')
                                     .then(() => {
 
-
-                                        // product_object
-                                        // .get_direct_item()
-                                        // .then(direct_results_after_buying => {
-
                                             res.redirect(307,'/product-details');
 
-                                                    //  product_price = direct_results_after_buying.rows[0].price 
-                                                    //  product_status = direct_results_after_buying.rows[0].status
-
-                                                    // res.render('admin/product_details', {
-                                                    //     pageTitle: 'Product Details',
-                                                    //     path: '/product-details',
-                                                    //     editing: false,
-                                                    //     product_id : product_id,
-                                                    //     product_type : product_type,
-                                                    //     product_price : product_price,
-                                                    //     product_status : product_status
-
-                                                    // });
-
-                                        // }).catch(err => console.log(err));
 
                                     }).catch(err => console.log(err));
 
@@ -478,13 +380,7 @@ exports.get_product_details_buy = (req,res,next) => {
 
 
 
-
-
-
-
-
-
-exports.get_product_details_confirm_delivery = (req,res,next) => {
+exports.get_product_details_confirm_delivery = (req,res,next) => {// when the buyer clicks on confirm delivery for a direct sale item
 
     const product_id = req.body.product_id;
     const product_type = req.body.product_type;
@@ -522,35 +418,14 @@ exports.get_product_details_confirm_delivery = (req,res,next) => {
 
 
                                 product_object
-                                    .decrease_balance(product_price,currentID)
+                                    .decrease_balance(product_price,currentID)// decrease balance of the buyer
                                     .then(() => {
 
                                         product_object
-                                            .increase_balance(product_price,direct_results.rows[0].seller_id)
+                                            .increase_balance(product_price,direct_results.rows[0].seller_id)//increase balance of the seller
                                             .then(() => {
 
-                                                // product_object
-                                                //     .get_direct_item()
-                                                //     .then(direct_results_after_confirming_delivery => {
-
                                                                 res.redirect(307,'/product-details');
-
-                                                                // product_price = direct_results_after_confirming_delivery.rows[0].price 
-                                                                // product_status = direct_results_after_confirming_delivery.rows[0].status
-
-                                                                // res.render('admin/product_details', {
-                                                                //     pageTitle: 'Product Details',
-                                                                //     path: '/product-details',
-                                                                //     editing: false,
-                                                                //     product_id : product_id,
-                                                                //     product_type : product_type,
-                                                                //     product_price : product_price,
-                                                                //     product_status : product_status
-
-                                                                // });
-
-
-                                                    // }).catch(err => console.log(err));
 
                                         }).catch(err => console.log(err));
 
@@ -576,53 +451,3 @@ exports.get_product_details_confirm_delivery = (req,res,next) => {
 
 
 };
-
-// exports.get_products = (req,res,next) => {
-    
-
-//     var cookies = new Cookies(req, res, {keys  : keys });
-
-//     // Get a cookie
-//     var currentID = cookies.get('CurrentID', { signed: true });
-
-//     if (!currentID) {
-//         console.log('Get Lost');
-//     } else {
-
-//         // cookies.set('CurrentID');
-
-//         var currentID = cookies.get('CurrentID', { signed: true });
-
-
-//         if (currentID) {
-
-//         console.log("success");
-//         console.log(currentID);
-//         res.render('admin/login_screen', {
-//             pageTitle: 'Add Product',
-//             path: '/login-screen',
-//             editing: false
-//         });
-
-//         }
-//         // else{
-
-//         //     res.redirect('prods');
-//         // }
-
-
-
-//     }
-
-//     // Prod.get_all().then(results => 
-//     // {
-//     //     res.render('admin/login_screen', {
-//     //         pageTitle: 'View Products',
-//     //         path: '/login-screen',
-       
-//     //     });
-//     // }
-        
-//     //     );
-
-// };

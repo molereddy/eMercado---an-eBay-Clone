@@ -136,7 +136,7 @@ module.exports = class Product{
     update_on_hold_balance_for_rejected_buyers(final_buyer){
 
 
-        return pool.query('WITH rejected_buyers(person_id,bid_value) AS (SELECT person_id,bid_value FROM bid WHERE aitem_id = $1 AND person_id <> $2 ) UPDATE person SET amount_on_hold = amount_on_hold - (SELECT bid_value from rejected_buyers where rejected_buyers.person_id = person_id) WHERE person_id IN (SELECT person_id from rejected_buyers)',[this.product_id,final_buyer]);
+        return pool.query('WITH rejected_buyers(person_id,bid_limit) AS (SELECT person_id,bid_limit FROM bid WHERE aitem_id = $1 AND person_id <> $2 ) UPDATE person SET amount_on_hold = amount_on_hold - (SELECT bid_limit from rejected_buyers where rejected_buyers.person_id = person_id) WHERE person_id IN (SELECT person_id from rejected_buyers)',[this.product_id,final_buyer]);
 
     }
 

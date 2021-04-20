@@ -32,7 +32,7 @@
 
     <% if (product_viewer == "buyer")  {%>
 
-            <!-- <% if (product_status == "open")  {%> -->
+            <% if (product_status == "open")  {%>
 
             <form action="http://localhost:3000/auction-product-details-place-bid" method="post">
                 <div class="form-control">
@@ -54,7 +54,7 @@
 
             </form>
 
-            <!-- <% } %> -->
+            <% } %>
                 
                 <!-- <button type="submit">Buy</button>
                 <input type="hidden" name="product_id" value= <%=product_id %>>
