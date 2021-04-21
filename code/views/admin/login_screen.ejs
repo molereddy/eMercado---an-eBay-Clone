@@ -1,44 +1,22 @@
 <%- include('../includes/head.ejs') %>
-<link rel="stylesheet" href="/css/forms.css">
-<link rel="stylesheet" href="/css/product.css">
-</head>
-
-<body>
-
-
-<main>
-
-    <h1>Login Screen Page</h1>
-
-    <form class="product-form" action="http://localhost:3000/login-screen" method="POST">
-        <div class="form-control">
-            <label for="email">Email</label>
-            <input type="text" name="email" id="email" >
+    <div class="row">
+        <div class="col-md-4 m-auto">
+            <br> <br>
+            <div class="login-form">
+                <form action="http://localhost:3000/login-screen" class="product-form" method="POST">
+                    <h2 class="text-center" style="font-family: 'Lucida Sans Typewriter', 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;">Login Page</h2>
+                    <div class="form-group">
+                        <label for="email" style="font-size: 3vmin; font-family: 'Lucida Sans Typewriter', 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;">e-mail</label>
+                        <input type="email" class="form-control" id="email" placeholder="e-mail address" required="required" name="email">
+                        <br>
+                        <label for="password" style="font-size: 3vmin; font-family: 'Lucida Sans Typewriter', 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;">password</label>
+                        <input type="password" class="form-control" placeholder="password" required="required" id="password" name="password">
+                        <br>
+                        <button type="submit" class="btn btn-primary btn-block" style="font-family: 'Lucida Sans Typewriter', 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', sans-serif;">Log in</button>
+                    </div>
+                </form>
+                <p class="text-center"><a href="http://localhost:3000/signup-screen" style="font-family: 'Lucida Sans Typewriter', 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;" class="button">Signup</a></p>
+            </div>
         </div>
-        <div class="form-control">
-            <label for="password">Password</label>
-            <input type="text" name="password" id="password" >
-        </div>
-        
-      
-
-        <button class="btn" type="submit">Sign in</button>
-    </form>
-    <form class="product-form" action="http://localhost:3000/signup-screen" method="get">
-        <div class="form-control">
-            <button class="btn" type="submit">Sign up</button>
-        </div>
-        
-    </form>
-
-
-
-
-
-    <form action="http://localhost:3000/logout" method="post">
-        <button type="submit">Logout</button>
-    </form>
-
-
-</main>
-<%- include('../includes/end.ejs') %>
+    </div>
+    <%- include('../includes/end.ejs') %>
