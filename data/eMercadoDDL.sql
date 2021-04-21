@@ -99,19 +99,19 @@ CREATE TABLE direct_item_messages(
 	foreign key(person_id) references person on delete cascade
 );
 
-CREATE TABLE direct_item_messages(
+CREATE TABLE auction_item_messages(
 	message_id 	serial,
 	person_id	int,
-	ditem_id	int,
+	aitem_id	int,
 	title		varchar(30),
 	message_text text,
 	primary key(message_id),
-	foreign key(ditem_id) references direct_sale_item on delete cascade,
+	foreign key(aitem_id) references auction_item on delete cascade,
 	foreign key(person_id) references person on delete cascade
 );
 
-CREATE index receipt_user_1 ON direct_item_messages(user_id);
-CREATE index receipt_user_2 ON auction_item_messages(user_id);
+CREATE index receipt_user_1 ON direct_item_messages(person_id);
+CREATE index receipt_user_2 ON auction_item_messages(person_id);
 CREATE INDEX auslr_idx ON auction_item(seller_id);
 CREATE INDEX dsslr_idx ON direct_sale_item(seller_id);
 CREATE INDEX dsbyr_idx ON direct_sale_item(buyer_id);
