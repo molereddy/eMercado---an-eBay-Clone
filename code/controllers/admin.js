@@ -1,7 +1,9 @@
 const Login = require('../models/Login');
 const Search = require('../models/Search');
 const Product = require('../models/Product');
+const {encrypt} = require('../utils/crypto');
 var Cookies = require('cookies');
+const Signup = require('../models/Signup');
 
 var keys = ['secret key']
 
@@ -14,17 +16,44 @@ exports.get_login = (req,res,next) => {
             
         });
 
+};
+
+exports.get_signup = (req,res,next) => {
 
 
-    
-
+    res.render('admin/signup_screen', {
+        pageTitle: 'Signup Screen',
+        path: '/signup-screen'
+        
+    });
 
 };
 
+exports.post_signup = (req,res,next) => {
+    var name = req.body.name,
+        email = req.body.email,
+        password = encrypt(req.body.password),
+        phone_no = req.body.phone,
+        latitude = req.body.latitude,
+        longitude = req.body.longitude;
+    
+    user = new Signup();
+    user
+        .get_personid()
+        .then( results => {
+            var user = new Signup(results.rows[0].person_id+1,name,email,password,phone_no,latitude,longitude,1000);
+
+            user.insert_user().catch(err => console.log(err));
+            res.redirect('login-screen');
+            
+        }).catch(err => console.log(err));
+        
+
+};
 exports.post_login = (req,res,next) => {
     const email = req.body.email;
-    const password = req.body.password
-  
+    const password = encrypt(req.body.password);
+    //const password = req.body.password;
     const user = new Login( email, password);
     user
         .get_user()

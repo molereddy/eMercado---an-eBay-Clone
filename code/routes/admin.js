@@ -9,6 +9,8 @@ const router = express.Router();
 
 router.get('/login-screen',adminCon.get_login);
 router.post('/login-screen',adminCon.post_login);
+router.get('/signup-screen',adminCon.get_signup);
+router.post('/signup-screen',adminCon.post_signup);
 
 router.get('/home-screen',adminCon.get_home_screen);
 router.post('/home-screen',adminCon.post_home_screen_search);
