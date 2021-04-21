@@ -1,0 +1,63 @@
+<%- include('../includes/head.ejs') %>
+<link rel="stylesheet" href="/css/forms.css">
+<link rel="stylesheet" href="/css/product.css">
+</head>
+
+<body>
+
+
+<main>
+
+    <h1>Sign Up Screen Page</h1>
+
+    <form class="product-form" action="http://localhost:3000/signup-screen" method="POST">
+        <div class="form-control">
+            <label for="name">Name</label>
+            <input type="text" name="name" id="name" required = "required" >
+        </div>
+        <div class="form-control">
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" required = "required">
+        </div>
+        <div class="form-control">
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" required = "required">
+        </div>
+        <div class="form-control">
+            <label for="re_password">Re enter your Password</label>
+            <input type="password" name="re_password" id="re_password" required = "required">
+        </div>
+        <div class="form-control">
+            <label for="phone">Phone no</label>
+            <input type="text" name="phone" id="phone" required = "required">
+        </div>
+        <div class="form-control">
+            <label for="latitude">Latitude</label>
+            <input type="number" step = "0.0001" name="latitude" id="latitude" required = "required">
+        </div>
+        <div class="form-control">
+            <label for="Longitude">longitude</label>
+            <input type="number" step = "0.0001" name="longitude" id="longitude" required = "required">
+        </div>
+        
+        
+      
+
+        <button class="btn" type="submit">Sign up</button>
+
+
+
+
+        
+   
+   
+    </form>
+
+
+
+
+
+   
+
+</main>
+<%- include('../includes/end.ejs') %>
