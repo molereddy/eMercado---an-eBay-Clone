@@ -1,21 +1,115 @@
 <%- include('../includes/head.ejs') %>
-<link rel="stylesheet" href="/css/forms.css">
-<link rel="stylesheet" href="/css/product.css">
-</head>
 
-<body>
+    <!-- <h1>Search Screen Page</h1>
+    <form class="product-form" action="http://localhost:3000/home-screen" method="POST">
+        <div class="form-control">
+            <label for="search">Search for an item</label>
+            <input type="text" name="search" id="search">
+        </div>
+        <button class="btn" type="submit">Search</button>
+    </form>
+    <div class="container">
+
+        <hgroup class="mb20">
+            <h1>Search Results</h1>
+            <h2 class="lead"><strong class="text-danger">3</strong> results were found for the search for <strong class="text-danger">Lorem</strong></h2>
+        </hgroup>
+
+        <section class="col-xs-12 col-sm-6 col-md-12">
+            <% for (var i =0; i < direct_products.rows.length;  i++ ) { %>
+                <article class="card product-item">
+                    <header class="card__header">
+                        <h1 class="product__title">
+                            <p>
+                                <%= (direct_products) ?  direct_products.rows[i].name : '' %>
+                            </p>
+                        </h1>
+                    </header>
+                    <div class="card__content">
+                        <h3 class="product__price">Price:
+                            <p>
+                                <%=(direct_products) ?  direct_products.rows[i].price : '' %>
+                            </p>
+                        </h3>
+                        <h3 class="product__description">Quantity:
+                            <p>
+                                <%= (direct_products) ?  direct_products.rows[i].quantity : '' %>
+                            </p>
+                        </h3>
+                    </div>
+                    <div class="card__actions">
+                        <form action="http://localhost:3000/product-details" method="post">
+                            <button class="btn" type="submit">Add to Cart</button>
+                            <input type="hidden" name="product_id" value=<%=direct_products.rows[i].ditem_id %> >
+                            <input type="hidden" name="product_type" value="direct">
+                        </form>
+                    </div>
+                </article>
+                <% } %>
+                    <% for (var i =0; i < auction_products.rows.length;  i++ ) { %>
+                        <article class="search-result row">
+                            <header class="card__header">
+                                <h1 class="product__title">
+                                    <p>
+                                        <%= (auction_products) ?  auction_products.rows[i].name : '' %>
+                                    </p>
+                                </h1>
+                            </header>
+                            <div class="card__content">
+                                <h3 class="product__price">Price:
+                                    <p>
+                                        <%= (auction_products) ?  auction_products.rows[i].price : '' %>
+                                    </p>
+                                </h3>
+                                <h3 class="product__description">Quantity:
+                                    <p>
+                                        <%= (auction_products) ?  auction_products.rows[i].quantity : '' %>
+                                    </p>
+                                </h3>
+                            </div>
+                            <div class="card__actions">
+                                <form action="http://localhost:3000/auction-product-details" method="post">
+                                    <button class="btn" type="submit">Add to Cart</button>
+                                    <input type="hidden" name="product_id" value=<%=auction_products.rows[i].aitem_id %> >
+                                    <input type="hidden" name="product_type" value="auction">
+                                </form>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-2">
+                                <ul class="meta-search">
+                                    <li><i class="glyphicon glyphicon-calendar"></i> <span>02/15/2014</span></li>
+    <li><i class="glyphicon glyphicon-time"></i> <span>Start: <%= (auction_products) ?  auction_products.rows.[i].start_time : '' %></span></li>
+    <li><i class="glyphicon glyphicon-time"></i> <span>Close: <%= (auction_products) ?  auction_products.rows.[i].close_time : '' %></span></li>
+    <li><i class="glyphicon glyphicon-usd"></i> <span>Price: <%= (auction_products) ?  auction_products.rows.price[i].price : '' %></span></li>
+    </ul>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-7 excerpet">
+        <h3><a href="#" title="">Voluptatem, exercitationem, suscipit, distinctio</a></h3>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatem, exercitationem, suscipit, distinctio, qui sapiente aspernatur molestiae non corporis magni sit sequi iusto debitis delectus doloremque.</p>
+        <span class="plus"><a href="#" title="Lorem ipsum"><i class="glyphicon glyphicon-plus"></i></a></span>
+    </div>
+    <span class="clearfix borda"></span>
+    </article>
+    <article class="card product-item">
+
+    </article>
+    <% } %>
+
+        </section>
+        </div>
+        <div class="grid">
+
+        </div> -->
 
 
-<main>
 
     <h1>Search Screen Page</h1>
     <form class="product-form" action="http://localhost:3000/home-screen" method="POST">
         <div class="form-control">
             <label for="search">Search for an item</label>
-            <input type="text" name="search" id="search" >
+            <input type="text" name="search" id="search">
         </div>
-       
-      
+
+
 
         <button class="btn" type="submit">Search</button>
     </form>
@@ -24,89 +118,87 @@
     <div class="grid">
 
         <% for (var i =0; i < direct_products.rows.length;  i++ ) { %>
-           
-            
-        <article class="card product-item">
-            <header class="card__header">
-                <h1 class="product__title">
-                    <p><%= (direct_products) ?  direct_products.rows[i].name : '' %></p>
-                   
-                </h1>
-            </header>
-
-            
-
-            <div class="card__content">
-                <h3 class="product__price">Price:
-                    <p><%= (direct_products) ?  direct_products.rows[i].price : '' %></p>
-                    
-                </h3>
-                <h3 class="product__description">Quantity:
-                    <p><%= (direct_products) ?  direct_products.rows[i].quantity : '' %></p>
-                </h3>
-            </div>
-
-            <div class="card__actions">
 
 
+            <article class="card product-item">
+                <header class="card__header">
+                    <h1 class="product__title">
+                        <p>
+                            <%= (direct_products) ?  direct_products.rows[i].name : '' %>
+                        </p>
+
+                    </h1>
+                </header>
+
+                <div class="card__content">
+                    <h3 class="product__price">Price:
+                        <p>
+                            <%= (direct_products) ?  direct_products.rows[i].price : '' %>
+                        </p>
+
+                    </h3>
+                    <h3 class="product__description">Quantity:
+                        <p>
+                            <%= (direct_products) ?  direct_products.rows[i].quantity : '' %>
+                        </p>
+                    </h3>
+                </div>
+                <div class="card__actions">
                     <form action="http://localhost:3000/product-details" method="post">
                         <button class="btn" type="submit">Add to Cart</button>
-                        <input type="hidden" name="product_id" value=<%=direct_products.rows[i].ditem_id  %> >
-                        <input type="hidden" name="product_type" value= "direct" >
+                        <input type="hidden" name="product_id" value=<%=direct_products.rows[i].ditem_id %> >
+                        <input type="hidden" name="product_type" value="direct">
 
-                        
-                     </form>
-            </div>
-        </article>
-
-    <% } %>
+                    </form>
+                </div>
+            </article>
+            <% } %>
 
 
 
 
 
-     <% for (var i =0; i < auction_products.rows.length;  i++ ) { %>
-           
-            
-        <article class="card product-item">
-            <header class="card__header">
-                <h1 class="product__title">
-                    <p><%= (auction_products) ?  auction_products.rows[i].name : '' %></p>
-                   
-                </h1>
-            </header>
-
-            
-
-            <div class="card__content">
-                <h3 class="product__price">Price:
-                    <p><%= (auction_products) ?  auction_products.rows[i].price : '' %></p>
-                    
-                </h3>
-                <h3 class="product__description">Quantity:
-                    <p><%= (auction_products) ?  auction_products.rows[i].quantity : '' %></p>
-                </h3>
-            </div>
-
-            <div class="card__actions">
+                <% for (var i =0; i < auction_products.rows.length;  i++ ) { %>
 
 
-                    <form action="http://localhost:3000/auction-product-details" method="post">
-                        <button class="btn" type="submit">Add to Cart</button>
-                        <input type="hidden" name="product_id" value=<%=auction_products.rows[i].aitem_id  %> >
-                        <input type="hidden" name="product_type" value= "auction" >
-                        
-                     </form>
-            </div>
-        </article>
+                    <article class="card product-item">
+                        <header class="card__header">
+                            <h1 class="product__title">
+                                <p>
+                                    <%= (auction_products) ?  auction_products.rows[i].name : '' %>
+                                </p>
 
-    <% } %>
+                            </h1>
+                        </header>
+
+                        <div class="card__content">
+                            <h3 class="product__price">Price:
+                                <p>
+                                    <%= (auction_products) ?  auction_products.rows[i].price : '' %>
+                                </p>
+
+                            </h3>
+                            <h3 class="product__description">Quantity:
+                                <p>
+                                    <%= (auction_products) ?  auction_products.rows[i].quantity : '' %>
+                                </p>
+                            </h3>
+                        </div>
+                        <div class="card__actions">
+                            <form action="http://localhost:3000/auction-product-details" method="post">
+                                <button class="btn" type="submit">Add to Cart</button>
+                                <input type="hidden" name="product_id" value=<%=auction_products.rows[i].aitem_id %> >
+                                <input type="hidden" name="product_type" value="auction">
+
+                            </form>
+                        </div>
+                    </article>
+                    <% } %>
 
 
 
 
-            </div>
-       
+    </div>
 
 
 
@@ -127,16 +219,15 @@
 
 
 
-        
-    
 
 
-    
+
+
+
+
 
     <form action="http://localhost:3000/logout" method="post">
         <button type="submit">Logout</button>
     </form>
 
-
-</main>
-<%- include('../includes/end.ejs') %>
+    <%- include('../includes/end.ejs') %>

@@ -1,84 +1,32 @@
-<!-- <%- include('../includes/head.ejs') %>
-<link rel="stylesheet" href="/css/forms.css">
-<link rel="stylesheet" href="/css/product.css">
-</head>
-
-<body>
-
-
-<main>
-
-    <h1>Sign Up Screen Page</h1>
-
-    <form class="product-form" action="http://localhost:3000/signup-screen" method="POST">
-        <div class="form-control">
-            <label for="name">Name</label>
-            <input type="text" name="name" id="name" required = "required" >
-        </div>
-        <div class="form-control">
-            <label for="email">Email</label>
-            <input type="email" name="email" id="email" required = "required">
-        </div>
-        <div class="form-control">
-            <label for="password">Password</label>
-            <input type="password" name="password" id="password" required = "required">
-        </div>
-        <div class="form-control">
-            <label for="re_password">Re enter your Password</label>
-            <input type="password" name="re_password" id="re_password" required = "required">
-        </div>
-        <div class="form-control">
-            <label for="phone">Phone no</label>
-            <input type="text" name="phone" id="phone" required = "required">
-        </div>
-        <div class="form-control">
-            <input type="checkbox" name="location" id="location" required = "required">
-            <label for="location">Permission to access my location</label>
-        </div>
-      
-
-        <button class="btn" type="submit">Sign up</button>
-
-
-
-
-        
-   
-   
-    </form>
-
-
-
-
-
-   
-
-</main>
-<%- include('../includes/end.ejs') %> -->
-
 <%- include('../includes/head.ejs') %>
     <br><br>
     <div id='root'></div>
-
-    <div class="login-form">
-        <form action="http://localhost:3000/signup-screen" class="product-form" method="POST">
-            <h2 style="font-family:Geneva, sans-serif; font-size:40px;"><b>Enter account details</b></h2> <br><br>
-            <div class="form-group">
-                <input type="text" class="form-control" id="name" placeholder="Username" required="required" name="name">
-                <br>
-                <input type="email" class="form-control" placeholder="Email" required="required" name="email" id="email">
-                <br>
-                <input type="password" class="form-control" placeholder="Enter password" required="required" name="password" id="password">
-                <br>
-                <input type="password" class="form-control" placeholder="Re-enter password" required="required" name="re_password" id="re_password">
-                <br>
-                <input type="text" class="form-control" placeholder="Phone Number" required="required" name="phone" id="phone">
-                <br>
-                <input type="checkbox" name="location" id="location" required="required">
-                <label for="location">Permission to store your location</label>
-                <br>
-                <button type="submit" class="btn btn-primary btn-block" style="font-family: 'Lucida Sans Typewriter', 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;">Sign up</button>
-            </div>
-        </form>
+    <div class="split left">
+        <div class="centered">
+            <h1 style="font-size: 50px; font-family: 'Lucida Sans Typewriter', 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;">Welcome to eMercado!</h1>
+            <p style="font-size: 20px;font-weight: 100;">buy & sell just about anything, at the best prices in India</p>
+        </div>
+    </div>
+    <div class="split right login-form" style="right: 0; margin-top: 30px;">
+        <div class="centered">
+            <form action="http://localhost:3000/signup-screen" class="product-form" method="POST">
+                <div class="form-group">
+                    <input type="text" class="form-control" id="name" placeholder="Username" required="required" name="name">
+                    <br>
+                    <input type="email" class="form-control" placeholder="Email" required="required" name="email" id="email">
+                    <br>
+                    <input type="password" class="form-control" placeholder="Enter password" required="required" name="password" id="password">
+                    <br>
+                    <input type="password" class="form-control" placeholder="Re-enter password" required="required" name="re_password" id="re_password">
+                    <br>
+                    <input type="text" class="form-control" placeholder="Phone Number" required="required" name="phone" id="phone">
+                    <br>
+                    <input type="checkbox" name="location" id="location" required="required">
+                    <label for="location">Permission to save your location</label>
+                    <br>
+                    <button type="submit" class="btn btn-primary btn-block" style="font-family: 'Lucida Sans Typewriter', 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;">Sign up</button>
+                </div>
+            </form>
+        </div>
     </div>
     <%- include('../includes/end.ejs') %>
