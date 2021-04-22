@@ -50,7 +50,7 @@ with open('Datagen/person.csv', 'w') as f:
     	header = next(csvreader)  
     	for row in csvreader:
     		phno = random.randint(seedphnomin,seedphnomax)
-    		csvwriter.writerow([row[0],row[1],row[1]+'@emercado.com',seedpassword,phno,seedlocation,seedbalance,0.0])
+    		csvwriter.writerow([row[0],row[1],row[1]+'@emercado.com',"298fc689",phno,seedlocation,seedbalance,0.0])
     		if(seednumcust<=int(row[0])):
     			break
 
