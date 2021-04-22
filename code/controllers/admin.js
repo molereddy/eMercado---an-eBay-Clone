@@ -4,7 +4,10 @@ const Product = require('../models/Product');
 const {encrypt} = require('../utils/crypto');
 var Cookies = require('cookies');
 const Signup = require('../models/Signup');
-
+const { use } = require('../routes/admin');
+const { rawListeners } = require('../utils/database');
+const { Navigator } = require("node-navigator");
+const navigator = new Navigator();
 var keys = ['secret key']
 
 exports.get_login = (req,res,next) => {
@@ -29,55 +32,75 @@ exports.get_signup = (req,res,next) => {
 
 };
 
+function getPosition(position)
+{
+    return [position.latitude,position.longitude];
+}
+
 exports.post_signup = (req,res,next) => {
     var name = req.body.name,
         email = req.body.email,
         password = encrypt(req.body.password),
-        phone_no = req.body.phone,
-        latitude = req.body.latitude,
-        longitude = req.body.longitude;
-    
-    user = new Signup();
-    user
-        .get_personid()
-        .then( results => {
-            var user = new Signup(results.rows[0].person_id+1,name,email,password,phone_no,latitude,longitude,1000);
+        phone_no = req.body.phone;
+        
 
-            user.insert_user().catch(err => console.log(err));
-            res.redirect('login-screen');
+    if(navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+              (position) => {
+                  //latitude = position.coords.latitude;
+                  //longitude = position.coords.longitude; 
+                
+                var latitude = position.latitude;
+                var longitude = position.longitude;
+                user = new Signup();
+                user
+                .get_personid()
+                .then( results => {
+                    var user = new Signup(results.rows[0].person_id+1,name,email,password,phone_no,latitude,longitude,1000);
+
+                    user.insert_user().catch(err => console.log(err));
+                    res.redirect('login-screen');
+                    
+                }).catch(err => console.log(err));
             
-        }).catch(err => console.log(err));
+                    
+            });
+        }
         
 
 };
 exports.post_login = (req,res,next) => {
     const email = req.body.email;
     const password = encrypt(req.body.password);
+    
     //const password = req.body.password;
-    const user = new Login( email, password);
-    user
-        .get_user()
-        .then(results => {
+        const user = new Login(email);
+        user
+            .get_user(password)
+            .then(results => {
+    
+                if(results.rows.length ==  0){
+    
+                    res.redirect('login-screen');
+    
+                }
+                req.currentUser =results.rows[0].person_id;
+    
+                // Create a cookies object
+                var cookies = new Cookies(req, res, {keys : keys });
+                
+                // Set the cookie to a value
+                cookies.set('CurrentID', results.rows[0].person_id, { signed: true });
+                cookies.set('CurrentEmail',results.rows[0].email,{signed:true});
+    
+                res.redirect('home-screen');
+    
+                
+            })
+            .catch(err => console.log(err));
+    
 
-            if(results.rows.length ==  0){
-
-                res.redirect('login-screen');
-
-            }
-
-
-            req.currentUser =results.rows[0].person_id;
-
-            // Create a cookies object
-            var cookies = new Cookies(req, res, {keys : keys });
-            
-            // Set the cookie to a value
-            cookies.set('CurrentID', results.rows[0].person_id, { signed: true });
-
-            res.redirect('home-screen');
-
-        })
-        .catch(err => console.log(err));
+    
 };
 
 
@@ -117,28 +140,47 @@ exports.get_home_screen = (req,res,next) => {
 
     var cookies = new Cookies(req, res, {keys  : keys })
 
+
     // Get a cookie
     var currentID = cookies.get('CurrentID', { signed: true })
-
+    var currentEmail = cookies.get('CurrentEmail', { signed: true })
+    user = new Login(currentEmail);
+    
     if (!currentID) {
-        console.log('Get Lost');
+        res.redirect('login-screen');
     } else {
-
-        res.render('admin/home_screen', {
-            pageTitle: 'Home Screen',
-            path: '/home-screen'
-           
-        });
-
-
+        user
+            .get_balance()
+            .then(results => {
+                
+                res.render('admin/home_screen', {
+                    pageTitle: 'Home Screen',
+                    path: '/home-screen',
+                    balance: results.rows[0].balance
+                    
+                });
+            
+            }).catch(err => console.log(err));
 
     }
-
-
-    
-
-
 };
+
+exports.post_update_balance = (req,res,next) => {
+
+    var cookies = new Cookies(req, res, {keys  : keys })
+
+    // Get a cookie
+    var currentID = cookies.get('CurrentID', { signed: true })
+    var currentEmail = cookies.get('CurrentEmail', { signed: true })
+    user = new Login(currentEmail);
+    if (!currentID) {
+        res.redirect('login-screen');
+    } else {
+        user.update_balance(req.body.balance);
+        res.redirect('home-screen');
+    }
+};
+
 
 
 exports.post_home_screen_search = (req,res,next) => {// when search button is pressed 
@@ -149,7 +191,7 @@ exports.post_home_screen_search = (req,res,next) => {// when search button is pr
     var currentID = cookies.get('CurrentID', { signed: true })
 
     if (!currentID) {
-        console.log('Get Lost');
+        res.redirect('login-screen');
     } else {
 
 
@@ -201,7 +243,7 @@ exports.get_product_details = (req,res,next) => {// when a direct sale product i
     var currentID = cookies.get('CurrentID', { signed: true })
 
     if (!currentID) {
-        console.log('Get Lost');
+        res.redirect('login-screen');
     } else {
 
 
@@ -255,7 +297,7 @@ exports.get_product_details_delete_product = (req,res,next) => {// when seller d
     var currentID = cookies.get('CurrentID', { signed: true })
 
     if (!currentID) {
-        console.log('Get Lost');
+        res.redirect('login-screen');
     } else {
 
         console.log(product_id);
@@ -291,7 +333,7 @@ exports.get_product_details_update_status = (req,res,next) => {//when seller pre
     var currentID = cookies.get('CurrentID', { signed: true })
 
     if (!currentID) {
-        console.log('Get Lost');
+        res.redirect('login-screen');
     } else {
 
 
@@ -359,7 +401,7 @@ exports.get_product_details_buy = (req,res,next) => {// when the buyer clicks on
     var currentID = cookies.get('CurrentID', { signed: true })
 
     if (!currentID) {
-        console.log('Get Lost');
+        res.redirect('login-screen');
     } else {
 
         console.log(product_id);
@@ -420,7 +462,7 @@ exports.get_product_details_confirm_delivery = (req,res,next) => {// when the bu
     var currentID = cookies.get('CurrentID', { signed: true })
 
     if (!currentID) {
-        console.log('Get Lost');
+        res.redirect('login-screen');
     } else {
 
         console.log(product_id);

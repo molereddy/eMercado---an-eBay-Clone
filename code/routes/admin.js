@@ -15,6 +15,7 @@ router.post('/signup-screen',adminCon.post_signup);
 router.get('/home-screen',adminCon.get_home_screen);
 router.post('/home-screen',adminCon.post_home_screen_search);
 
+router.post('/update-balance',adminCon.post_update_balance);
 router.post('/product-details',adminCon.get_product_details);
 router.post('/product-details-buy',adminCon.get_product_details_buy);
 router.post('/product-details-confirm-delivery',adminCon.get_product_details_confirm_delivery);

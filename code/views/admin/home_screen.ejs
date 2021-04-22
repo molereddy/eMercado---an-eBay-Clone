@@ -19,11 +19,6 @@
       
 
         <button class="btn" type="submit">Search</button>
-       
-
-        
-   
-   
     </form>
 
 
@@ -33,6 +28,36 @@
     <form action="http://localhost:3000/logout" method="post">
         <button type="submit">Logout</button>
     </form>
+
+    <h3>Your current balance : <%= balance %> </h3>
+
+
+    <button class="open-button" onclick="openForm()">Add Money</button>
+
+    <div class="form-popup" id="myForm">
+    <form action="http://localhost:3000/update-balance" class="form-container" method="POST">
+        <h3>Add Money</h3>
+
+        
+        <label for="balance"><b>Amount</b></label>
+        <input type="number" placeholder="Enter Amount to be added" name="balance"  id = "balance" required>
+        
+
+        <button type="submit" class="btn">Update balance</button>
+        <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+    </form>
+    </div>
+    <script>
+        function openForm() {
+        document.getElementById("myForm").style.display = "block";
+        }
+        
+        function closeForm() {
+        document.getElementById("myForm").style.display = "none";
+        }
+    </script>
+    
+      
 
 
 </main>

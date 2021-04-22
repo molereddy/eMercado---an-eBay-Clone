@@ -1,5 +1,6 @@
 
 const pool= require('../utils/database');
+//const sequelize = require('sequelize');
 
 module.exports = class Search{
 
@@ -12,15 +13,19 @@ module.exports = class Search{
     // }
     get_direct_search_results(){
         // console.log(this.searchkey);
-        return pool.query('SELECT * FROM direct_sale_item where name = $1',[this.searchkey]);
+        return pool.query('SELECT * FROM direct_sale_item where to_tsvector(name) @@ to_tsquery($1)',[this.searchkey.replace(/ /g,"|")]);
 
     }
 
 
     get_auction_search_results(){
         // console.log(this.searchkey);
-        return pool.query('SELECT * FROM auction_item where name = $1',[this.searchkey]);
+        return pool.query('SELECT * FROM auction_item where to_tsvector(name) @@ to_tsquery($1)',[this.searchkey.replace(/ /g,"|")]);
 
     }
 
+
+
 };
+
+
