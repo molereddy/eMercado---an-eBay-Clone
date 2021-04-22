@@ -1,4 +1,4 @@
-<%- include('../includes/head.ejs') %>
+<!-- <%- include('../includes/head.ejs') %>
 <link rel="stylesheet" href="/css/forms.css">
 <link rel="stylesheet" href="/css/product.css">
 </head>
@@ -54,4 +54,31 @@
    
 
 </main>
-<%- include('../includes/end.ejs') %>
+<%- include('../includes/end.ejs') %> -->
+
+<%- include('../includes/head.ejs') %>
+    <br><br>
+    <div id='root'></div>
+
+    <div class="login-form">
+        <form action="http://localhost:3000/signup-screen" class="product-form" method="POST">
+            <h2 style="font-family:Geneva, sans-serif; font-size:40px;"><b>Enter account details</b></h2> <br><br>
+            <div class="form-group">
+                <input type="text" class="form-control" id="name" placeholder="Username" required="required" name="name">
+                <br>
+                <input type="email" class="form-control" placeholder="Email" required="required" name="email" id="email">
+                <br>
+                <input type="password" class="form-control" placeholder="Enter password" required="required" name="password" id="password">
+                <br>
+                <input type="password" class="form-control" placeholder="Re-enter password" required="required" name="re_password" id="re_password">
+                <br>
+                <input type="text" class="form-control" placeholder="Phone Number" required="required" name="phone" id="phone">
+                <br>
+                <input type="checkbox" name="location" id="location" required="required">
+                <label for="location">Permission to store your location</label>
+                <br>
+                <button type="submit" class="btn btn-primary btn-block" style="font-family: 'Lucida Sans Typewriter', 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;">Sign up</button>
+            </div>
+        </form>
+    </div>
+    <%- include('../includes/end.ejs') %>
