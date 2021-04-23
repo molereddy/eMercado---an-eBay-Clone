@@ -94,6 +94,7 @@ CREATE TABLE direct_item_messages(
 	ditem_id	int,
 	title		varchar(30),
 	message_text text,
+	message_time timestamp,
 	primary key(message_id),
 	foreign key(ditem_id) references direct_sale_item on delete cascade,
 	foreign key(person_id) references person on delete cascade
@@ -105,6 +106,7 @@ CREATE TABLE auction_item_messages(
 	aitem_id	int,
 	title		varchar(30),
 	message_text text,
+	message_time timestamp,
 	primary key(message_id),
 	foreign key(aitem_id) references auction_item on delete cascade,
 	foreign key(person_id) references person on delete cascade

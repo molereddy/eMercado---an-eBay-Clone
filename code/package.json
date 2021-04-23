@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "alert": "^5.0.10",
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.5",
     "cookies": "^0.8.0",

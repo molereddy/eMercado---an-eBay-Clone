@@ -15,12 +15,17 @@ router.post('/signup-screen', adminCon.post_signup);
 router.get('/home-screen', adminCon.get_home_screen);
 router.post('/home-screen', adminCon.post_home_screen_search);
 
-router.post('/update-balance', adminCon.post_update_balance);
-router.post('/product-details', adminCon.get_product_details);
-router.post('/product-details-buy', adminCon.get_product_details_buy);
-router.post('/product-details-confirm-delivery', adminCon.get_product_details_confirm_delivery);
-router.post('/product-details-delete-product', adminCon.get_product_details_delete_product);
-router.post('/product-details-update-status', adminCon.get_product_details_update_status);
+router.post('/messages',adminCon.viewMessages);
+router.post('/add-product',adminCon.post_add_product);
+router.get('/add-product',adminCon.get_add_product);
+router.get('/view-myproducts',adminCon.get_view_my_products);
+
+router.post('/update-balance',adminCon.post_update_balance);
+router.post('/product-details',adminCon.get_product_details);
+router.post('/product-details-buy',adminCon.get_product_details_buy);
+router.post('/product-details-confirm-delivery',adminCon.get_product_details_confirm_delivery);
+router.post('/product-details-delete-product',adminCon.get_product_details_delete_product);
+router.post('/product-details-update-status',adminCon.get_product_details_update_status);
 
 
 

@@ -20,7 +20,53 @@ module.exports = class Login{
     }
 
     get_balance(){
-        return pool.query('select balance from person where email = $1',[this.email]);
+        return pool.query('select balance,amount_on_hold from person where email = $1',[this.email]);
+    }
+
+    
+    get_messages(id){
+        return pool.query('(SELECT * from direct_item_messages  where person_id = $1 order by message_time desc) union (SELECT * from auction_item_messages where person_id = $1 order by message_time desc)  ',[id]);
+    }
+
+    add_auction_product(aitem_id,category,name,desc,price,seller_id,quantity,start_time,close_time)
+    {
+        return pool.query('Insert into auction_item(aitem_id,identifier,name,description,price,seller_id,status,physical_product,quantity,delivery_factor,start_time,close_time) values($1,$2,$3,$4,$5,$6,\'open\',true,$7,1,$8,$9);',[aitem_id,category,name,desc,price,seller_id,quantity,start_time,close_time]);
+
+    }
+
+    add_direct_product(ditem_id,category,name,desc,price,seller_id,quantity)
+    {   console.log(ditem_id);
+        console.log(name);
+        console.log(seller_id);
+        console.log(desc);
+        console.log(quantity);
+        console.log(category);
+        console.log(price);
+        return pool.query('INSERT INTO direct_sale_item(ditem_id,identifier,name,description,price,seller_id,status,physical_product,quantity,delivery_factor) values($1,$2,$3,$4,$5,$6,\'open\',true,$7,1.00) ',[ditem_id,category,name,desc,price,seller_id,quantity]);
+
+    }
+
+    get_new_aitem_id()
+    {
+        return pool.query('select * from auction_item order by aitem_id desc limit 1;');
+
+    }
+
+    get_new_ditem_id()
+    {
+        return pool.query('select * from direct_sale_item order by ditem_id desc limit 1;');
+
+    }
+
+    get_direct_search_results(id)
+    {
+        return pool.query('select * from direct_sale_item where seller_id = $1;',[id]);
+    }
+
+    get_auction_search_results(id)
+    {
+        return pool.query('select * from auction_item where seller_id = $1;',[id]);
+    
     }
 
 };

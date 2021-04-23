@@ -1,0 +1,72 @@
+<%- include('../includes/head.ejs') %>
+<link rel="stylesheet" href="/css/forms.css">
+<link rel="stylesheet" href="/css/product.css">
+</head>
+
+<body>
+
+
+<main>
+
+    
+    <div class="grid">
+
+        <% for (var i =0; i < messages.rows.length;  i++ ) { %>
+           
+            
+        <article class="card product-item">
+            <header class="card__header">
+                <h1 class="product__title">
+                    <p><%= (messages) ?  messages.rows[i].title : '' %></p>
+                   
+                </h1>
+            </header>
+
+            
+
+            <div class="card__content">
+                <h3 class="product__price">Price:
+                    <p><%= (messages) ?  messages.rows[i].message_text : '' %></p>
+                    
+                </h3>
+            </div>
+
+            
+        </article>
+
+         <% } %>
+     </div>
+       
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+
+
+    
+
+    <form action="http://localhost:3000/logout" method="post">
+        <button type="submit">Logout</button>
+    </form>
+
+
+</main>
+<%- include('../includes/end.ejs') %>
