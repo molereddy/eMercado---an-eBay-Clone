@@ -8,9 +8,17 @@ module.exports = class Product{
         this.currentID = currentID;
     }
 
-    // add_prod(){
-    //     return pool.query('INSERT INTO products(title, price, image, quantity) VALUES ($1, $2, $3, $4);', [this.title, this.price, this.image, this.quantity]);
-    // }
+    //add_direct_item(){
+      //   return pool.query('INSERT INTO products(title, price, image, quantity) VALUES ($1, $2, $3, $4);', [this.title, this.price, this.image, this.quantity]);
+    //}
+
+    update_direct_buyer(id){
+        return pool.query('update direct_sale_item set buyer_id = $1 where ditem_id = $2',[id,this.product_id]);
+    }
+
+    update_auction_buyer(id){
+        return pool.query('update auction_sale_item set buyer_id = $1 where aitem_id = $2',[id,this.product_id]);
+    }
     get_direct_item(){
         
         return pool.query('SELECT * FROM direct_sale_item where ditem_id = $1',[this.product_id]);

@@ -1,14 +1,16 @@
 const Login = require('../models/Login');
 const Search = require('../models/Search');
 const Product = require('../models/Product');
-const { encrypt } = require('../utils/crypto');
+const {encrypt,get_timestamp} = require('../utils/crypto');
 var Cookies = require('cookies');
+const Message = require('../models/Message');
 const Signup = require('../models/Signup');
 const { use } = require('../routes/admin');
 const { rawListeners } = require('../utils/database');
 const { Navigator } = require("node-navigator");
 const navigator = new Navigator();
 var keys = ['secret key']
+const alert = require('alert');
 
 exports.get_login = (req, res, next) => {
 
@@ -155,8 +157,9 @@ exports.get_home_screen = (req, res, next) => {
                 res.render('admin/home_screen', {
                     pageTitle: 'Home Screen',
                     path: '/home-screen',
-                    balance: results.rows[0].balance
-
+                    balance: results.rows[0].balance,
+                    amount_on_hold:results.rows[0].amount_on_hold
+                    
                 });
 
             }).catch(err => console.log(err));
@@ -231,7 +234,50 @@ exports.post_home_screen_search = (req, res, next) => { // when search button is
 
 };
 
-exports.post_results_switch_page = (req, res, next) => { // when next page or prev page button is pressed 
+exports.get_view_my_products = (req,res,next) => {// when search button is pressed 
+
+    var cookies = new Cookies(req, res, {keys  : keys })
+
+    // Get a cookie
+    var currentID = cookies.get('CurrentID', { signed: true })
+    var currentEmail = cookies.get('CurrentEmail', { signed: true })
+    
+    if (!currentID) {
+        res.redirect('login-screen');
+    } else {
+        
+        const user = new Login(currentEmail);
+        user
+            .get_direct_search_results(currentID)
+            .then(direct_results => {
+
+
+
+            user
+                .get_auction_search_results(currentID)
+                .then(auction_results => {
+
+    
+                res.render('admin/search_screen', {
+                    pageTitle: 'Search Screen',
+                    path: '/search-screen',
+                  
+                    direct_products : direct_results,
+                    auction_products : auction_results
+                });
+
+
+            }).catch(err => console.log(err));
+
+    
+        }).catch(err => console.log(err));
+
+    }
+
+};
+
+
+exports.post_results_switch_page = (req, res, next) => { // when search button is pressed
 
     var cookies = new Cookies(req, res, { keys: keys })
 
@@ -271,8 +317,7 @@ exports.get_product_details = (req, res, next) => { // when a direct sale produc
 
     const product_id = req.body.product_id;
     const product_type = req.body.product_type;
-
-    var cookies = new Cookies(req, res, { keys: keys })
+    var cookies = new Cookies(req, res, {keys  : keys })
 
     // Get a cookie
     var currentID = cookies.get('CurrentID', { signed: true })
@@ -299,16 +344,15 @@ exports.get_product_details = (req, res, next) => { // when a direct sale produc
 
                 product_price = direct_results.rows[0].price
                 product_status = direct_results.rows[0].status
-
-
+               
                 res.render('admin/product_details', {
                     pageTitle: 'Product Details',
                     path: '/product-details',
-                    product_id: product_id,
-                    product_type: product_type,
-                    product_price: product_price,
-                    product_status: product_status,
-                    product_viewer: product_viewer
+                    product_id : product_id,
+                    product_type : product_type,
+                    product_price : product_price,
+                    product_status : product_status,
+                    product_viewer : product_viewer,
 
                 });
 
@@ -361,8 +405,7 @@ exports.get_product_details_update_status = (req, res, next) => { //when seller 
 
     const product_id = req.body.product_id;
     const product_type = req.body.product_type;
-
-    var cookies = new Cookies(req, res, { keys: keys })
+    var cookies = new Cookies(req, res, {keys  : keys })
 
     // Get a cookie
     var currentID = cookies.get('CurrentID', { signed: true })
@@ -431,8 +474,8 @@ exports.get_product_details_buy = (req, res, next) => { // when the buyer clicks
     var cookies = new Cookies(req, res, { keys: keys })
 
     // Get a cookie
-    var currentID = cookies.get('CurrentID', { signed: true })
-
+    var currentID = cookies.get('CurrentID', { signed: true });
+    var currentEmail = cookies.get('CurrentEmail',{signed:true});
     if (!currentID) {
         res.redirect('login-screen');
     } else {
@@ -447,9 +490,11 @@ exports.get_product_details_buy = (req, res, next) => { // when the buyer clicks
             .then(direct_results => {
 
 
-                product_price = direct_results.rows[0].price
-                product_status = direct_results.rows[0].status
-
+                product_price = direct_results.rows[0].price; 
+                product_status = direct_results.rows[0].status;
+                product_seller = direct_results.rows[0].seller_id;
+                product_name = direct_results.rows[0].name;
+                
                 product_object
                     .get_person_remaining_balance()
                     .then(remaining_balance => {
@@ -464,14 +509,26 @@ exports.get_product_details_buy = (req, res, next) => { // when the buyer clicks
                                         .update_status('sold')
                                         .then(() => {
 
-                                            res.redirect(307, '/product-details');
+                                        //var user = new Login(currentEmail);
+                                        product_object.update_direct_buyer(currentID);
+                                        var message = new Message(product_id,currentID,"Order placed Succesful","Your order for item "+product_name+" is placed success fully at "+get_timestamp(),get_timestamp())
+                                        message.send_direct_message();
+                                        var message = new Message(product_id,product_seller,"New order","You got a new order for "+product_name,get_timestamp());
+                                        message.send_direct_message();
+                                        res.redirect(307,'/product-details');
 
 
                                         }).catch(err => console.log(err));
 
                                 }).catch(err => console.log(err));
 
-                        }
+                         }
+                         else{
+                            // res.json({success:false});
+                            //var string = encodeURIComponent('something that would break');
+                           // res.redirect(307,'/product-details?valid=' + string);
+                             res.send("Insufficent Balance");
+                         }
 
                     }).catch(err => console.log(err));
 
@@ -552,6 +609,106 @@ exports.get_product_details_confirm_delivery = (req, res, next) => { // when the
 
 
 
+
+};
+
+
+exports.viewMessages = (req,res,next) => {// when a direct sale product is selected
+
+    var cookies = new Cookies(req, res, {keys  : keys })
+
+    // Get a cookie
+    var currentID = cookies.get('CurrentID', { signed: true })
+    var currentEmail = cookies.get('CurrentEmail', { signed: true })
+
+    if (!currentID) {
+        res.redirect('login-screen');
+    } else {
+
+
+        const user = new Login(currentEmail);
+        user
+            .get_messages(currentID)
+            .then(results => {
+                //console.log(results);
+                res.render('admin/messages', {
+                    pageTitle: 'Product Details',
+                    path: '/product-details',
+                    messages : results
+                });
+                 
+            }).catch(err => console.log(err));
+
+    }
+
+};
+
+exports.get_add_product = (req,res,next) => {
+    var cookies = new Cookies(req, res, {keys  : keys })
+
+    // Get a cookie
+    var currentID = cookies.get('CurrentID', { signed: true })
+    var currentEmail = cookies.get('CurrentEmail', { signed: true })
+    if (!currentID) {
+        res.redirect('login-screen');
+    } else {
+        res.render('admin/add-product',{
+            pageTitle: 'Add Product',
+            path: '/add-product',
+            
+        });
+    }
+
+
+};
+
+
+exports.post_add_product = (req,res,next) => {
+    var cookies = new Cookies(req, res, {keys  : keys })
+
+    // Get a cookie
+    var currentID = cookies.get('CurrentID', { signed: true })
+    var currentEmail = cookies.get('CurrentEmail', { signed: true })
+    var name = req.body.name,
+        description = req.body.description,
+        price = req.body.price,
+        quantity = req.body.quantity,
+        identifier = req.body.category,
+        mode = req.body.item_type,
+        close_date = req.body.close_date;
+
+
+
+    if (!currentID) {
+        res.redirect('login-screen');
+    } else {
+
+        user = new Login(currentEmail);
+        if(mode == "auction" )
+        {
+            user
+                .get_new_aitem_id()
+                .then(results => {
+                    user.add_auction_product(results.rows[0].aitem_id+1,identifier,name,description,price,currentID,quantity,get_timestamp(),close_date+" 23:59:00");
+                        res.redirect('home-screen');    
+
+                }).catch(err => console.log(err));
+        }
+        else
+        {
+            user
+                .get_new_ditem_id()
+                .then(results => {
+                    user
+                    .add_direct_product(results.rows[0].ditem_id+1,identifier,name,description,price,currentID,quantity)
+                    .catch(err=> console.log(err));
+                        res.redirect('home-screen');    
+
+                }).catch(err => console.log(err));
+        }
+
+        
+    }
 
 
 };

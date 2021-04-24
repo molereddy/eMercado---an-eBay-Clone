@@ -21,8 +21,17 @@
         <button class="btn" type="submit">Search</button>
     </form>
 
+    <form action="http://localhost:3000/add-product" method="GET">
+        <button type="submit">Add product</button>
+    </form>
+    <form action="http://localhost:3000/view-myproducts" method="GET">
+        <button type="submit">View my products</button>
+    </form>
 
 
+    <form action="http://localhost:3000/messages" method="post">
+        <button type="submit">View Messages</button>
+    </form>
 
 
     <form action="http://localhost:3000/logout" method="get">
@@ -30,6 +39,7 @@
     </form>
 
     <h3>Your current balance : <%= balance %> </h3>
+    <h3>Your amount on hold : <%= amount_on_hold %> </h3>
 
 
     <button class="open-button" onclick="openForm()">Add Money</button>
