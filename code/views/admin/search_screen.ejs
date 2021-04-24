@@ -21,7 +21,7 @@
                 <strong class="text-danger">
                     <%= (direct_products) ?  ((auction_products) ?  auction_products.rows.length : 0)+direct_products.rows.length : ((auction_products) ?  auction_products.rows[i].quantity : 0) %>
                 </strong> 
-                results were found for the search for 
+                results were found for 
                 <strong class="text-danger">
                     <%= (searched_text) ?  searched_text : '' %>
                 </strong>
@@ -42,13 +42,13 @@
                             <%= ((direct_products) ?  ((auction_products) ?  auction_products.rows.length : 0)+direct_products.rows.length : ((auction_products) ?  auction_products.rows[i].quantity : 0)) %>
                         </strong>
                     <% } %>
-                    results for the search for 
+                    results for 
                     <strong class="text-danger">
                         <%= (searched_text) ?  searched_text : '' %>
                     </strong>
                 <% } else{ %>
                     <strong class="text-danger">
-                        No results to display. Try searching something else.
+                        No results to display. Try something else.
                     </strong>
                 <% } %>
             </h2>

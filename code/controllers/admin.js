@@ -263,7 +263,9 @@ exports.get_view_my_products = (req,res,next) => {// when search button is press
                     path: '/search-screen',
                   
                     direct_products : direct_results,
-                    auction_products : auction_results
+                    auction_products : auction_results,
+                    searched_text: 'My products',
+                    result_start: 0
                 });
 
 
