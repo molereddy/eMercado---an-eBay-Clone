@@ -1,106 +1,5 @@
 <%- include('../includes/head.ejs') %>
 
-    <!-- <h1>Search Screen Page</h1>
-    <form class="product-form" action="http://localhost:3000/home-screen" method="POST">
-        <div class="form-control">
-            <label for="search">Search for an item</label>
-            <input type="text" name="search" id="search">
-        </div>
-        <button class="btn" type="submit">Search</button>
-    </form>
-    <div class="container">
-
-        <hgroup class="mb20">
-            <h1>Search Results</h1>
-            <h2 class="lead"><strong class="text-danger">3</strong> results were found for the search for <strong class="text-danger">Lorem</strong></h2>
-        </hgroup>
-
-        <section class="col-xs-12 col-sm-6 col-md-12">
-            <% for (var i =0; i < direct_products.rows.length;  i++ ) { %>
-                <article class="card product-item">
-                    <header class="card__header">
-                        <h1 class="product__title">
-                            <p>
-                                <%= (direct_products) ?  direct_products.rows[i].name : '' %>
-                            </p>
-                        </h1>
-                    </header>
-                    <div class="card__content">
-                        <h3 class="product__price">Price:
-                            <p>
-                                <%=(direct_products) ?  direct_products.rows[i].price : '' %>
-                            </p>
-                        </h3>
-                        <h3 class="product__description">Quantity:
-                            <p>
-                                <%= (direct_products) ?  direct_products.rows[i].quantity : '' %>
-                            </p>
-                        </h3>
-                    </div>
-                    <div class="card__actions">
-                        <form action="http://localhost:3000/product-details" method="post">
-                            <button class="btn" type="submit">Add to Cart</button>
-                            <input type="hidden" name="product_id" value=<%=direct_products.rows[i].ditem_id %> >
-                            <input type="hidden" name="product_type" value="direct">
-                        </form>
-                    </div>
-                </article>
-                <% } %>
-                    <% for (var i =0; i < auction_products.rows.length;  i++ ) { %>
-                        <article class="search-result row">
-                            <header class="card__header">
-                                <h1 class="product__title">
-                                    <p>
-                                        <%= (auction_products) ?  auction_products.rows[i].name : '' %>
-                                    </p>
-                                </h1>
-                            </header>
-                            <div class="card__content">
-                                <h3 class="product__price">Price:
-                                    <p>
-                                        <%= (auction_products) ?  auction_products.rows[i].price : '' %>
-                                    </p>
-                                </h3>
-                                <h3 class="product__description">Quantity:
-                                    <p>
-                                        <%= (auction_products) ?  auction_products.rows[i].quantity : '' %>
-                                    </p>
-                                </h3>
-                            </div>
-                            <div class="card__actions">
-                                <form action="http://localhost:3000/auction-product-details" method="post">
-                                    <button class="btn" type="submit">Add to Cart</button>
-                                    <input type="hidden" name="product_id" value=<%=auction_products.rows[i].aitem_id %> >
-                                    <input type="hidden" name="product_type" value="auction">
-                                </form>
-                            </div>
-                            <div class="col-xs-12 col-sm-12 col-md-2">
-                                <ul class="meta-search">
-                                    <li><i class="glyphicon glyphicon-calendar"></i> <span>02/15/2014</span></li>
-    <li><i class="glyphicon glyphicon-time"></i> <span>Start: <%= (auction_products) ?  auction_products.rows.[i].start_time : '' %></span></li>
-    <li><i class="glyphicon glyphicon-time"></i> <span>Close: <%= (auction_products) ?  auction_products.rows.[i].close_time : '' %></span></li>
-    <li><i class="glyphicon glyphicon-usd"></i> <span>Price: <%= (auction_products) ?  auction_products.rows.price[i].price : '' %></span></li>
-    </ul>
-    </div>
-    <div class="col-xs-12 col-sm-12 col-md-7 excerpet">
-        <h3><a href="#" title="">Voluptatem, exercitationem, suscipit, distinctio</a></h3>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatem, exercitationem, suscipit, distinctio, qui sapiente aspernatur molestiae non corporis magni sit sequi iusto debitis delectus doloremque.</p>
-        <span class="plus"><a href="#" title="Lorem ipsum"><i class="glyphicon glyphicon-plus"></i></a></span>
-    </div>
-    <span class="clearfix borda"></span>
-    </article>
-    <article class="card product-item">
-
-    </article>
-    <% } %>
-
-        </section>
-        </div>
-        <div class="grid">
-
-        </div> -->
-
-
 
     <h1>Search Screen Page</h1>
     <form class="product-form" action="http://localhost:3000/home-screen" method="POST">
@@ -114,120 +13,205 @@
         <button class="btn" type="submit">Search</button>
     </form>
 
+    <div class="container">
 
-    <div class="grid">
+        <hgroup class="mb20">
+            <h1>Search Results</h1>
+            <h2 class="lead">
+                <strong class="text-danger">
+                    <%= (direct_products) ?  ((auction_products) ?  auction_products.rows.length : 0)+direct_products.rows.length : ((auction_products) ?  auction_products.rows[i].quantity : 0) %>
+                </strong> 
+                results were found for the search for 
+                <strong class="text-danger">
+                    <%= (searched_text) ?  searched_text : '' %>
+                </strong>
+            </h2>
+            <h2 class="lead">
+                <% if(((direct_products) ?  ((auction_products) ?  auction_products.rows.length : 0)+direct_products.rows.length : ((auction_products) ?  auction_products.rows[i].quantity : 0)) > result_start){ %>
+                    Showing 
+                    <strong class="text-danger">
+                        <%= ((result_start) ? result_start : 0)+1 %>
+                    </strong> 
+                    to
+                    <% if(((direct_products) ?  ((auction_products) ?  auction_products.rows.length : 0)+direct_products.rows.length : ((auction_products) ?  auction_products.rows[i].quantity : 0)) >= (result_start+10)){ %>
+                        <strong class="text-danger">
+                            <%= ((result_start) ? result_start : 0)+10 %>
+                        </strong>
+                    <% } else{ %>
+                        <strong class="text-danger">
+                            <%= ((direct_products) ?  ((auction_products) ?  auction_products.rows.length : 0)+direct_products.rows.length : ((auction_products) ?  auction_products.rows[i].quantity : 0)) %>
+                        </strong>
+                    <% } %>
+                    results for the search for 
+                    <strong class="text-danger">
+                        <%= (searched_text) ?  searched_text : '' %>
+                    </strong>
+                <% } else{ %>
+                    <strong class="text-danger">
+                        No results to display. Try searching something else.
+                    </strong>
+                <% } %>
+            </h2>
+        </hgroup>
 
-        <% for (var i =0; i < direct_products.rows.length;  i++ ) { %>
+        <section class="col-xs-12 col-sm-6 col-md-12">
 
+            <% for (var i = result_start; (i < direct_products.rows.length) && (i < (result_start+10));  i++ ) { %>
 
-            <article class="card product-item">
-                <header class="card__header">
-                    <h1 class="product__title">
-                        <p>
-                            <%= (direct_products) ?  direct_products.rows[i].name : '' %>
-                        </p>
-
-                    </h1>
-                </header>
-
-                <div class="card__content">
-                    <h3 class="product__price">Price:
-                        <p>
-                            <%= (direct_products) ?  direct_products.rows[i].price : '' %>
-                        </p>
-
-                    </h3>
-                    <h3 class="product__description">Quantity:
-                        <p>
+                <article class="search-result row">
+                    <div class="col-xs-12 col-sm-12 col-md-2">
+                        <h3>
+                            <i class="glyphicon glyphicon-usd"></i>
+                            <span>
+                                <%= (direct_products) ?  direct_products.rows[i].price : '' %>
+                            </span>
+                        </h3>
+                        <h3>
+                            Quantity:
                             <%= (direct_products) ?  direct_products.rows[i].quantity : '' %>
-                        </p>
-                    </h3>
-                </div>
-                <div class="card__actions">
-                    <form action="http://localhost:3000/product-details" method="post">
-                        <button class="btn" type="submit">Add to Cart</button>
-                        <input type="hidden" name="product_id" value=<%=direct_products.rows[i].ditem_id %> >
-                        <input type="hidden" name="product_type" value="direct">
+                        </h3>
+                    </div>
 
-                    </form>
-                </div>
-            </article>
+                    <header class="col-xs-12 col-sm-12 col-md-7 excerpet">
+                        <h2>
+                            <%= (direct_products) ?  direct_products.rows[i].name : '' %>
+                        </h2>
+                        <!-- <button type="button" class="collapsible">View description</button> -->
+                        <% if(((direct_products) ?  direct_products.rows[i].description.length : 0) > 200){ %>
+                            <h3>
+                                <!-- <%= (direct_products) ?  direct_products.rows[i].description.length : 0 %> -->
+                                <span>
+                                    <%= (direct_products) ?  direct_products.rows[i].description.substring(0,200) : '' %>
+                                </span>
+                                <span class="content">
+                                    <%= (direct_products) ?  direct_products.rows[i].description.substring(200) : '' %>
+                                </span>
+                                <span class="myBtn collapsible">... Read more</span>
+                            </h3>
+                        <% } else{ %> 
+                            <h3>
+                                <%= (direct_products) ?  direct_products.rows[i].description.substring(0,200) : '' %>
+                            </h3>
+                        <% } %>
+                    </header>
+                    <div class="col-xs-12 col-sm-12 col-md-1">
+                        
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-2">
+                        <form action="http://localhost:3000/product-details" method="post">
+                            <button class="btn" type="submit">View Product</button>
+                            <input type="hidden" name="product_id" value=<%=direct_products.rows[i].ditem_id %> >
+                            <input type="hidden" name="product_type" value="direct">
+
+                        </form>
+                    </div>
+                </article>
             <% } %>
 
+            <% for (var i = Math.max((result_start - direct_products.rows.length),0); (i < auction_products.rows.length) && (i < ((result_start - direct_products.rows.length)+10));  i++ ) { %>
 
+                <article class="search-result row">
+                    <div class="col-xs-12 col-sm-12 col-md-2">
+                        <h3>
+                            <i class="glyphicon glyphicon-usd"></i>
+                            <span>
+                                <%= (auction_products) ?  auction_products.rows[i].price : '' %>
+                            </span>
+                        </h3>
+                        <h3>
+                            Quantity:
+                            <%= (auction_products) ?  auction_products.rows[i].quantity : '' %>
+                        </h3>
+                    </div>
 
-
-
-                <% for (var i =0; i < auction_products.rows.length;  i++ ) { %>
-
-
-                    <article class="card product-item">
-                        <header class="card__header">
-                            <h1 class="product__title">
-                                <p>
-                                    <%= (auction_products) ?  auction_products.rows[i].name : '' %>
-                                </p>
-
-                            </h1>
-                        </header>
-
-                        <div class="card__content">
-                            <h3 class="product__price">Price:
-                                <p>
-                                    <%= (auction_products) ?  auction_products.rows[i].price : '' %>
-                                </p>
-
+                    <header class="col-xs-12 col-sm-12 col-md-7 excerpet">
+                        <h2>
+                            <%= (auction_products) ?  auction_products.rows[i].name : '' %>
+                        </h2>
+                        <!-- <button type="button" class="collapsible">View description</button> -->
+                        <% if(((auction_products) ?  auction_products.rows[i].description.length : 0) > 200){ %>
+                            <h3>
+                                <!-- <%= (auction_products) ?  auction_products.rows[i].description.length : 0 %> -->
+                                <span>
+                                    <%= (auction_products) ?  auction_products.rows[i].description.substring(0,200) : '' %>
+                                </span>
+                                <span class="content">
+                                    <%= (auction_products) ?  auction_products.rows[i].description.substring(200) : '' %>
+                                </span>
+                                <span class="myBtn collapsible">... Read more</span>
                             </h3>
-                            <h3 class="product__description">Quantity:
-                                <p>
-                                    <%= (auction_products) ?  auction_products.rows[i].quantity : '' %>
-                                </p>
+                        <% } else{ %> 
+                            <h3>
+                                <%= (auction_products) ?  auction_products.rows[i].description.substring(0,200) : '' %>
                             </h3>
-                        </div>
-                        <div class="card__actions">
-                            <form action="http://localhost:3000/auction-product-details" method="post">
-                                <button class="btn" type="submit">Add to Cart</button>
-                                <input type="hidden" name="product_id" value=<%=auction_products.rows[i].aitem_id %> >
-                                <input type="hidden" name="product_type" value="auction">
+                        <% } %>
+                    </header>
+                    <div class="col-xs-12 col-sm-12 col-md-1">
+                        
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-2">
+                        <form action="http://localhost:3000/product-details" method="post">
+                            <button class="btn" type="submit">View Product</button>
+                            <input type="hidden" name="product_id" value=<%=auction_products.rows[i].ditem_id %> >
+                            <input type="hidden" name="product_type" value="auction">
 
-                            </form>
-                        </div>
-                    </article>
-                    <% } %>
+                        </form>
+                    </div>
+                </article>
+            <% } %>
+            
 
-
-
+        </section>
 
     </div>
 
+    <% if(((direct_products) ?  ((auction_products) ?  auction_products.rows.length : 0)+direct_products.rows.length : ((auction_products) ?  auction_products.rows[i].quantity : 0)) > (result_start+10)){ %>
+        <form action="http://localhost:3000/results-switch-page" method="post">
+            <button class="btn" type="submit">Next Page</button>
+            <input type="hidden" name="search" value=<%=searched_text %> >
+            <input type="hidden" name="result_start" value=<%=(result_start - 10) %> >
+            <input type="hidden" name="direct_results" value=<%=direct_products %> >
+            <input type="hidden" name="auction_results" value=<%=auction_products %> >
 
+        </form>
+    <% } %>
 
+    <% if(result_start >= 10){ %>
+        <form action="http://localhost:3000/results-switch-page" method="post">
+            <button class="btn" type="submit">Prev Page</button>
+            <input type="hidden" name="search" value=<%= searched_text %> >
+            <input type="hidden" name="result_start" value=<%= (result_start - 10) %> >
+            <input type="hidden" name="direct_results" value=<%= direct_products.rows %> >
+            <input type="hidden" name="auction_results" value=<%= auction_products %> >
 
+        </form>
+    <% } %>
 
+    <script>
+        var coll = document.getElementsByClassName("myBtn");
+        var i;
+        
+        for (i = 0; i < coll.length; i++) {
+          coll[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var content = this.previousElementSibling;
+            // console.log('clicked on read more/read less');
+            // console.log(content.style.display);
+            if (this.innerHTML == "... Read more") {
+              content.style.display = "inline";
+              this.innerHTML = "Read less"; 
+            //   this.style.display = "block";
+            } else {
+              content.style.display = "none";
+              this.innerHTML = "... Read more";
+            //   this.style.display = "none";
+            }
+          });
+        }
+        </script>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <form action="http://localhost:3000/logout" method="post">
+    <!-- <form action="http://localhost:3000/logout" method="get">
         <button type="submit">Logout</button>
-    </form>
+    </form> -->
 
     <%- include('../includes/end.ejs') %>

@@ -197,6 +197,7 @@ exports.post_home_screen_search = (req, res, next) => { // when search button is
         console.log('entered post_home_screen_search');
 
         const search_key = req.body.search;
+        const start = 0;
 
         const search_object = new Search(search_key);
         search_object
@@ -215,7 +216,9 @@ exports.post_home_screen_search = (req, res, next) => { // when search button is
                             path: '/search-screen',
 
                             direct_products: direct_results,
-                            auction_products: auction_results
+                            auction_products: auction_results,
+                            result_start: start,
+                            searched_text: search_key
                         });
 
 
@@ -228,7 +231,40 @@ exports.post_home_screen_search = (req, res, next) => { // when search button is
 
 };
 
+exports.post_results_switch_page = (req, res, next) => { // when next page or prev page button is pressed 
 
+    var cookies = new Cookies(req, res, { keys: keys })
+
+    // Get a cookie
+    var currentID = cookies.get('CurrentID', { signed: true })
+
+    if (!currentID) {
+        res.redirect('login-screen');
+    } else {
+
+
+        console.log('entered post_results_switch_page');
+
+        const search_key = req.body.search;
+        const start = req.body.result_start;
+        const direct_results = req.body.direct_results;
+        const auction_results = req.body.auction_results;
+
+        res.render('admin/search_screen', {
+            pageTitle: 'Search Screen',
+            path: '/search-screen',
+
+            direct_products: direct_results,
+            auction_products: auction_results,
+            result_start: start,
+            searched_text: search_key
+        });
+
+        
+
+    }
+
+};
 
 
 exports.get_product_details = (req, res, next) => { // when a direct sale product is selected
