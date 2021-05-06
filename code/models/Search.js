@@ -13,14 +13,14 @@ module.exports = class Search{
     // }
     get_direct_search_results(){
         // console.log(this.searchkey);
-        return pool.query('SELECT * FROM direct_sale_item where status = \'open\' and to_tsvector(name) @@ to_tsquery($1)',[this.searchkey.replace(/ /g,"|")]);
+        return pool.query('SELECT * FROM direct_sale_item where to_tsvector(name) @@ to_tsquery($1)',[this.searchkey.replace(/ /g,"|")]);
 
     }
 
 
     get_auction_search_results(){
         // console.log(this.searchkey);
-        return pool.query('SELECT * FROM auction_item where status = \'open\' and to_tsvector(name) @@ to_tsquery($1)',[this.searchkey.replace(/ /g,"|")]);
+        return pool.query('SELECT * FROM auction_item where  to_tsvector(name) @@ to_tsquery($1)',[this.searchkey.replace(/ /g,"|")]);
 
     }
 

@@ -69,10 +69,10 @@
 
             <% } %>
 
-            <% if (product_status != "open")  {%>
+            <% if (product_status != "open"  && product_status!= "delivered")  {%>
 
             <form action="http://localhost:3000/product-details-update-status" method="post">
-                <button type="submit">Update Status</button>
+                <button type="submit">Update Status to <%=product_new_status%> </button>
                 <input type="hidden" name="product_id" value= <%=product_id %>>
                 <input type="hidden" name="product_type" value= <%=product_type %>>
                         

@@ -21,6 +21,7 @@ exports.auction_get_product_details = (req,res,next) => {// auction item product
     if (!currentID) {
         console.log('Get Lost');
     } else {
+        
 
         console.log(product_id);
         console.log(product_type);
@@ -44,6 +45,10 @@ exports.auction_get_product_details = (req,res,next) => {// auction item product
                 product_sale_start_time = auction_results.rows[0].start_time
                 product_sale_end_time = auction_results.rows[0].close_time
 
+                // console.log(auction_results.rows[0]);
+
+                // product_sale_end_time = auction_results.rows[0].location 
+
 
                
 
@@ -65,31 +70,69 @@ exports.auction_get_product_details = (req,res,next) => {// auction item product
     
                         }
 
+                        product_object
+                            .get_location(auction_results.rows[0].seller_id)
+                            .then(location_results => {
+
+
+                                product_new_status = product_status;//initialisation
+                                if(product_status == 'auctioned'){
+                                    product_new_status = 'shipping';
+                
+                                }
+                                else if(product_status == 'shipping'){
+                                    product_new_status = 'shipped';
+                                    
+                                }
+                                else if(product_status == 'shipped'){
+                                    product_new_status = 'out-for-delivery';
+                                    
+                                }
+
+                                product_object
+                                  .get_distance(currentID,auction_results.rows[0].seller_id)
+                                  .then(distance_results => {
+                                      
+                                    product_distance = distance_results.rows[0].distance/1000;//converted  to KM
+                                    product_delivery_cost = Math.round(product_distance*auction_results.rows[0].delivery_factor);//rounded off
+
+
         
 
-                            res.render('admin/auction_product_details', {
-                                pageTitle: 'Product Details',
-                                path: '/auction-product-details',
-                                editing: false,
+                                    res.render('admin/auction_product_details', {
+                                        pageTitle: 'Product Details',
+                                        path: '/auction-product-details',
+                                        editing: false,
 
-                                current_id : currentID,
-                                product_id : product_id,
-                                product_type : product_type,
-                                product_base_price : product_base_price,
-                                product_status : product_status,
-                                product_viewer : product_viewer,
-                                product_curent_best_bid : product_curent_best_bid,
-                                product_curent_best_bidder : product_curent_best_bidder,
-                                product_sale_start_time : product_sale_start_time,
-                                product_sale_end_time : product_sale_end_time,
-                                product_your_bid : product_your_bid,
-                                product_auto_mode : product_auto_mode,
-                                product_bid_limit : product_bid_limit
-                                
+                                        current_id : currentID,
+                                        product_id : product_id,
+                                        product_type : product_type,
+                                        product_base_price : product_base_price,
+                                        product_status : product_status,
+                                        product_viewer : product_viewer,
+                                        product_curent_best_bid : product_curent_best_bid,
+                                        product_curent_best_bidder : product_curent_best_bidder,
+                                        product_sale_start_time : product_sale_start_time,
+                                        product_sale_end_time : product_sale_end_time,
+                                        product_your_bid : product_your_bid,
+                                        product_auto_mode : product_auto_mode,
+                                        product_bid_limit : product_bid_limit,
+                                        product_lat : location_results.rows[0].y,
+                                        product_lng : location_results.rows[0].x,
+                                        product_seller  : auction_results.rows[0].seller_id,
+                                        product_new_status : product_new_status,
+                                        product_distance  : product_distance,
+                                        product_delivery_cost : product_delivery_cost
+                                        
+
+                                    });
+
+                                }).catch(err => console.log(err));
 
 
 
-                            });
+                            }).catch(err => console.log(err));
+
 
                     }).catch(err => console.log(err));
                  
@@ -138,211 +181,137 @@ exports.auction_place_bid = (req,res,next) => {// function to either place a bid
 
 
                 product_object
-                    .get_your_bid()
-                    .then(your_bid_results => {//your_bid_results contains the details of your previous bid
+                .get_distance(currentID,auction_results.rows[0].seller_id)
+                .then(distance_results => {
+                    
+                  product_distance = distance_results.rows[0].distance/1000;//converted  to KM
+                  product_delivery_cost = Math.round(product_distance*auction_results.rows[0].delivery_factor);//rounded off
 
-                       
-                            previous_bid_value = 0;//initialisation
-                            old_on_hold = 0;//initialisation
 
-                            if(your_bid_results.rows.length==0){//if there is no previous bid
 
-                                old_on_hold = 0;
-                                previous_bid_value = 0;
 
-                            }
+                    product_object
+                        .get_your_bid()
+                        .then(your_bid_results => {//your_bid_results contains the details of your previous bid
 
-                            else if((your_bid_results.rows[0].auto_mode).toString().replace(/\s/g, '') == 'true'){//check if automode is set to true
+                        
+                                previous_bid_value = 0;//initialisation
+                                old_on_hold = 0;//initialisation
+
+                                if(your_bid_results.rows.length==0){//if there is no previous bid
+
+                                    old_on_hold = 0;
+                                    previous_bid_value = 0;
+
+                                }
+
+                                else if((your_bid_results.rows[0].auto_mode).toString().replace(/\s/g, '') == 'true'){//check if automode is set to true
+                                        
+                                    previous_bid_value = your_bid_results.rows[0].bid_value
+                                    old_on_hold = your_bid_results.rows[0].bid_limit + product_delivery_cost;// since auto mode is true on_hold will be the bid_limit
+
+                                }
+                                else{// if auto mode is not true 
+
+                                    previous_bid_value = your_bid_results.rows[0].bid_value
+                                    old_on_hold = your_bid_results.rows[0].bid_value + product_delivery_cost;// since auto mode is false on_hold will be the bid_value
+
+
+                                }
+
+                                new_on_hold = 0;//initialisation
+                                check = 1;//initialisation
+
+                                //this part is to get the value of new on-hold-amount
+                                if((product_auto_mode).toString().replace(/\s/g, '') == 'true'){
+
+                                    // your bid must not be less than your previous bid && product_bid_limit>=product_your_bid for auto-mode
+                                    if(product_your_bid<previous_bid_value ||  product_bid_limit<product_your_bid){check = 0;}
+
+                                    console.log("entered auto mode")
+
                                     
-                                previous_bid_value = your_bid_results.rows[0].bid_value
-                                old_on_hold = your_bid_results.rows[0].bid_limit;// since auto mode is true on_hold will be the bid_limit
+                                        
+                                    new_on_hold = product_bid_limit + product_delivery_cost;
 
-                            }
-                            else{// if auto mode is not true 
+                                }
+                                else{
 
-                                previous_bid_value = your_bid_results.rows[0].bid_value
-                                old_on_hold = your_bid_results.rows[0].bid_value;// since auto mode is false on_hold will be the bid_value
+                                    new_on_hold = product_your_bid + product_delivery_cost;
+
+                                }
+
+                                console.log(product_auto_mode)
+
+                                console.log(old_on_hold)
+                                console.log(new_on_hold)
 
 
-                            }
+                                product_object
+                                    .get_person_remaining_balance()
+                                    .then(remaining_balance => {
+                                        
 
-                            new_on_hold = 0;//initialisation
-                            check = 1;//initialisation
-
-                            //this part is to get the value of new on-hold-amount
-                            if((product_auto_mode).toString().replace(/\s/g, '') == 'true'){
-
-                                // your bid must not be less than your previous bid && product_bid_limit>=product_your_bid for auto-mode
-                                if(product_your_bid<previous_bid_value ||  product_bid_limit<product_your_bid){check = 0;}
-
-                                console.log("entered auto mode")
+                                        console.log(remaining_balance.rows[0].remaining_balance)
+            
+                                        //all these conditions have to be satisfied in order to place the bid
+                                        if(remaining_balance.rows[0].remaining_balance >= new_on_hold - old_on_hold && new_on_hold>=old_on_hold && check && product_your_bid >= auction_results.rows[0].price){
+            
+                                            product_object
+                                                .increase_on_hold_balance(new_on_hold - old_on_hold)
+                                                .then(() => {
 
                                 
-                                    
-                                new_on_hold = product_bid_limit;
-
-                            }
-                            else{
-
-                                new_on_hold = product_your_bid;
-
-                            }
-
-                            console.log(product_auto_mode)
-
-                            console.log(old_on_hold)
-                            console.log(new_on_hold)
+                                                        product_object
+                                                            .update_bid(product_your_bid,product_auto_mode,product_bid_limit,your_bid_results.rows.length!=0)
+                                                            .then(() => {
 
 
-                            product_object
-                                .get_person_remaining_balance()
-                                .then(remaining_balance => {
-                                    
+                                                                if (auction_results.rows[0].best_bid > product_your_bid && (product_auto_mode).toString().replace(/\s/g, '') == 'false'){
+                                                                    
+                                                                    res.redirect(307,'/auction-product-details');
+                                                                    //Do Nothing since auto mode is false and the bid is less than the previous best bid
+                                                                }
 
-                                    console.log(remaining_balance.rows[0].remaining_balance)
-        
-                                    //all these conditions have to be satisfied inn order to place the bid
-                                    if(remaining_balance.rows[0].remaining_balance >= new_on_hold - old_on_hold && new_on_hold>=old_on_hold && check && product_your_bid >= auction_results.rows[0].price){
-        
-                                        product_object
-                                            .increase_on_hold_balance(new_on_hold - old_on_hold)
-                                            .then(() => {
+                                                                //If automode is false and your bid_value is greater than the previous best bid
+                                                                else if (auction_results.rows[0].best_bid <= product_your_bid && (product_auto_mode).toString().replace(/\s/g, '') == 'false'){
 
-                            
-                                                    product_object
-                                                        .update_bid(product_your_bid,product_auto_mode,product_bid_limit,your_bid_results.rows.length!=0)
-                                                        .then(() => {
-
-
-                                                            if (auction_results.rows[0].best_bid > product_your_bid && (product_auto_mode).toString().replace(/\s/g, '') == 'false'){
-
-                                                                //Do Nothing since auto mode is false and the bid is less than the previous best bid
-                                                            }
-
-                                                            //If automode is false and your bid_value is greater than the previous best bid
-                                                            else if (auction_results.rows[0].best_bid <= product_your_bid && (product_auto_mode).toString().replace(/\s/g, '') == 'false'){
-
-                                                                product_object
-                                                                .fetch_maximum_possible_bid(currentID)
-                                                                .then(fetch_maximum_possible_bid_results => {//fetch_maximum_possible_bid gets maximum possible bid other than that of the current bidder
-
-
-                                                                    new_best_bid = 0
-                                                                    if(fetch_maximum_possible_bid_results.rows[0].maximum_possible_bid < product_your_bid){
-
-                                                                        new_best_bid = product_your_bid
-
-
-
-                                                                    }
-                                                                    else if(fetch_maximum_possible_bid_results.rows[0].maximum_possible_bid > product_your_bid){
-
-                                                                        new_best_bid = product_your_bid + 1
-
-                                                                    }
-                                                                    else{//If maxiimum possible and bid_value are same
-
-                                                                        new_best_bid = product_your_bid
-
-                                                                    }
-
-                                                                    //perform best bid and best bidder update
-                                                                        product_object
-                                                                            .update_best_bid(new_best_bid)
-                                                                            .then(() => {
-
-                                                                            product_object
-                                                                                .update_bid_value_for_auto_bids(new_best_bid)//for  updating the bid_values for all the auto bids
-                                                                                .then(() => {
-
-                                                                                    product_object
-                                                                                    .update_best_bidder(new_best_bid)// the person having bid value as  new_best_bid  is  the new  best bidder
-                                                                                    .then(() => {
-                    
-                                                                                
-                                                                                
-                                                                                            res.redirect(307,'/auction-product-details');
-                    
-                    
-                                                                                    }).catch(err => console.log(err));                                
-                                                                            
-                                                                            
-                                                                            }).catch(err => console.log(err));
-                                                                     
-                                                                            
-                                                                        }).catch(err => console.log(err));
-    
-
-
-
-
-
-
-
-
-                                                                 }).catch(err => console.log(err));
-
-
-                                                            }
-
-                                                            //If automode is true and your bid_value and bid limit are less than the previous best bid 
-                                                            else if(auction_results.rows[0].best_bid > product_your_bid && auction_results.rows[0].best_bid > product_bid_limit && (product_auto_mode).toString().replace(/\s/g, '') == 'true'){
-
-                                                                //In this case we  set the bid_value of the current bid to bid_limit
-                                                                product_object
-                                                                    .update_bid(product_bid_limit,product_auto_mode,product_bid_limit)
-                                                                    .then(() => {
-
-                                                                    }).catch(err => console.log(err));
-
-                                                            }
-
-                                                            //If automode is true and your bid_value is less than the previous best bid but bid limit  is greter than or equal to the previous best bid
-                                                            else if(auction_results.rows[0].best_bid > product_your_bid && auction_results.rows[0].best_bid <= product_bid_limit && (product_auto_mode).toString().replace(/\s/g, '') == 'true'){
-
-                                                                product_object
+                                                                    product_object
                                                                     .fetch_maximum_possible_bid(currentID)
                                                                     .then(fetch_maximum_possible_bid_results => {//fetch_maximum_possible_bid gets maximum possible bid other than that of the current bidder
 
 
                                                                         new_best_bid = 0
-                                                                        if(fetch_maximum_possible_bid_results.rows[0].maximum_possible_bid < product_bid_limit){
+                                                                        if(fetch_maximum_possible_bid_results.rows[0].maximum_possible_bid < product_your_bid){
 
-                                                                            new_best_bid = fetch_maximum_possible_bid_results.rows[0].maximum_possible_bid+1
+                                                                            new_best_bid = product_your_bid
 
 
-
-                                                                        }
-                                                                        else if(fetch_maximum_possible_bid_results.rows[0].maximum_possible_bid > product_bid_limit){
-
-                                                                            new_best_bid = product_bid_limit + 1
 
                                                                         }
-                                                                        else{//if they are equal
+                                                                        else if(fetch_maximum_possible_bid_results.rows[0].maximum_possible_bid > product_your_bid){
 
-                                                                            new_best_bid = product_bid_limit
+                                                                            new_best_bid = product_your_bid + 1
+
+                                                                        }
+                                                                        else{//If maximum possible and bid_value are same
+
+                                                                            new_best_bid = product_your_bid
 
                                                                         }
 
                                                                         //perform best bid and best bidder update
-                                                                        product_object
-                                                                        .update_best_bid(new_best_bid)
-                                                                        .then(() => {
-
-                                                                            
-                                                                            
+                                                                            product_object
+                                                                                .update_best_bid(new_best_bid)
+                                                                                .then(() => {
 
                                                                                 product_object
-                                                                                    .update_bid_value_for_auto_bids(new_best_bid)
+                                                                                    .update_bid_value_for_auto_bids(new_best_bid)//for  updating the bid_values for all the auto bids
                                                                                     .then(() => {
 
-                                                                                        
-
                                                                                         product_object
-                                                                                        .update_best_bidder(new_best_bid)
+                                                                                        .update_best_bidder(new_best_bid)// the person having bid value as  new_best_bid  is  the new  best bidder
                                                                                         .then(() => {
-
-                                                                                            
                         
                                                                                     
                                                                                     
@@ -355,7 +324,8 @@ exports.auction_place_bid = (req,res,next) => {// function to either place a bid
                                                                                 }).catch(err => console.log(err));
                                                                         
                                                                                 
-                                                                        }).catch(err => console.log(err));
+                                                                            }).catch(err => console.log(err));
+        
 
 
 
@@ -363,129 +333,216 @@ exports.auction_place_bid = (req,res,next) => {// function to either place a bid
 
 
 
-                                                                }).catch(err => console.log(err));
 
-                                                            }
-
-                                                            //If automode is true and your bid_value is greater than the previous best bid 
-                                                            else if(auction_results.rows[0].best_bid <= product_your_bid  && (product_auto_mode).toString().replace(/\s/g, '') == 'true'){
-                                                                
-                                                                product_object
-                                                                    .fetch_maximum_possible_bid(currentID)
-                                                                    .then(fetch_maximum_possible_bid_results => {
-
-                                                                        
+                                                                    }).catch(err => console.log(err));
 
 
-                                                                        new_best_bid = 0
-                                                                        if(fetch_maximum_possible_bid_results.rows[0].maximum_possible_bid < product_your_bid){
+                                                                }
 
-                                                                            new_best_bid = product_your_bid
+                                                                //If automode is true and your bid_value and bid limit are less than the previous best bid 
+                                                                else if(auction_results.rows[0].best_bid > product_your_bid && auction_results.rows[0].best_bid > product_bid_limit && (product_auto_mode).toString().replace(/\s/g, '') == 'true'){
 
-
-
-                                                                        }
-                                                                        else if(fetch_maximum_possible_bid_results.rows[0].maximum_possible_bid > product_bid_limit){
-
-                                                                            new_best_bid = product_bid_limit + 1
-
-                                                                        }
-                                                                        else if(fetch_maximum_possible_bid_results.rows[0].maximum_possible_bid < product_bid_limit){
-
-                                                                            new_best_bid = fetch_maximum_possible_bid_results.rows[0].maximum_possible_bid + 1
-
-                                                                        }
-                                                                        else{
-
-                                                                            new_best_bid = product_bid_limit
-
-                                                                        }
-
-                                                                        //perform best bid and best bidder update
-                                                                        product_object
-                                                                        .update_best_bid(new_best_bid)
+                                                                    //In this case we  set the bid_value of the current bid to bid_limit
+                                                                    product_object
+                                                                        .update_bid(product_bid_limit,product_auto_mode,product_bid_limit)
                                                                         .then(() => {
 
-                                                                            console.log("done1");
+                                                                            res.redirect(307,'/auction-product-details');
 
-                                                                            product_object
-                                                                                .update_bid_value_for_auto_bids(new_best_bid)
-                                                                                .then(() => {
-
-                                                                                    console.log("done2");
-
-                                                                                    product_object
-                                                                                    .update_best_bidder(new_best_bid)
-                                                                                    .then(() => {
-
-                                                                                            console.log("done3");
-                    
-                                                                                
-                                                                                
-                                                                                            res.redirect(307,'/auction-product-details');
-                    
-                    
-                                                                                    }).catch(err => console.log(err));                                
-                                                                            
-                                                                            
-                                                                            }).catch(err => console.log(err));
-                                                                    
-                                                                            
                                                                         }).catch(err => console.log(err));
 
+                                                                }
+
+                                                                //If automode is true and your bid_value is less than the previous best bid but bid limit  is greter than or equal to the previous best bid
+                                                                else if(auction_results.rows[0].best_bid > product_your_bid && auction_results.rows[0].best_bid <= product_bid_limit && (product_auto_mode).toString().replace(/\s/g, '') == 'true'){
+
+                                                                    product_object
+                                                                        .fetch_maximum_possible_bid(currentID)
+                                                                        .then(fetch_maximum_possible_bid_results => {//fetch_maximum_possible_bid gets maximum possible bid other than that of the current bidder
+
+
+                                                                            new_best_bid = 0
+                                                                            if(fetch_maximum_possible_bid_results.rows[0].maximum_possible_bid < product_bid_limit){
+
+                                                                                new_best_bid = fetch_maximum_possible_bid_results.rows[0].maximum_possible_bid+1
+
+
+
+                                                                            }
+                                                                            else if(fetch_maximum_possible_bid_results.rows[0].maximum_possible_bid > product_bid_limit){
+
+                                                                                new_best_bid = product_bid_limit + 1
+
+                                                                            }
+                                                                            else{//if they are equal
+
+                                                                                new_best_bid = product_bid_limit
+
+                                                                            }
+
+                                                                            //perform best bid and best bidder update
+                                                                            product_object
+                                                                            .update_best_bid(new_best_bid)
+                                                                            .then(() => {
+
+                                                                                
+                                                                                
+
+                                                                                    product_object
+                                                                                        .update_bid_value_for_auto_bids(new_best_bid)
+                                                                                        .then(() => {
+
+                                                                                            
+
+                                                                                            product_object
+                                                                                            .update_best_bidder(new_best_bid)
+                                                                                            .then(() => {
+
+                                                                                                
+                            
+                                                                                        
+                                                                                        
+                                                                                                    res.redirect(307,'/auction-product-details');
+                            
+                            
+                                                                                            }).catch(err => console.log(err));                                
+                                                                                    
+                                                                                    
+                                                                                    }).catch(err => console.log(err));
+                                                                            
+                                                                                    
+                                                                            }).catch(err => console.log(err));
 
 
 
 
 
 
-                                                                }).catch(err => console.log(err));
+
+                                                                    }).catch(err => console.log(err));
+
+                                                                }
+
+                                                                //If automode is true and your bid_value is greater than the previous best bid 
+                                                                else if(auction_results.rows[0].best_bid <= product_your_bid  && (product_auto_mode).toString().replace(/\s/g, '') == 'true'){
+                                                                    
+                                                                    product_object
+                                                                        .fetch_maximum_possible_bid(currentID)
+                                                                        .then(fetch_maximum_possible_bid_results => {
+
+                                                                            
+
+
+                                                                            new_best_bid = 0
+                                                                            if(fetch_maximum_possible_bid_results.rows[0].maximum_possible_bid < product_your_bid){
+
+                                                                                new_best_bid = product_your_bid
 
 
 
-                                                            }
+                                                                            }
+                                                                            else if(fetch_maximum_possible_bid_results.rows[0].maximum_possible_bid > product_bid_limit){
+
+                                                                                new_best_bid = product_bid_limit + 1
+
+                                                                            }
+                                                                            else if(fetch_maximum_possible_bid_results.rows[0].maximum_possible_bid < product_bid_limit){
+
+                                                                                new_best_bid = fetch_maximum_possible_bid_results.rows[0].maximum_possible_bid + 1
+
+                                                                            }
+                                                                            else{
+
+                                                                                new_best_bid = product_bid_limit
+
+                                                                            }
+
+                                                                            //perform best bid and best bidder update
+                                                                            product_object
+                                                                            .update_best_bid(new_best_bid)
+                                                                            .then(() => {
+
+                                                                                console.log("done1");
+
+                                                                                product_object
+                                                                                    .update_bid_value_for_auto_bids(new_best_bid)
+                                                                                    .then(() => {
+
+                                                                                        console.log("done2");
+
+                                                                                        product_object
+                                                                                        .update_best_bidder(new_best_bid)
+                                                                                        .then(() => {
+
+                                                                                                console.log("done3");
+                        
+                                                                                    
+                                                                                    
+                                                                                                res.redirect(307,'/auction-product-details');
+                        
+                        
+                                                                                        }).catch(err => console.log(err));                                
+                                                                                
+                                                                                
+                                                                                }).catch(err => console.log(err));
+                                                                        
+                                                                                
+                                                                            }).catch(err => console.log(err));
 
 
 
-                                                     }).catch(err => console.log(err));
-
-
-                                        }).catch(err => console.log(err));
-
-                                    }   
-                                    else if( product_bid_limit<product_your_bid){
-
-                                        console.log("bid limit cannot be less than than your bid");
-
-
-                                    }
-                                    else if( new_on_hold<old_on_hold || product_your_bid<previous_bid_value){
-
-                                        console.log("Cannot reduce your bid");
-
-
-                                    }
-                                    else if(product_your_bid < auction_results.rows[0].price){
-
-                                        console.log("Bid cannot be less than the base price of the item");
-
-
-                                    }
-
-                                    
-
-                                    else{
-                                        console.log("Insufficient funds");
-                                        //print insufficient funds here
-                                    }
-    
-                                }).catch(err => console.log(err));
 
 
 
-                                                
 
-                    }).catch(err => console.log(err));
+                                                                    }).catch(err => console.log(err));
+
+
+
+                                                                }
+
+
+
+                                                        }).catch(err => console.log(err));
+
+
+                                            }).catch(err => console.log(err));
+
+                                        }   
+                                        else if( product_bid_limit<product_your_bid){
+
+                                            console.log("bid limit cannot be less than than your bid");
+
+
+                                        }
+                                        else if( new_on_hold<old_on_hold || product_your_bid<previous_bid_value){
+
+                                            console.log("Cannot reduce your bid");
+
+
+                                        }
+                                        else if(product_your_bid < auction_results.rows[0].price){
+
+                                            console.log("Bid cannot be less than the base price of the item");
+
+
+                                        }
+
+                                        
+
+                                        else{
+                                            console.log("Insufficient funds");
+                                            //print insufficient funds here
+                                        }
+        
+                                    }).catch(err => console.log(err));
+
+
+
+                                                    
+
+                        }).catch(err => console.log(err));
+                }).catch(err => console.log(err));
                  
             }).catch(err => console.log(err));
 
@@ -537,9 +594,14 @@ exports.auction_close_bidding = (req,res,next) => {
                 }
                 else{
 
+
+                    
+
                     product_object
                         .update_status_to_sold()
                         .then(() => {
+
+                            
 
                             product_object
                                 .update_status_for_rejected_buyers(auction_results.rows[0].best_bidder)
@@ -547,21 +609,29 @@ exports.auction_close_bidding = (req,res,next) => {
 
 
                                     product_object
-                                        .update_on_hold_balance_for_rejected_buyers(auction_results.rows[0].best_bidder)
-                                         .then(() => {
-                                    
+                                        .update_on_hold_balance_for_rejected_buyers_auto(auction_results.rows[0].best_bidder,auction_results.rows[0].delivery_factor,auction_results.rows[0].seller_id)
+                                         .then(() => {//////////
+
                                             product_object
-                                            .update_status_for_accepted_buyer(auction_results.rows[0].best_bidder)
-                                            .then(() => {
+                                            .update_on_hold_balance_for_rejected_buyers_non_auto(auction_results.rows[0].best_bidder,auction_results.rows[0].delivery_factor,auction_results.rows[0].seller_id)
+                                             .then(() => {//////////
 
 
-                                                res.redirect(307,'/auction-product-details');
+                                            
+                                                    product_object
+                                                    .update_status_for_accepted_buyer(auction_results.rows[0].best_bidder)
+                                                    .then(() => {
 
-            
-            
-            
-            
-                                             }).catch(err => console.log(err));
+
+                                                        res.redirect(307,'/auction-product-details');
+
+                    
+                    
+                    
+                    
+                                                    }).catch(err => console.log(err));
+
+                                            }).catch(err => console.log(err));
 
 
 
@@ -630,14 +700,20 @@ exports.auction_delete_product = (req,res,next) => {
                     .update_status_for_rejected_buyers(-1)// here -1 is placed since no bid is accepted
                     .then(() => {
 
-                         product_object
-                            .update_on_hold_balance_for_rejected_buyers(-1)// here -1 is placed since no bid is accepted
-                            .then(() => {
+                        product_object
+                            .update_on_hold_balance_for_rejected_buyers_auto(-1,auction_results.rows[0].delivery_factor,auction_results.rows[0].seller_id)// here -1 is placed since no bid is accepted
+                            .then(() => {//////////
 
-
-                                res.redirect('/home-screen');
-
-
+                                product_object
+                                .update_on_hold_balance_for_rejected_buyers_non_auto(-1,auction_results.rows[0].delivery_factor,auction_results.rows[0].seller_id)// here -1 is placed since no bid is accepted
+                                .then(() => {//////////
+    
+    
+                                     res.redirect('/home-screen');
+    
+    
+    
+                                 }).catch(err => console.log(err));
 
                         }).catch(err => console.log(err));
 
@@ -753,57 +829,68 @@ exports.auction_confirm_delivery = (req,res,next) => {
 
                 product_status = auction_results.rows[0].status
 
-                
                 product_object
-                    .update_status('delivered')
-                    .then(() => {
+                    .get_distance(currentID,auction_results.rows[0].seller_id)
+                    .then(distance_results => {
+                    
+                         product_distance = distance_results.rows[0].distance/1000;//converted  to KM
+                         product_delivery_cost = Math.round(product_distance*auction_results.rows[0].delivery_factor);//rounded off
 
-
-                        product_object
-                        .get_your_bid()
-                        .then(your_bid_results => {
-
-                            decrase_on_hold_amount_by_this_value = 0//initialisation
-
-                            if(your_bid_results.rows[0].auto_mode.toString().replace(/\s/g, '') == 'true'){
-                                decrase_on_hold_amount_by_this_value = your_bid_results.rows[0].bid_limit
-                            }
-                            else{
-
-                                decrase_on_hold_amount_by_this_value = your_bid_results.rows[0].bid_value
-
-                            }
-    
+                
+                    product_object
+                        .update_status('delivered')
+                        .then(() => {
 
 
                             product_object
-                                .decrease_on_hold_balance(decrase_on_hold_amount_by_this_value)
-                                .then(() => {
+                            .get_your_bid()
+                            .then(your_bid_results => {//////////
+
+                                decrase_on_hold_amount_by_this_value = 0//initialisation
+
+                                if(your_bid_results.rows[0].auto_mode.toString().replace(/\s/g, '') == 'true'){
+                                    decrase_on_hold_amount_by_this_value = your_bid_results.rows[0].bid_limit + product_delivery_cost
+                                }
+                                else{
+
+                                    decrase_on_hold_amount_by_this_value = your_bid_results.rows[0].bid_value + product_delivery_cost
+
+                                }
+        
 
 
-                                    product_object
-                                        .decrease_balance(auction_results.rows[0].best_bid,currentID)
-                                        .then(() => {
+                                product_object
+                                    .decrease_on_hold_balance(decrase_on_hold_amount_by_this_value)
+                                    .then(() => {
 
-                                            product_object
-                                                .increase_balance(auction_results.rows[0].best_bid,auction_results.rows[0].seller_id)
-                                                .then(() => {
 
-                                            
-                                                    res.redirect(307,'/auction-product-details');
+                                        decrease_balance_by_this_amount = auction_results.rows[0].best_bid + product_delivery_cost
 
-                                                    
+                                        product_object
+                                            .decrease_balance(decrease_balance_by_this_amount,currentID)
+                                            .then(() => {
 
-                                            }).catch(err => console.log(err));
+                                                product_object
+                                                    .increase_balance(auction_results.rows[0].best_bid,auction_results.rows[0].seller_id)
+                                                    .then(() => {
+
+                                                
+                                                        res.redirect(307,'/auction-product-details');
+
+                                                        
+
+                                                }).catch(err => console.log(err));
+
+
+                                        }).catch(err => console.log(err));
 
 
                                     }).catch(err => console.log(err));
 
+                            }).catch(err => console.log(err));
 
-                                }).catch(err => console.log(err));
 
-                        }).catch(err => console.log(err));
-
+                    }).catch(err => console.log(err));
 
                 }).catch(err => console.log(err));
 

@@ -150,9 +150,9 @@
                         
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-2">
-                        <form action="http://localhost:3000/product-details" method="post">
+                        <form action="http://localhost:3000/auction-product-details" method="post">
                             <button class="btn" type="submit">View Product</button>
-                            <input type="hidden" name="product_id" value=<%=auction_products.rows[i].ditem_id %> >
+                            <input type="hidden" name="product_id" value=<%=auction_products.rows[i].aitem_id %> >
                             <input type="hidden" name="product_type" value="auction">
 
                         </form>

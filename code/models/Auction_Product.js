@@ -15,6 +15,19 @@ module.exports = class Product{
 
     }
 
+    get_location(user_id){
+        return pool.query('SELECT ST_X(location::geometry) as  X,ST_Y(location::geometry) as Y FROM person where person.person_id = $1',[user_id]);
+
+    }
+
+    get_distance(buyer_id,seller_id){
+        return pool.query('SELECT ST_Distance_Sphere(geometry(a.location), geometry(b.location)) as distance FROM person a, person b where a.person_id = $1 and b.person_id = $2',[buyer_id,seller_id]);
+
+
+    }
+
+
+
     get_your_bid(){
 
          return pool.query ('SELECT * FROM bid WHERE aitem_id = $1 and person_id = $2',[this.product_id,this.currentID]);
@@ -33,7 +46,7 @@ module.exports = class Product{
 
         if(already_present){
 
-            return pool.query ('UPDATE bid SET bid_value = $1, auto_mode = $4, bid_limit = $5 WHERE aitem_id = $2 AND person_id = $3',[bid_value,this.product_id,this.currentID,auto_mode,bid_limit]);
+            return pool.query ('UPDATE bid SET bid_value = $1, auto_mode = $4, bid_limit = $5, time = NOW() WHERE aitem_id = $2 AND person_id = $3',[bid_value,this.product_id,this.currentID,auto_mode,bid_limit]);
         }
         else{
 
@@ -69,9 +82,9 @@ module.exports = class Product{
     }
 
 
-    update_best_bidder(){
+    update_best_bidder(){//It is ordered by time when two bids are having the same bid_value
 
-        return pool.query ('UPDATE auction_item SET best_bidder = (SELECT person_id from bid where aitem_id = $1 and bid_value = $2 order by  person_id limit 1) where aitem_id = $1',[this.product_id,new_best_bid]);
+        return pool.query ('UPDATE auction_item SET best_bidder = (SELECT person_id from bid where aitem_id = $1 and bid_value = $2 order by time limit 1) where aitem_id = $1',[this.product_id,new_best_bid]);
         
     }
 
@@ -120,7 +133,7 @@ module.exports = class Product{
 
     update_status_to_sold(){
 
-        return pool.query('UPDATE auction_item SET status= $1, close_time = NOW() WHERE aitem_id = $2',['auctioned',this.product_id]);
+        return pool.query('UPDATE auction_item SET status= $1 WHERE aitem_id = $2',['auctioned',this.product_id]);
 
     }
 
@@ -133,12 +146,32 @@ module.exports = class Product{
 
     }
 
-    update_on_hold_balance_for_rejected_buyers(final_buyer){
+    update_on_hold_balance_for_rejected_buyers_auto(final_buyer,delivery_factor,seller_id){
 
 
-        return pool.query('WITH rejected_buyers(person_id,bid_limit) AS (SELECT person_id,bid_limit FROM bid WHERE aitem_id = $1 AND person_id <> $2 ) UPDATE person SET amount_on_hold = amount_on_hold - (SELECT bid_limit from rejected_buyers where rejected_buyers.person_id = person_id) WHERE person_id IN (SELECT person_id from rejected_buyers)',[this.product_id,final_buyer]);
+        // return pool.query('WITH rejected_buyers(person_id,bid_limit) AS (SELECT person_id,bid_limit FROM bid WHERE aitem_id = $1 AND person_id <> $2 ) UPDATE person SET amount_on_hold = amount_on_hold - (SELECT bid_limit from rejected_buyers where rejected_buyers.person_id = person_id) WHERE person_id IN (SELECT person_id from rejected_buyers)',[this.product_id,final_buyer]);
+
+        return pool.query('WITH rejected_buyers(person_id,bid_limit) AS (SELECT person_id,bid_limit FROM bid WHERE aitem_id = $1 AND person_id <> $2 AND auto_mode = true ) UPDATE person P SET amount_on_hold = amount_on_hold - (SELECT bid_limit from rejected_buyers where rejected_buyers.person_id = P.person_id) - round((SELECT ST_Distance_Sphere(geometry(a.location), geometry(b.location)) as distance FROM person a, person b where a.person_id = P.person_id and b.person_id = $4)*$3/1000) WHERE person_id IN (SELECT person_id from rejected_buyers)', [this.product_id,final_buyer,delivery_factor,seller_id]);
+
+      
+
 
     }
+
+    update_on_hold_balance_for_rejected_buyers_non_auto(final_buyer,delivery_factor,seller_id){
+
+
+        // return pool.query('WITH rejected_buyers(person_id,bid_limit) AS (SELECT person_id,bid_limit FROM bid WHERE aitem_id = $1 AND person_id <> $2 ) UPDATE person SET amount_on_hold = amount_on_hold - (SELECT bid_limit from rejected_buyers where rejected_buyers.person_id = person_id) WHERE person_id IN (SELECT person_id from rejected_buyers)',[this.product_id,final_buyer]);
+
+        return pool.query('WITH rejected_buyers(person_id,bid_value) AS (SELECT person_id,bid_value FROM bid WHERE aitem_id = $1 AND person_id <> $2 AND auto_mode = false ) UPDATE person P SET amount_on_hold = amount_on_hold - (SELECT bid_value from rejected_buyers where rejected_buyers.person_id = P.person_id) - round((SELECT ST_Distance_Sphere(geometry(a.location), geometry(b.location)) as distance FROM person a, person b where a.person_id = P.person_id and b.person_id = $4)*$3/1000) WHERE person_id IN (SELECT person_id from rejected_buyers)', [this.product_id,final_buyer,delivery_factor,seller_id]);
+
+
+    }
+
+
+
+
+
 
     update_status_for_accepted_buyer(final_buyer){
 

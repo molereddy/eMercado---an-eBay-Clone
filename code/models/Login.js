@@ -11,7 +11,7 @@ module.exports = class Login{
     //     return pool.query('INSERT INTO products(title, price, image, quantity) VALUES ($1, $2, $3, $4);', [this.title, this.price, this.image, this.quantity]);
     // }
     get_user(password){
-        return pool.query('SELECT * FROM person where person.email = $1 and person.password_hashed = $2',[this.email,password]);
+        return pool.query('SELECT person_id,name,email,password_hashed,phone_no,ST_X(location::geometry) as  X,ST_Y(location::geometry) as Y,balance,amount_on_hold FROM person where person.email = $1 and person.password_hashed = $2',[this.email,password]);
 
     }
 

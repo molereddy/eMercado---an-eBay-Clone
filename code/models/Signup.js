@@ -24,7 +24,7 @@ module.exports = class Signup{
 
     }
     insert_user(){
-        return pool.query('INSERT INTO person(person_id,name,email,password_hashed,phone_no,location,balance,amount_on_hold) VALUES ($8,$1,$2,$3,$4,ST_setSRid(st_makePOINT($5,$6),4326),$7,0)',[this.name,this.email,this.password,this.phone_no,this.latitude,this.longitude,this.balance,this.personid]);
+        return pool.query('INSERT INTO person(person_id,name,email,password_hashed,phone_no,location,balance,amount_on_hold) VALUES ($8,$1,$2,$3,$4,ST_setSRid(st_makePOINT($6,$5),4326),$7,0)',[this.name,this.email,this.password,this.phone_no,this.latitude,this.longitude,this.balance,this.personid]);
 
     }
 

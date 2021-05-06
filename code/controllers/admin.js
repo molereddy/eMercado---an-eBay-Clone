@@ -346,6 +346,22 @@ exports.get_product_details = (req, res, next) => { // when a direct sale produc
 
                 product_price = direct_results.rows[0].price
                 product_status = direct_results.rows[0].status
+
+                product_new_status = product_status//initialisation
+
+                
+                if (product_status == 'sold') {
+                    product_new_status = 'shipping';
+
+                } else if (product_status == 'shipping') {
+                    product_new_status = 'shipped';
+
+                } else if (product_status == 'shipped') {
+                    product_new_status = 'out-for-delivery';
+
+                }
+
+
                
                 res.render('admin/product_details', {
                     pageTitle: 'Product Details',
@@ -355,6 +371,7 @@ exports.get_product_details = (req, res, next) => { // when a direct sale produc
                     product_price : product_price,
                     product_status : product_status,
                     product_viewer : product_viewer,
+                    product_new_status : product_new_status
 
                 });
 

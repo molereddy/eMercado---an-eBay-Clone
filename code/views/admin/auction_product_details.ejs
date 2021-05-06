@@ -1,12 +1,50 @@
 <%- include('../includes/head.ejs') %>
 <link rel="stylesheet" href="/css/forms.css">
 <link rel="stylesheet" href="/css/product.css">
+<style>
+    #map {
+      height: 250px;
+      width: 40%;
+     }
+  </style>
 </head>
 
 <body>
-
+    
+   
 
 <main>
+
+
+
+    <%var latitude = product_lat ;%>
+    <%var longitude = product_lng ;%>
+     
+
+    <div id="map"></div>
+    
+    <script>
+      function initMap() {
+        var place = {lat: <%=latitude%>, lng: <%=longitude%>};
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 7,
+          center: place
+        });
+        var marker = new google.maps.Marker({
+          position: place,
+          map: map
+        });
+      }
+    </script>
+    <script async defer
+    src=
+"https://maps.googleapis.com/maps/api/js?key=
+AIzaSyB2bXKNDezDf6YNVc-SauobynNHPo4RJb8&callback=initMap">
+    </script>
+
+    <!-- <div id="googleMap" style="width:500px;height:380px;"></div> -->
+
+    <!-- <div id="marker" style="width:50px;height:38px;"></div> -->
 
     <h1>Logged in as <%=current_id%></h1>
 
@@ -15,6 +53,8 @@
     <h1> Product id =  <%=product_id%> </h1>
 
     <h1> Product type = <%=product_type%> </h1>
+
+    <h1> product_seller = <%=product_seller%> </h1>
 
     <h1> base price = <%=product_base_price%> </h1>
 
@@ -27,6 +67,12 @@
     <h1> sale start time = <%=product_sale_start_time%> </h1>
 
     <h1> sale end time = <%=product_sale_end_time%> </h1>
+
+    <h1> product distance = <%=product_distance%>  Km </h1>
+
+    <h1> product delivery cost = <%=product_delivery_cost%> </h1>
+
+    
 
 
 
@@ -106,10 +152,10 @@
 
             <% } %>
 
-            <% if (product_status != "open")  {%>
+            <% if (product_status != "open" && product_status!= "delivered")  {%>
 
             <form action="http://localhost:3000/auction-update-status" method="post">
-                <button type="submit">Update Status</button>
+                <button type="submit">Update Status to <%=product_new_status%></button>
                 <input type="hidden" name="product_id" value= <%=product_id %>>
                 <input type="hidden" name="product_type" value= <%=product_type %>>
                         
@@ -124,11 +170,11 @@
 
 
     
-
+<!-- 
 
     <form action="http://localhost:3000/logout" method="post">
         <button type="submit">Logout</button>
-    </form>
+    </form> -->
 
 
 </main>
