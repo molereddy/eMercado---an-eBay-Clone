@@ -1,181 +1,122 @@
 <%- include('../includes/head.ejs') %>
-<link rel="stylesheet" href="/css/forms.css">
-<link rel="stylesheet" href="/css/product.css">
-<style>
-    #map {
-      height: 250px;
-      width: 40%;
-     }
-  </style>
-</head>
 
-<body>
-    
-   
-
-<main>
-
-
-
-    <%var latitude = product_lat ;%>
-    <%var longitude = product_lng ;%>
-     
-
-    <div id="map"></div>
-    
-    <script>
-      function initMap() {
-        var place = {lat: <%=latitude%>, lng: <%=longitude%>};
-        var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 7,
-          center: place
-        });
-        var marker = new google.maps.Marker({
-          position: place,
-          map: map
-        });
-      }
-    </script>
-    <script async defer
-    src=
-"https://maps.googleapis.com/maps/api/js?key=
-AIzaSyB2bXKNDezDf6YNVc-SauobynNHPo4RJb8&callback=initMap">
-    </script>
-
-    <!-- <div id="googleMap" style="width:500px;height:380px;"></div> -->
-
-    <!-- <div id="marker" style="width:50px;height:38px;"></div> -->
-
-    <h1>Logged in as <%=current_id%></h1>
-
-    <h1>Auction Product Details Page</h1>
-
-    <h1> Product id =  <%=product_id%> </h1>
-
-    <h1> Product type = <%=product_type%> </h1>
-
-    <h1> product_seller = <%=product_seller%> </h1>
-
-    <h1> base price = <%=product_base_price%> </h1>
-
-    <h1> current best bid = <%=product_curent_best_bid%> </h1>
-
-    <h1> current best bidder = <%=product_curent_best_bidder%> </h1>
-
-    <h1> status = <%=product_status%> </h1>
-
-    <h1> sale start time = <%=product_sale_start_time%> </h1>
-
-    <h1> sale end time = <%=product_sale_end_time%> </h1>
-
-    <h1> product distance = <%=product_distance%>  Km </h1>
-
-    <h1> product delivery cost = <%=product_delivery_cost%> </h1>
-
-    
-
-
-
-    <% if (product_viewer == "buyer")  {%>
-
-            <% if (product_status == "open")  {%>
-
-            <form action="http://localhost:3000/auction-product-details-place-bid" method="post">
-                <div class="form-control">
-                   <label for="your_bid">Your Bid</label>
-                  <input type="text" name="your_bid" id="your_bid" value=" <%= product_your_bid %> ">
-
-                  <label for="auto_mode">Auto Mode</label>
-                  <input type="text" name="auto_mode" id="auto_mode"  value=" <%= product_auto_mode %> ">
-
-                  <label for="bid_limit">Bid Limit</label>
-                  <input type="text" name="bid_limit" id="bid_limit" value=" <%= product_bid_limit %> ">
-
-
-
-                  <input type="hidden" name="product_id" value= <%=product_id %>>
-                  <input type="hidden" name="product_type" value= <%=product_type %>>
-                  <button type="submit">Buy</button>
-                </div>
-
-            </form>
-
-            <% } %>
-                
-                <!-- <button type="submit">Buy</button>
-                <input type="hidden" name="product_id" value= <%=product_id %>>
-                <input type="hidden" name="product_type" value= <%=product_type %>>
-                         -->
-            
-
-            
-
-
-            <% if (product_status == "out-for-delivery" && (current_id ==  product_curent_best_bidder) )  {%>
-
-                <form action="http://localhost:3000/auction-confirm-delivery" method="post">
-                    <button type="submit">Confirm Delivery</button>
-                    <input type="hidden" name="product_id" value= <%=product_id %>>
-                    <input type="hidden" name="product_type" value= <%=product_type %>>
-                            
-                </form>
-            
-                <% } %>
-
-
-    <% } %>
-
-
-
-
-
-
-    <% if (product_viewer == "seller")  {%>
-
-
-        <% if (product_status == "open")  {%>
-
-            <form action="http://localhost:3000/auction-product-details-delete-product" method="post">
-                <button type="submit">Delete Product</button>
-                <input type="hidden" name="product_id" value= <%=product_id %>>
-                <input type="hidden" name="product_type" value= <%=product_type %>>
-                        
-            </form>
-
-
-            <form action="http://localhost:3000/auction-product-details-close-bidding" method="post">
-                <button type="submit">Close Bidding</button>
-                <input type="hidden" name="product_id" value= <%=product_id %>>
-                <input type="hidden" name="product_type" value= <%=product_type %>>
-                        
-            </form>
-
-            <% } %>
-
-            <% if (product_status != "open" && product_status!= "delivered")  {%>
-
-            <form action="http://localhost:3000/auction-update-status" method="post">
-                <button type="submit">Update Status to <%=product_new_status%></button>
-                <input type="hidden" name="product_id" value= <%=product_id %>>
-                <input type="hidden" name="product_type" value= <%=product_type %>>
-                        
-            </form>
-
-            <% } %>
-
-
-    <% } %>
-
-
-
-
-    
-<!-- 
-
-    <form action="http://localhost:3000/logout" method="post">
-        <button type="submit">Logout</button>
-    </form> -->
-
-
-</main>
-<%- include('../includes/end.ejs') %>
+    <div id="root"></div>
+    <div style="width: 100%;">
+        <div style="float:left; width: 50%">
+            <h1> <b style="font-size: xx-large;">Product Description</b></h1>
+            <br>
+            <h3> <b>item ID:&nbsp;</b>
+                <tt><%=product_id%></tt>
+            </h3>
+            <h3> <b>sale type:&nbsp;</b>
+                <%=product_type%>
+            </h3>
+            <h3> <b>current status:&nbsp;</b>
+                <%=product_status%>
+            </h3>
+            <h3> <b>seller ID:&nbsp;</b>
+                <tt><%=product_seller%></tt>
+            </h3>
+            <h3> <b>base price:&nbsp;</b>
+                <tt>&dollar;<%=product_base_price%></tt>
+            </h3>
+            <h3> <b>current best bid:&nbsp;</b>
+                <tt>&dollar;<%=product_curent_best_bid%></tt>
+            </h3>
+            <h3> <b>current best bidder:&nbsp;</b>
+                <tt><%=product_curent_best_bidder%></tt>
+            </h3>
+            <h3> <b>sale started at:&nbsp;</b>
+                <tt style="font-size:large;"><%=product_sale_start_time%></tt>
+            </h3>
+            <h3> <b>sale ends at:&nbsp;</b>
+                <tt style="font-size:large;"><%=product_sale_end_time%></tt>
+            </h3>
+            <h3> <b>delivery distance:&nbsp;</b>
+                <tt><%=product_distance%> km</tt>
+            </h3>
+            <h3> <b>delivery charges:&nbsp;</b>
+                <tt>&dollar;<%=product_delivery_cost%></tt>
+            </h3>
+        </div>
+        <div style="float:right; width: 50%;">
+            <%var latitude = product_lat ;%>
+                <%var longitude = product_lng ;%>
+                    <div id="map" m class="vertical-center"></div>
+                    <script>
+                        function initMap() {
+                            var place = {
+                                lat: <%=latitude%>,
+                                lng: <%=longitude%>
+                            };
+                            var map = new google.maps.Map(document.getElementById('map'), {
+                                zoom: 7,
+                                center: place
+                            });
+                            var marker = new google.maps.Marker({
+                                position: place,
+                                map: map
+                            });
+                        }
+                    </script>
+                    <script async defer src="https://maps.googleapis.com/maps/api/js?key=
+            AIzaSyB2bXKNDezDf6YNVc-SauobynNHPo4RJb8&callback=initMap">
+                    </script>
+                    <br>
+                    <div class="row">
+                        <form action="http://localhost:3000/auction-product-details-place-bid" method="post">
+                            <div class="form-control">
+                                <label for="your_bid">Your Bid</label>
+                                <input type="text" name="your_bid" id="your_bid" value=" <%= product_your_bid %> ">
+                                <label for="auto_mode">Auto Mode</label>
+                                <input type="text" name="auto_mode" id="auto_mode" value=" <%= product_auto_mode %> ">
+                                <label for="bid_limit">Bid Limit</label>
+                                <input type="text" name="bid_limit" id="bid_limit" value=" <%= product_bid_limit %> ">
+                                <input type="hidden" name="product_id" value=< %=product_id %>>
+                                <input type="hidden" name="product_type" value=< %=product_type %>>
+                                <button type="submit" class="btn btn-primary btn-block product-options">place order</button>
+                            </div>
+                        </form>
+                        <br> <br>
+                        <form action="http://localhost:3000/auction-product-details-place-bid" method="post">
+                            <label for="your_bid">Your initial offering:</label>
+                            <input type="text" id="your_bid" name="your_bid" value=" <%= product_your_bid %> "><br>
+                            <br>
+                            <label for="simple">simple bidding</label>
+                            <input type="radio" id="auto_chosen" name="auto_chosen" value=" <%= product_auto_mode %> ">
+                            <label for="auto">auto bidding</label>
+                            <input type="radio" id="auto_chosen" name="auto_chosen" value=" <%= product_auto_mode %> "><br>
+                            <label for="bid_limit">Maximum offering:</label>
+                            <input type="text" name="bid_limit" id="bid_limit" value=" <%= product_bid_limit %> "><br>
+                        </form>
+                    </div>
+                    <br>
+                    <div class="row" style="margin-top: 30px;"></div>
+                    <form action="http://localhost:3000/auction-confirm-delivery" method="post">
+                        <button type="submit" class="btn btn-primary btn-block product-options">confirm delivery</button>
+                        <input type="hidden" name="product_id" value=< %=product_id %>>
+                        <input type="hidden" name="product_type" value=< %=product_type %>>
+                    </form>
+                    <br>
+                    <form action="http://localhost:3000/auction-product-details-delete-product" method="post">
+                        <button type="submit" class="btn btn-primary btn-block product-options">remove product from sale</button>
+                        <input type="hidden" name="product_id" value=< %=product_id %>>
+                        <input type="hidden" name="product_type" value=< %=product_type %>>
+                    </form>
+
+                    <form action="http://localhost:3000/auction-product-details-close-bidding" method="post">
+                        <button type="submit" class="btn btn-primary btn-block product-options" style="padding: 1rem; width: fit-content;">Close Bidding</button>
+                        <input type="hidden" name="product_id" value=< %=product_id %>>
+                        <input type="hidden" name="product_type" value=< %=product_type %>>
+                    </form>
+                    <br>
+                    <form action="http://localhost:3000/auction-update-status" method="post">
+                        <button type="submit" class="btn btn-primary btn-block product-options">update status to &nbsp;<u><i><%=product_new_status%></i></u> </button>
+                        <input type="hidden" name="product_id" value=< %=product_id %>>
+                        <input type="hidden" name="product_type" value=< %=product_type %>>
+                    </form>
+                    <br>
+        </div>
+    </div>
+    <div style="clear:both"></div>
+    <%- include('../includes/end.ejs') %>

@@ -15,6 +15,22 @@
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
     <style>
         @import "http://fonts.googleapis.com/css?family=Roboto:300,400,500,700";
+        * {
+            box-sizing: border-box;
+        }
+        
+        #map {
+            height: 250px;
+            width: 40%;
+        }
+        
+        .product-options {
+            padding: 1rem;
+            width: 30rem;
+            font-size: larger;
+            margin: auto;
+        }
+        
         .container {
             margin-top: 20px;
         }
@@ -52,7 +68,7 @@
         
         .search-result {
             margin-top: 20px;
-            outline: 1px  rgb(86, 168, 216);
+            outline: 1px rgb(86, 168, 216);
             outline-offset: 15px;
         }
         
@@ -128,6 +144,7 @@
             top: 0;
             overflow-x: hidden;
             padding-top: 20px;
+            margin-top: 60px;
         }
         
         .left {
@@ -139,38 +156,78 @@
         }
         
         .centered {
-            position: absolute;
+            position: relative;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             text-align: center;
         }
-
+        
+        .vertical-center {
+            text-align: center;
+            margin: auto;
+        }
+        
         .collapsible {
-            /* background-color: rgb(255, 255, 255); */
             color: rgb(57, 18, 161);
             cursor: pointer;
-            /* padding: 18px; */
-            /* width: 100%; */
-            /* border: none; */
-            /* text-align: left; */
-            /* outline: none; */
-            /* font-size: 15px; */
         }
-
-        /* .active, .collapsible:hover {
-            background-color: rgb(230, 45, 236);
-        } */
-
+        
         .content {
-            /* padding: 0 18px; */
             display: none;
             overflow: hidden;
-            /* background-color: #7fbfd8; */
+        }
+        
+        @import url(https://fonts.googleapis.com/css?family=Open+Sans);
+        body {
+            background: #f2f2f2;
+            font-family: 'Open Sans', sans-serif;
+        }
+        
+        .search {
+            width: 100%;
+            position: relative;
+            display: flex;
+        }
+        
+        .searchTerm {
+            width: 100%;
+            border: 1px solid #0052cc;
+            border-right: none;
+            padding: 5px;
+            height: 20px;
+            border-radius: 5px 0 0 5px;
+            outline: none;
+            color: #9DBFAF;
+        }
+        
+        .searchTerm:focus {
+            color: #00B4CC;
+        }
+        
+        .searchButton {
+            width: 40px;
+            height: 36px;
+            border: 1px solid #0030cc;
+            background: #0047cc;
+            text-align: center;
+            color: #fff;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            font-size: 20px;
+        }
+        /*Resize the wrap to see the search bar change!*/
+        
+        .wrap {
+            width: 30%;
+            position: relative;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
     </style>
 </head>
 
 <body>
     <%- include('navbar.ejs') %>
-        <div class="container">
+        <div class="container" style="margin-top: 75px">
