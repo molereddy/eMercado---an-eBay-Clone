@@ -76,7 +76,7 @@ module.exports = class Login{
 
     get_auction_search_results_purchases(id)
     {
-        return pool.query('select * from auction_item where buyer_id = $1;',[id]);
+        return pool.query('select * from auction_item where best_bidder = $1;',[id]);
     
     }
 
