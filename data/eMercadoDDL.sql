@@ -23,7 +23,6 @@ CREATE TABLE person (
 
 CREATE TABLE auction_item (
 	aitem_id serial,
-	identifier varchar(32),
 	name varchar(150),
 	description text,
 	price float,
@@ -44,7 +43,6 @@ CREATE TABLE auction_item (
 
 CREATE TABLE direct_sale_item (
 	ditem_id serial,
-	identifier varchar(32),
 	name varchar(150),
 	description text,
 	price float,
