@@ -25,7 +25,7 @@ module.exports = class Login{
 
     
     get_messages(id){
-        return pool.query('(SELECT * from direct_item_messages  where person_id = $1 order by message_time desc) union (SELECT * from auction_item_messages where person_id = $1 order by message_time desc)  ',[id]);
+        return pool.query('(SELECT * from direct_item_messages  where person_id = $1) union (SELECT * from auction_item_messages where person_id = $1)  ',[id]);
     }
 
     add_auction_product(aitem_id,category,name,desc,price,seller_id,quantity,start_time,close_time)
@@ -58,14 +58,25 @@ module.exports = class Login{
 
     }
 
-    get_direct_search_results(id)
+    get_direct_search_results_sales(id)
     {
         return pool.query('select * from direct_sale_item where seller_id = $1;',[id]);
     }
 
-    get_auction_search_results(id)
+    get_auction_search_results_sales(id)
     {
         return pool.query('select * from auction_item where seller_id = $1;',[id]);
+    
+    }
+
+    get_direct_search_results_purchases(id)
+    {
+        return pool.query('select * from direct_sale_item where buyer_id = $1;',[id]);
+    }
+
+    get_auction_search_results_purchases(id)
+    {
+        return pool.query('select * from auction_item where buyer_id = $1;',[id]);
     
     }
 
