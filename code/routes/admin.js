@@ -18,7 +18,8 @@ router.post('/home-screen', adminCon.post_home_screen_search);
 router.post('/messages',adminCon.viewMessages);
 router.post('/add-product',adminCon.post_add_product);
 router.get('/add-product',adminCon.get_add_product);
-router.get('/view-myproducts',adminCon.get_view_my_products);
+router.get('/view-mysales',adminCon.get_view_my_sales);
+router.get('/view-mypurchases',adminCon.get_view_my_purchases);
 
 router.post('/results-switch-page',adminCon.post_results_switch_page);
 router.post('/update-balance',adminCon.post_update_balance);

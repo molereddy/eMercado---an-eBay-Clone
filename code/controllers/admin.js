@@ -179,6 +179,9 @@ exports.post_update_balance = (req, res, next) => {
         res.redirect('login-screen');
     } else {
         user.update_balance(req.body.balance);
+        var message = new Message(product_id,seller_id,"Balance updated","Your have added money "+req.body.balance+" at "+get_timestamp(),get_timestamp())
+        message.send_direct_message();
+                    
         res.redirect('home-screen');
     }
 };
@@ -234,7 +237,7 @@ exports.post_home_screen_search = (req, res, next) => { // when search button is
 
 };
 
-exports.get_view_my_products = (req,res,next) => {// when search button is pressed 
+exports.get_view_my_sales = (req,res,next) => {// when search button is pressed 
 
     var cookies = new Cookies(req, res, {keys  : keys })
 
@@ -248,13 +251,13 @@ exports.get_view_my_products = (req,res,next) => {// when search button is press
         
         const user = new Login(currentEmail);
         user
-            .get_direct_search_results(currentID)
+            .get_direct_search_results_sales(currentID)
             .then(direct_results => {
 
 
 
             user
-                .get_auction_search_results(currentID)
+                .get_auction_search_results_sales(currentID)
                 .then(auction_results => {
 
     
@@ -264,7 +267,51 @@ exports.get_view_my_products = (req,res,next) => {// when search button is press
                   
                     direct_products : direct_results,
                     auction_products : auction_results,
-                    searched_text: 'My products',
+                    searched_text: 'My Sales',
+                    result_start: 0
+                });
+
+
+            }).catch(err => console.log(err));
+
+    
+        }).catch(err => console.log(err));
+
+    }
+
+};
+
+exports.get_view_my_purchases = (req,res,next) => {// when search button is pressed 
+
+    var cookies = new Cookies(req, res, {keys  : keys })
+
+    // Get a cookie
+    var currentID = cookies.get('CurrentID', { signed: true })
+    var currentEmail = cookies.get('CurrentEmail', { signed: true })
+    
+    if (!currentID) {
+        res.redirect('login-screen');
+    } else {
+        
+        const user = new Login(currentEmail);
+        user
+            .get_direct_search_results_purchases(currentID)
+            .then(direct_results => {
+
+
+
+            user
+                .get_auction_search_results_purchases(currentID)
+                .then(auction_results => {
+
+    
+                res.render('admin/search_screen', {
+                    pageTitle: 'Search Screen',
+                    path: '/search-screen',
+                  
+                    direct_products : direct_results,
+                    auction_products : auction_results,
+                    searched_text: 'My Purchases',
                     result_start: 0
                 });
 
@@ -406,8 +453,7 @@ exports.get_product_details_delete_product = (req, res, next) => { // when selle
         product_object
             .delete_product()
             .then(() => {
-
-
+                
                 res.redirect('/home-screen');
 
 
@@ -448,6 +494,10 @@ exports.get_product_details_update_status = (req, res, next) => { //when seller 
 
                 product_price = direct_results.rows[0].price
                 product_status = direct_results.rows[0].status
+                console.log(direct_results.rows[0])
+                buyer_id  = direct_results.rows[0].buyer_id
+                product_name = direct_results.rows[0].name
+
 
 
 
@@ -459,12 +509,27 @@ exports.get_product_details_update_status = (req, res, next) => { //when seller 
 
                 if (product_status == 'sold') {
                     product_status = 'shipping';
+                    var message = new Message(product_id,currentID,"Status Updated","Your have updated the status of "+product_name+" to shipping at "+get_timestamp(),get_timestamp())
+                    message.send_direct_message();
+                    var message = new Message(product_id,buyer_id,"Product Shipping","We are glad to inform you that your new purchase "+product_name+" status is shipping. Message sent at "+get_timestamp(),get_timestamp());
+                    message.send_direct_message();
+                                        
 
                 } else if (product_status == 'shipping') {
                     product_status = 'shipped';
+                    var message = new Message(product_id,currentID,"Status Updated","Your have updated the status of "+product_name+" to shipped at "+get_timestamp(),get_timestamp())
+                    message.send_direct_message();
+                    var message = new Message(product_id,buyer_id,"Product Shipping","We are glad to inform you that your new purchase "+product_name+"got shipped at "+get_timestamp(),get_timestamp());
+                    message.send_direct_message();
+                    
 
                 } else if (product_status == 'shipped') {
                     product_status = 'out-for-delivery';
+                    var message = new Message(product_id,currentID,"Status Updated","Your have updated the status of "+product_name+" to out for delivary at "+get_timestamp(),get_timestamp())
+                    message.send_direct_message();
+                    var message = new Message(product_id,buyer_id,"Product Shipping","We are glad to inform you that your new purchase "+product_name+" is out for delivary now. Message sent at "+get_timestamp(),get_timestamp());
+                    message.send_direct_message();
+                    
 
                 }
 
@@ -532,7 +597,7 @@ exports.get_product_details_buy = (req, res, next) => { // when the buyer clicks
                                         product_object.update_direct_buyer(currentID);
                                         var message = new Message(product_id,currentID,"Order placed Succesful","Your order for item "+product_name+" is placed success fully at "+get_timestamp(),get_timestamp())
                                         message.send_direct_message();
-                                        var message = new Message(product_id,product_seller,"New order","You got a new order for "+product_name,get_timestamp());
+                                        var message = new Message(product_id,product_seller,"New order","You got a new order for "+product_name+" at "+get_timestamp(),get_timestamp());
                                         message.send_direct_message();
                                         res.redirect(307,'/product-details');
 
@@ -586,6 +651,9 @@ exports.get_product_details_confirm_delivery = (req, res, next) => { // when the
 
                 product_price = direct_results.rows[0].price
                 product_status = direct_results.rows[0].status
+                product_name = direct_results.rows[0].name
+                product_seller = direct_results.rows[0].seller_id
+                product_buyer = direct_results.rows[0].buyer_id
 
                 product_object
                     .update_status('delivered')
@@ -604,7 +672,11 @@ exports.get_product_details_confirm_delivery = (req, res, next) => { // when the
                                         product_object
                                             .increase_balance(product_price, direct_results.rows[0].seller_id) //increase balance of the seller
                                             .then(() => {
-
+                                                var message = new Message(product_id,product_seller,"Product Delivered","Your product "+product_name+" got succesfully delivered to your customer at "+get_timestamp(),get_timestamp())
+                                                message.send_direct_message();
+                                                var message = new Message(product_id,product_buyer,"Product Delivered","Your product"+product_name+" got delivered at"+get_timestamp()+". Thanks for shopping with us.",get_timestamp());
+                                                message.send_direct_message();
+                    
                                                 res.redirect(307, '/product-details');
 
                                             }).catch(err => console.log(err));
@@ -709,7 +781,10 @@ exports.post_add_product = (req,res,next) => {
                 .get_new_aitem_id()
                 .then(results => {
                     user.add_auction_product(results.rows[0].aitem_id+1,identifier,name,description,price,currentID,quantity,get_timestamp(),close_date+" 23:59:00");
-                        res.redirect('home-screen');    
+                    var message = new Message(results.rows[0].aitem_id+1,currentID,"New Product Added","You have added a new direct sale product "+name+" at "+get_timestamp(),get_timestamp())
+                    message.send_direct_message();
+                        
+                    res.redirect('home-screen');    
 
                 }).catch(err => console.log(err));
         }
@@ -721,6 +796,9 @@ exports.post_add_product = (req,res,next) => {
                     user
                     .add_direct_product(results.rows[0].ditem_id+1,identifier,name,description,price,currentID,quantity)
                     .catch(err=> console.log(err));
+                    var message = new Message(results.rows[0].ditem_id+1,currentID,"New Product Added","You have added a new direct sale product "+name+" at "+get_timestamp(),get_timestamp())
+                    message.send_direct_message();
+                    
                         res.redirect('home-screen');    
 
                 }).catch(err => console.log(err));
