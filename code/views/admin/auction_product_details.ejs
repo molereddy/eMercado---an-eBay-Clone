@@ -67,52 +67,38 @@
                         <% if (product_viewer == "buyer")  {%>
                             <% if (product_status == "open")  {%>
                                 <div class="semicentered">
-                                <form action="http://localhost:3000/auction-product-details-place-bid" method="post">
-                                    <div class="form-group">
-                                        <div style="display:flex; flex-direction: row">
-                                            <label for="your_bid">Your initial offering:</label>
-                                            <input type="text" class="form-control" name="your_bid" id="your_bid" value="<%= product_your_bid %>"><br>
-                                        </div>
-                                        <br>
+                                    <form action="http://localhost:3000/auction-product-details-place-bid" method="post">
+                                        <div class="form-group">
+                                            <div style="display:flex; flex-direction: row">
+                                                <label for="your_bid">Your initial offering:</label>
+                                                <input type="text" class="form-control" name="your_bid" id="your_bid" value="<%= product_your_bid %>"><br>
+                                            </div>
+                                            <br>
 
-                                        <div style="display:flex; flex-direction: row">
-                                        <label for="auto_mode">Mode of bidding:&nbsp;  </label><br>
-                                        
-                                        <select name="auto_mode" id="auto_mode">
+                                            <div style="display:flex; flex-direction: row">
+                                                <label for="auto_mode">Mode of bidding:&nbsp;  </label><br>
+
+                                                <select name="auto_mode" id="auto_mode">
                                             <option value="false">Simple bidding</option>
                                             <option value="true">Auto bidding</option>
                                         </select><br>
+                                            </div>
+                                            <br>
+                                            <div style="display:flex; flex-direction: row">
+                                                <label for="bid_limit">Maximum offering:</label>
+                                                <input type="text" class="form-control" name="bid_limit" id="bid_limit" value="<%= product_bid_limit %>"><br>
+                                            </div>
+                                            <br>
+                                            <input type="hidden" name="product_id" value=< %=product_id %>>
+                                            <input type="hidden" name="product_type" value=< %=product_type %>>
+                                            <button type="submit" class="btn btn-primary btn-block product-options">place order</button>
                                         </div>
-                                        <br>
-                                        <!-- <input type="text" class="form-control" name="auto_mode" id="auto_mode" value=" <%= product_auto_mode %> "><br> -->
-                                        <div style="display:flex; flex-direction: row">
-                                            <label for="bid_limit">Maximum offering:</label>
-                                            <input type="text" class="form-control" name="bid_limit" id="bid_limit" value="<%= product_bid_limit %>"><br>
-                                        </div>
-                                        <br>
-                                        <input type="hidden" name="product_id" value= <%=product_id %>>
-                                        <input type="hidden" name="product_type" value= <%=product_type %>>
-                                        <button type="submit" class="btn btn-primary btn-block product-options">place order</button>
-                                    </div>
-                                </form>
+                                    </form>
                                 </div>
                                 <br> <br>
-                            <% } %>
-                        <% } %>
-                        <!-- <form action="http://localhost:3000/auction-product-details-place-bid" method="post">
-                            <div class="form-group" style="margin-top: 100px;"></div>
-                                <label for="your_bid">Your initial offering:</label>
-                                <input type="text" class="form-control" id="your_bid" name="your_bid" value=" <%= product_your_bid %> "><br>
-                                <br>
-                                <label for="simple">simple bidding</label>
-                                <input type="radio" id="auto_chosen" name="auto_chosen" value=" <%= product_auto_mode %> "> <br>
-                                <label for="auto">auto bidding</label>
-                                <input type="radio" id="auto_chosen" name="auto_chosen" value=" <%= product_auto_mode %> "><br>
-                                <label for="bid_limit">Maximum offering:</label>
-                                <input type="text" class="form-control" name="bid_limit" id="bid_limit" value=" <%= product_bid_limit %> "><br>
-                            </div>
-                        </form> -->
-                        
+                                <% } %>
+                                    <% } %>
+
                     </div>
                     <br>
                     <div class="row" style="margin-top: 50px;"></div>
@@ -123,7 +109,7 @@
                             <input type="hidden" name="product_type" value= <%=product_type %>>
                         </form>
                         <br>
-                    <% } %>
+                        <% } %>
 
                     <% if (product_viewer == "seller")  {%>
                         <% if (product_status == "open")  {%>

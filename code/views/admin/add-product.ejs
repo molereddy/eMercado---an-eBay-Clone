@@ -1,66 +1,46 @@
 <%- include('../includes/head.ejs') %>
-<link rel="stylesheet" href="/css/forms.css">
-<link rel="stylesheet" href="/css/product.css">
-</head>
-
-<body>
-
-
-<main>
-
-    <h1>Add Product</h1>
-
+    <h1 class="centered"> <b>Upload product</b> </h1>
     <form class="product-form" action="http://localhost:3000/add-product" method="POST">
-        <div class="form-control">
-            <label for="name">Name</label>
-            <input type="text" name="name" id="name" required = "required" >
+        <div class="row">
+            <div class="col-25"><label for="name">Name of your product</label></div>
+            <div class="col-75"><input type="text" id="name" name="name" placeholder="product name.." required="required"></div>
         </div>
-        <div class="form-control">
-            <label for="description">Description</label>
-            <input type="text" name="description" id="description">
+        <div class="row">
+            <div class="col-25"><label for="category">Add product tags here, separated by spaces</label></div>
+            <div class="col-75"><input type="text" id="category" name="category" placeholder="item tags your product falls under.."></div>
         </div>
-        <div class="price">
-            <label for="price">Price</label>
-            <input type="number" step="0.01" name="price" id="Price" required = "required">
+        <div class="row">
+            <div class="col-25"><label for="description">Add product description</label></div>
+            <div class="col-75">
+                <textarea type="text" id="description" name="description" style="height:200px"></textarea>
+            </div>
         </div>
-        <div class="form-control">
-            <label for="quantity">Quantity</label>
-            <input type="quantity" name="quantity" id="quantity" required = "required">
+        <div class="row" style="margin-top: 20px;">
+            <div class="col-25"><label for="price">Add price, quantity and sale type</label></div>
+            <div class="col-20">
+                <input type="number" id="Price" name="price" required="required" style="height: 30px;" placeholder="in dollars">
+            </div>
+            &nbsp;
+            <div class="col-20">
+                <input type="quantity" name="quantity" id="quantity" required="required" style="height: 30px;">
+            </div>
+            &nbsp;
+            <div class="col-15">
+                <select name="item_type" id="item_type" style="height: 50px;">
+                    <option value="auction">auctioning</option>
+                    <option value="direct_sale" selected>simple sale</option>
+                </select>
+            </div>
         </div>
-        <div class="form-control">
-            <label for="category">Category</label>
-            <input type="text" name="category" id="category">
+        <div class="row">
+            <div class="col-25"><label for="close_date">closing time</label></div>
+            <div class="col-75">
+                <input type="date" id="close_date" name="close_date">
+            </div>
         </div>
-        <div class="form-control">
-            <label for="item_type">Choose a way to sell the item:</label>
-            <select name="item_type" id="item_type">
-                <option value="auction">Auction</option>
-                <option value="direct_sale">Direct_sale</option>
-            </select>
+        <div class="row">
+            <button class="btn btn-primary btn-block product-options" type="submit">Upload</button>
         </div>
-        <h4>If your choosing auction mode then choose an endtime for your auction</h4>
-        <div class="form-control">
-            <label for="close_date">Close Date</label>
-            <input type="date" name="close_date" id="close_date">
-        </div>
-        
-                
-
-        <button class="btn" type="submit">Add</button>
-
-
-
-
-        
-   
-   
     </form>
 
-
-
-
-
-   
-
-</main>
-<%- include('../includes/end.ejs') %>
+    <%- include('../includes/end.ejs') %>
