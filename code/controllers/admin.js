@@ -887,7 +887,7 @@ exports.post_add_product = (req, res, next) => {
                     user.add_auction_product(results.rows[0].aitem_id + 1, identifier, name, description, price, currentID, quantity, get_timestamp(), close_date + " 23:59:00");
                     console.log("added auction product")
                     var message = new Message(results.rows[0].aitem_id + 1, currentID, "New Product Added", "You have added a new direct sale product " + name + " at " + get_timestamp(), get_timestamp())
-                    message.send_direct_message();
+                    message.send__message();
 
                     var i;
                     for (i = 0; i < tags.length; i++) {
