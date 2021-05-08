@@ -8,15 +8,82 @@
 
 <main>
 
+    <%var latitude = product_lat ;%>
+    <%var longitude = product_lng ;%>
+        <div id="map" m class="vertical-center"></div>
+        <script>
+            function initMap() {
+                var place = {
+                    lat: <%=latitude%>,
+                    lng: <%=longitude%>
+                };
+                var map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 7,
+                    center: place
+                });
+                var marker = new google.maps.Marker({
+                    position: place,
+                    map: map
+                });
+            }
+        </script>
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key=
+AIzaSyB2bXKNDezDf6YNVc-SauobynNHPo4RJb8&callback=initMap">
+        </script>
+
+
+
     <h1>Direct Sale Product Details Page</h1>
 
-    <h1> Product id =  <%=product_id%> </h1>
 
-    <h1> Product type = <%=product_type%> </h1>
 
-    <h1> Price = <%=product_price%> </h1>
+    <h3> <b>Product Name:&nbsp;</b>
+        <tt><%=product_name%></tt>
+    </h3>
 
-    <h1> Status = <%=product_status%> </h1>
+
+    <h3> <b>Product Description:&nbsp;</b>
+        <tt><%=product_description%></tt>
+    </h3>
+
+    
+
+  
+
+    <h3> <b>Product id:&nbsp;</b>
+        <tt><%=product_id%></tt>
+    </h3>
+
+
+    <h3> <b>Sale type:&nbsp;</b>
+        <tt><%=product_type%></tt>
+    </h3>
+
+
+    <h3> <b>Price:&nbsp;</b>
+        <tt><%=product_price%></tt>
+    </h3>
+
+  
+
+    <h3> <b>Status:&nbsp;</b>
+        <tt><%=product_status%></tt>
+    </h3>
+
+    <h3> <b>seller ID:&nbsp;</b>
+        <tt><%=product_seller%></tt>
+    </h3>
+
+    <h3> <b>delivery distance:&nbsp;</b>
+        <tt><%=product_distance%> km</tt>
+    </h3>
+    <h3> <b>delivery charges:&nbsp;</b>
+        <tt>&dollar;<%=product_delivery_cost%></tt>
+    </h3>
+
+    <h3> <b>total cost:&nbsp;</b>
+        <tt>&dollar;<%=product_amount_to_pay%></tt>
+    </h3>
 
 
 
@@ -69,7 +136,7 @@
 
             <% } %>
 
-            <% if (product_status != "open"  && product_status!= "delivered")  {%>
+            <% if (product_status != "open"  && product_status!= "delivered" &&  product_status!= "out-for-delivery" )  {%>
 
             <form action="http://localhost:3000/product-details-update-status" method="post">
                 <button type="submit">Update Status to <%=product_new_status%> </button>

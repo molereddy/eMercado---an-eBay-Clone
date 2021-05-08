@@ -3,13 +3,24 @@
     <div id="root"></div>
     <div style="width: 100%;">
         <div style="float:left; width: 50%">
+
+            <% if (message.length > 0) { %>
+                <div class="alert alert-danger"><%=message%></div>
+              <% } %>
+
             <h1> <b style="font-size: xx-large;">Product Description</b></h1>
             <br>
             <h3> <b>item ID:&nbsp;</b>
                 <tt><%=product_id%></tt>
             </h3>
+            <h3> <b>Product Name:&nbsp;</b>
+                <tt><%=product_name%></tt>
+            </h3>
             <h3> <b>sale type:&nbsp;</b>
                 <%=product_type%>
+            </h3>
+            <h3> <b>Product Description:&nbsp;</b>
+                <tt><%=product_description%></tt>
             </h3>
             <h3> <b>current status:&nbsp;</b>
                 <%=product_status%>
@@ -18,14 +29,23 @@
                 <tt><%=product_seller%></tt>
             </h3>
             <h3> <b>base price:&nbsp;</b>
-                <tt>&dollar;<%=product_base_price%></tt>
+                <tt><%=product_base_price%></tt>
             </h3>
             <h3> <b>current best bid:&nbsp;</b>
-                <tt>&dollar;<%=product_curent_best_bid%></tt>
+                <tt><%=product_curent_best_bid%></tt>
             </h3>
+
+            <% if (product_curent_best_bidder == current_id) { %>
+
+                <tt style="font-size: xx-large;">You are the best bidder</tt>
+
+              <% } %>
+
             <h3> <b>current best bidder:&nbsp;</b>
                 <tt><%=product_curent_best_bidder%></tt>
             </h3>
+
+
             <h3> <b>sale started at:&nbsp;</b>
                 <tt style="font-size:large;"><%=product_sale_start_time%></tt>
             </h3>
@@ -38,6 +58,18 @@
             <h3> <b>delivery charges:&nbsp;</b>
                 <tt>&dollar;<%=product_delivery_cost%></tt>
             </h3>
+
+            <% if (product_bid_present == 1) { %>
+
+            <h3> <b>total cost:&nbsp;</b>
+                <tt>&dollar;<%=product_amount_to_pay%></tt>
+            </h3>
+
+            <% } %>
+            
+           
+
+
         </div>
         <div style="float:right; width: 50%;">
             <%var latitude = product_lat ;%>
@@ -79,8 +111,11 @@
                                                 <label for="auto_mode">Mode of bidding:&nbsp;  </label><br>
 
                                                 <select name="auto_mode" id="auto_mode">
-                                            <option value="false">Simple bidding</option>
-                                            <option value="true">Auto bidding</option>
+
+                                            
+                                            <option value="false" > Simple bidding</option>
+                                            <option value="true" >Auto bidding</option>
+
                                         </select><br>
                                             </div>
                                             <br>
@@ -89,8 +124,8 @@
                                                 <input type="text" class="form-control" name="bid_limit" id="bid_limit" value="<%= product_bid_limit %>"><br>
                                             </div>
                                             <br>
-                                            <input type="hidden" name="product_id" value=< %=product_id %>>
-                                            <input type="hidden" name="product_type" value=< %=product_type %>>
+                                            <input type="hidden" name="product_id" value=<%=product_id %>>
+                                            <input type="hidden" name="product_type" value=<%=product_type %>>
                                             <button type="submit" class="btn btn-primary btn-block product-options">place order</button>
                                         </div>
                                     </form>
@@ -128,7 +163,7 @@
                             <br>
                         <% } %>
 
-                        <% if (product_status != "open" && product_status!= "delivered")  {%>
+                        <% if (product_status != "open" && product_status!= "delivered" && product_status!= "out-for-delivery")  {%>
                             <form action="http://localhost:3000/auction-update-status" method="post">
                                 <button type="submit" class="btn btn-primary btn-block product-options">update status to &nbsp;<u><i><%=product_new_status%></i></u> </button>
                                 <input type="hidden" name="product_id" value= <%=product_id %>>
