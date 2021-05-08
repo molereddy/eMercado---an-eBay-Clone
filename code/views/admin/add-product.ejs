@@ -5,10 +5,37 @@
             <div class="col-25"><label for="name">Name of your product</label></div>
             <div class="col-75"><input type="text" id="name" name="name" placeholder="product name.." required="required"></div>
         </div>
+
         <div class="row">
-            <div class="col-25"><label for="category">Add product tags here, separated by spaces</label></div>
-            <div class="col-75"><input type="text" id="category" name="category" placeholder="item tags your product falls under.."></div>
+            <div class="col-25"><label for="checkboxes">Select tags for your product</label></div>
+            <div class="col-75" id="checkboxes">
+                <label for="a">
+              <input type="checkbox" name = "a" id="a" value="Clothing" style="font-family: 'Open Sans';"> clothing</label>
+                <label for="b">
+              <input type="checkbox" name = "b" id="b" value="Women's Clothing"/> women's clothing</label>
+                <label for="c">
+              <input type="checkbox" name = "c" id="c" value="Jewellery"/> jewellery</label>
+                <label for="d">
+              <input type="checkbox" name = "d" id="d" value="Footwear"/> footwear</label>
+                <label for="e">
+              <input type="checkbox" name = "e" id="e" value="Men's Clothing"/> men's clothing</label>
+                <label for="f">
+              <input type="checkbox" name = "f" id="f" value="Automotive"/> automotive</label>
+                <label for="g">
+              <input type="checkbox" name = "g" id="g" value="Necklaces"/> necklaces</label>
+                <label for="h">
+              <input type="checkbox" name = "h" id="h" value="Western Wear"/> western-wear</label>
+                <label for="i">
+              <input type="checkbox" name = "i" id="i" value="Beauty and Personal Care"/> care & beauty</label>
+                <label for="j">
+              <input type="checkbox" name = "j" id="j" value="Rings"/> rings</label>
+                <label for="k">
+              <input type="checkbox" name = "k" id="k" value="Accessories & Spare parts"/> accessories & spare parts</label>
+                <label for="l">
+              <input type="checkbox" name = "l" id="l" value="Home Decor & Festive Needs"/> festive & home decor</label>
+            </div>
         </div>
+
         <div class="row">
             <div class="col-25"><label for="description">Add product description</label></div>
             <div class="col-75">
@@ -31,43 +58,6 @@
                     <option value="direct_sale" selected>simple sale</option>
                 </select>
             </div>
-            <div class="multiselect">
-                <div class="selectBox" onclick="showCheckboxes()">
-                  <select>
-                    <option>Select all tags</option>
-                  </select>
-                  <div class="overSelect"></div>
-                </div>
-                <div id="checkboxes">
-                  <label for="a">
-                    <input type="checkbox" name = "a" id="a" value="Clothing" />Clothing</label>
-                  <label for="b">
-                    <input type="checkbox" name = "b" id="b" value="Women's Clothing" />Women's Clothing</label>
-                  <label for="c">
-                    <input type="checkbox" name = "c" id="c" value="Jewellery"/>Jewellery</label>
-                  <label for="d">
-                    <input type="checkbox" name = "d" id="d" value="Footwear" />Footware</label>
-                  <label for="e">
-                    <input type="checkbox" name = "e" id="e" value="Men's Clothing" />Men's Clothing</label>
-                  <label for="f">
-                    <input type="checkbox" name = "f" id="f" value="Automotive"/>Automotive</label>
-                  <label for="g">
-                    <input type="checkbox" name = "g" id="g" value="Necklaces" />Necklaces</label>
-                  <label for="h">
-                    <input type="checkbox" name = "h" id="h" value="Western Wear" />Western Wear</label>
-                  <label for="i">
-                    <input type="checkbox" name = "i" id="i" value="Beauty and Personal Care"/>Beauty and Personal Care</label>
-                  <label for="j">
-                    <input type="checkbox" name = "j" id="j" value="Rings" />Rings</label>
-                  <label for="k">
-                    <input type="checkbox" name = "k" id="k" value="Accessories & Spare parts" />Accessories & Spare parts</label>
-                  <label for="l">
-                    <input type="checkbox" name = "l" id="l" value="Home Decor & Festive Needs"/>Home Decor & Festive Needs</label>
-                    
-                
-                  </div>
-            </div>
-            
         </div>
         <div class="row">
             <div class="col-25"><label for="close_date">closing time</label></div>
@@ -79,21 +69,21 @@
             <button class="btn btn-primary btn-block product-options" type="submit">Upload</button>
         </div>
     </form>
-    
+
     <script>
         var expanded = false;
-    
-    function showCheckboxes() {
-      var checkboxes = document.getElementById("checkboxes");
-      if (!expanded) {
-        checkboxes.style.display = "block";
-        expanded = true;
-      } else {
-        checkboxes.style.display = "none";
-        expanded = false;
-      }
-    }
+
+        function showCheckboxes() {
+            var checkboxes = document.getElementById("checkboxes");
+            if (!expanded) {
+                checkboxes.style.display = "block";
+                expanded = true;
+            } else {
+                checkboxes.style.display = "none";
+                expanded = false;
+            }
+        }
     </script>
-    
-    
+
+
     <%- include('../includes/end.ejs') %>

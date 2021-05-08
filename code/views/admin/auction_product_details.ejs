@@ -6,7 +6,8 @@
             <h1> <b style="font-size: xx-large;">Product Description</b></h1>
             <br>
             <h3> <b>item ID:&nbsp;</b>
-                <tt><%=product_id%></tt>
+                <tt id="product-id"><%=product_id%></tt>
+                <input id="product-id" onclick="CopyToClipboard('product-id')" type="button" value="Copy" />
             </h3>
             <h3> <b>sale type:&nbsp;</b>
                 <%=product_type%>
@@ -105,38 +106,38 @@
                     <% if (product_status == "out-for-delivery" && (current_id ==  product_curent_best_bidder) && (product_viewer == "buyer"))  {%>
                         <form action="http://localhost:3000/auction-confirm-delivery" method="post">
                             <button type="submit" class="btn btn-primary btn-block product-options">confirm delivery</button>
-                            <input type="hidden" name="product_id" value= <%=product_id %>>
-                            <input type="hidden" name="product_type" value= <%=product_type %>>
+                            <input type="hidden" name="product_id" value=< %=product_id %>>
+                            <input type="hidden" name="product_type" value=< %=product_type %>>
                         </form>
                         <br>
                         <% } %>
 
-                    <% if (product_viewer == "seller")  {%>
-                        <% if (product_status == "open")  {%>
-                            <form action="http://localhost:3000/auction-product-details-delete-product" method="post">
-                                <button type="submit" class="btn btn-primary btn-block product-options">remove product from sale</button>
-                                <input type="hidden" name="product_id" value= <%=product_id %>>
-                                <input type="hidden" name="product_type" value= <%=product_type %>>
-                            </form>
-                        
+                            <% if (product_viewer == "seller")  {%>
+                                <% if (product_status == "open")  {%>
+                                    <form action="http://localhost:3000/auction-product-details-delete-product" method="post">
+                                        <button type="submit" class="btn btn-primary btn-block product-options">remove product from sale</button>
+                                        <input type="hidden" name="product_id" value=< %=product_id %>>
+                                        <input type="hidden" name="product_type" value=< %=product_type %>>
+                                    </form>
 
-                            <form action="http://localhost:3000/auction-product-details-close-bidding" method="post">
-                                <button type="submit" class="btn btn-primary btn-block product-options" style="padding: 1rem; width: fit-content;">Close Bidding</button>
-                                <input type="hidden" name="product_id" value= <%=product_id %>>
-                                <input type="hidden" name="product_type" value= <%=product_type %>>
-                            </form>
-                            <br>
-                        <% } %>
 
-                        <% if (product_status != "open" && product_status!= "delivered")  {%>
-                            <form action="http://localhost:3000/auction-update-status" method="post">
-                                <button type="submit" class="btn btn-primary btn-block product-options">update status to &nbsp;<u><i><%=product_new_status%></i></u> </button>
-                                <input type="hidden" name="product_id" value= <%=product_id %>>
-                                <input type="hidden" name="product_type" value= <%=product_type %>>
-                            </form>
-                            <br>
-                        <% } %>
-                    <% } %>
+                                    <form action="http://localhost:3000/auction-product-details-close-bidding" method="post">
+                                        <button type="submit" class="btn btn-primary btn-block product-options" style="padding: 1rem; width: fit-content;">Close Bidding</button>
+                                        <input type="hidden" name="product_id" value=< %=product_id %>>
+                                        <input type="hidden" name="product_type" value=< %=product_type %>>
+                                    </form>
+                                    <br>
+                                    <% } %>
+
+                                        <% if (product_status != "open" && product_status!= "delivered")  {%>
+                                            <form action="http://localhost:3000/auction-update-status" method="post">
+                                                <button type="submit" class="btn btn-primary btn-block product-options">update status to &nbsp;<u><i><%=product_new_status%></i></u> </button>
+                                                <input type="hidden" name="product_id" value=< %=product_id %>>
+                                                <input type="hidden" name="product_type" value=< %=product_type %>>
+                                            </form>
+                                            <br>
+                                            <% } %>
+                                                <% } %>
         </div>
     </div>
     <div style="clear:both"></div>
