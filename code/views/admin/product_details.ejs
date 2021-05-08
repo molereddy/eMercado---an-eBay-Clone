@@ -5,6 +5,13 @@
         <div style="float:left; width: 50%">
 
 
+            <% if (message.length > 0) { %>
+                <div class="alert alert-danger">
+                    <%=message%>
+                </div>
+                <% } %>
+
+
             <h1> <b style="font-size: xx-large;">Product Description</b></h1>
             <br>
 
@@ -49,16 +56,24 @@
         <tt><%=product_seller%></tt>
     </h3>
 
+    <% if (product_viewer == "buyer")  {%>
+
     <h3> <b>delivery distance:&nbsp;</b>
         <tt><%=product_distance%> km</tt>
     </h3>
+
+    
     <h3> <b>delivery charges:&nbsp;</b>
         <tt>&dollar;<%=product_delivery_cost%></tt>
     </h3>
+   
+
 
     <h3> <b>total cost:&nbsp;</b>
         <tt>&dollar;<%=product_amount_to_pay%></tt>
     </h3>
+
+    <% } %>
            
 
 

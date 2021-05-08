@@ -756,18 +756,22 @@ exports.auction_delete_product = (req,res,next) => {
         delivery_factor = 0 //initialisation
         seller_id = 0       //initialisation
 
-        if(auction_results.rows.length!=0){
-
-            delivery_factor = auction_results.rows[0].delivery_factor
-    
-            seller_id = auction_results.rows[0].seller_id
-        }
+      
 
 
         const product_object = new Auction_Product( product_id , product_type, currentID );
         product_object
-            .delete_product()
+            .get_auction_item()
             .then(auction_results => {
+
+
+                if(auction_results.rows.length!=0){
+
+                    delivery_factor = auction_results.rows[0].delivery_factor
+            
+                    seller_id = auction_results.rows[0].seller_id
+                }
+
 
                 product_object
                     .update_status_for_rejected_buyers(-1)// here -1 is placed since no bid is accepted
@@ -780,9 +784,18 @@ exports.auction_delete_product = (req,res,next) => {
                                 product_object
                                 .update_on_hold_balance_for_rejected_buyers_non_auto(-1,delivery_factor,seller_id)// here -1 is placed since no bid is accepted
                                 .then(() => {//////////
+
+                                    product_object
+                                    .update_status('closed')// here -1 is placed since no bid is accepted
+                                    .then(() => {//////////
+    
+
+
     
     
-                                     res.redirect('/home-screen');
+                                         res.redirect('/home-screen');
+
+                                    }).catch(err => console.log(err));
     
     
     

@@ -547,7 +547,8 @@ exports.get_product_details = (req, res, next) => { // when a direct sale produc
                                     product_name: direct_results.rows[0].name,
                                     product_amount_to_pay: product_amount_to_pay,
                                     product_seller: product_seller,
-                                    current_id: currentID
+                                    current_id: currentID,
+                                    message : req.flash('error')
 
                                 });
 
@@ -756,7 +757,14 @@ exports.get_product_details_buy = (req, res, next) => { // when the buyer clicks
                                     // res.json({success:false});
                                     //var string = encodeURIComponent('something that would break');
                                     // res.redirect(307,'/product-details?valid=' + string);
-                                    res.send("Insufficent Balance");
+                                   
+
+
+                                    req.flash('error', 'Insufficient funds');
+
+                                    res.redirect(307, '/product-details');
+
+
                                 }
 
 
@@ -951,7 +959,7 @@ exports.post_add_product = (req, res, next) => {
                     user.add_auction_product(results.rows[0].aitem_id + 1, identifier, name, description, price, currentID, quantity, get_timestamp(), close_date + " 23:59:00");
                     console.log("added auction product")
                     var message = new Message(results.rows[0].aitem_id + 1, currentID, "New Product Added", "You have added a new direct sale product " + name + " at " + get_timestamp(), get_timestamp())
-                    message.send__message();
+                    message.send_auction_message();
 
                     var i;
                     for (i = 0; i < tags.length; i++) {
