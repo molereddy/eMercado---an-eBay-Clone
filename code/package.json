@@ -13,6 +13,7 @@
   "dependencies": {
     "alert": "^5.0.10",
     "body-parser": "^1.19.0",
+    "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.5",
     "cookies": "^0.8.0",
     "crypto": "^1.0.1",

@@ -7,6 +7,9 @@
             <p style="font-size: 20px;font-weight: 100;">buy & sell just about anything, at the best prices in India</p>
         </div>
     </div>
+    <% if (message.length > 0 ) { %>
+        <div class="alert alert-danger" ><%=message%></div>
+      <% } %>
     <div class="split right login-form" style="right: 0; margin-top: 30px;">
         <div class="centered">
             <form action="http://localhost:3000/signup-screen" class="product-form" method="POST">
