@@ -228,6 +228,7 @@ exports.post_home_screen_search = (req, res, next) => { // when search button is
 
     // Get a cookie
     var currentID = cookies.get('CurrentID', { signed: true })
+    var tags = [req.body.a,req.body.b,req.body.c,req.body.d,req.body.e,req.body.f,req.body.g,req.body.h,req.body.i,req.body.j,req.body.k,req.body.l];
 
     if (!currentID) {
         res.redirect('login-screen');
@@ -239,15 +240,24 @@ exports.post_home_screen_search = (req, res, next) => { // when search button is
         const search_key = req.body.search;
         const start = 0;
 
+        
+tags = tags.filter(function( element ) {
+    return element !== undefined;
+ });
+
+        //var tags_string = "'" + tags.join("','") + "'";
+        var tags_string = tags.join(" , ");
+        console.log(tags);
+        console.log(tags_string)
         const search_object = new Search(search_key);
         search_object
-            .get_direct_search_results()
+            .get_direct_search_results(tags)
             .then(direct_results => {
 
 
 
                 search_object
-                    .get_auction_search_results()
+                    .get_auction_search_results(tags)
                     .then(auction_results => {
 
 
@@ -859,6 +869,10 @@ exports.post_add_product = (req,res,next) => {
         mode = req.body.item_type,
         close_date = req.body.close_date;
 
+    console.log(req.body.women);
+    console.log(req.body.clothes);
+    console.log(req.body.kids);
+    var tags = [req.body.a,req.body.b,req.body.c,req.body.d,req.body.e,req.body.f,req.body.g,req.body.h,req.body.i,req.body.j,req.body.k,req.body.l];
 
 
     if (!currentID) {
@@ -875,9 +889,17 @@ exports.post_add_product = (req,res,next) => {
                     user.add_auction_product(results.rows[0].aitem_id+1,identifier,name,description,price,currentID,quantity,get_timestamp(),close_date+" 23:59:00");
                     console.log("added auction product")
                     var message = new Message(results.rows[0].aitem_id+1,currentID,"New Product Added","You have added a new direct sale product "+name+" at "+get_timestamp(),get_timestamp())
-                    console.log("trying to send au msg")
-                    message.send_auction_message();
-                    console.log("sent au msg")
+                    message.send_direct_message();
+
+                    var i;
+                    for(i=0;i<tags.length;i++)
+                    {
+                        if(tags[i]!=undefined)
+                        {
+                            user.add_auction_tag(results.rows[0].aitem_id+1,tags[i]);
+                        }
+                    }
+                        
                     res.redirect('home-screen');    
 
                 }).catch(err => console.log(err));
@@ -892,6 +914,14 @@ exports.post_add_product = (req,res,next) => {
                     .catch(err=> console.log(err));
                     var message = new Message(results.rows[0].ditem_id+1,currentID,"New Product Added","You have added a new direct sale product "+name+" at "+get_timestamp(),get_timestamp())
                     message.send_direct_message();
+                    var i;
+                    for(i=0;i<tags.length;i++)
+                    {
+                        if(tags[i]!=undefined)
+                        {
+                            user.add_direct_tag(results.rows[0].ditem_id+1,tags[i]);
+                        }
+                    }
                     
                         res.redirect('home-screen');    
 
