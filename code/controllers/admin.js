@@ -239,8 +239,8 @@ exports.post_home_screen_search = (req, res, next) => { // when search button is
         const search_key = req.body.search;
         const start = 0;
 
-
-        tags = tags.filter(function(element) {
+        
+        tags = tags.filter(function( element ) {
             return element !== undefined;
         });
 
@@ -267,7 +267,9 @@ exports.post_home_screen_search = (req, res, next) => { // when search button is
                             direct_products: direct_results,
                             auction_products: auction_results,
                             result_start: start,
-                            searched_text: search_key
+                            searched_text: search_key,
+                            tags_string: tags_string,
+                            type: 0
                         });
 
 
@@ -291,7 +293,16 @@ exports.get_view_my_sales = (req, res, next) => { // when search button is press
     if (!currentID) {
         res.redirect('login-screen');
     } else {
-
+        
+        var resstart = req.body.result_start;
+        var start = 0;
+        if(resstart !== undefined){
+            start = parseInt(req.body.result_start);
+        }
+        else{
+            start = 0;
+        }
+        
         const user = new Login(currentEmail);
         user
             .get_direct_search_results_sales(currentID)
@@ -299,23 +310,28 @@ exports.get_view_my_sales = (req, res, next) => { // when search button is press
 
 
 
-                user
-                    .get_auction_search_results_sales(currentID)
-                    .then(auction_results => {
+            user
+                .get_auction_search_results_sales(currentID)
+                .then(auction_results => {
+
+    
+                res.render('admin/search_screen', {
+                    pageTitle: 'Search Screen',
+                    path: '/search-screen',
+                  
+                    direct_products : direct_results,
+                    auction_products : auction_results,
+                    searched_text: 'My Sales',
+                    result_start: 0,
+                    tags_string: '',
+                    type: 1
+                });
 
 
-                        res.render('admin/search_screen', {
-                            pageTitle: 'Your products',
-                            path: '/search-screen',
-
-                            direct_products: direct_results,
-                            auction_products: auction_results,
-                            searched_text: 'My Sales',
-                            result_start: 0
-                        });
+                        
 
 
-                    }).catch(err => console.log(err));
+                }).catch(err => console.log(err));
 
 
             }).catch(err => console.log(err));
@@ -335,7 +351,15 @@ exports.get_view_my_purchases = (req, res, next) => { // when search button is p
     if (!currentID) {
         res.redirect('login-screen');
     } else {
-
+        
+        var resstart = req.body.result_start;
+        var start = 0;
+        if(resstart !== undefined){
+            start = parseInt(req.body.result_start);
+        }
+        else{
+            start = 0;
+        }
         const user = new Login(currentEmail);
         user
             .get_direct_search_results_purchases(currentID)
@@ -343,23 +367,28 @@ exports.get_view_my_purchases = (req, res, next) => { // when search button is p
 
 
 
-                user
-                    .get_auction_search_results_purchases(currentID)
-                    .then(auction_results => {
+            user
+                .get_auction_search_results_purchases(currentID)
+                .then(auction_results => {
+
+    
+                res.render('admin/search_screen', {
+                    pageTitle: 'Search Screen',
+                    path: '/search-screen',
+                  
+                    direct_products : direct_results,
+                    auction_products : auction_results,
+                    searched_text: 'My Purchases',
+                    result_start: start,
+                    tags_string: '',
+                    type: 2
+                });
 
 
-                        res.render('admin/search_screen', {
-                            pageTitle: 'Search Screen',
-                            path: '/search-screen',
-
-                            direct_products: direct_results,
-                            auction_products: auction_results,
-                            searched_text: 'My Purchases',
-                            result_start: 0
-                        });
+                       
 
 
-                    }).catch(err => console.log(err));
+                }).catch(err => console.log(err));
 
 
             }).catch(err => console.log(err));
@@ -375,6 +404,7 @@ exports.post_results_switch_page = (req, res, next) => { // when search button i
 
     // Get a cookie
     var currentID = cookies.get('CurrentID', { signed: true })
+    // var tags = [req.body.a,req.body.b,req.body.c,req.body.d,req.body.e,req.body.f,req.body.g,req.body.h,req.body.i,req.body.j,req.body.k,req.body.l];
 
     if (!currentID) {
         res.redirect('login-screen');
@@ -384,21 +414,55 @@ exports.post_results_switch_page = (req, res, next) => { // when search button i
         console.log('entered post_results_switch_page');
 
         const search_key = req.body.search;
-        const start = req.body.result_start;
-        const direct_results = req.body.direct_results;
-        const auction_results = req.body.auction_results;
+        const start = parseInt(req.body.result_start);
 
-        res.render('admin/search_screen', {
-            pageTitle: 'Search Screen',
-            path: '/search-screen',
+        console.log(start);
+        // tags = tags.filter(function( element ) {
+        //     return element !== undefined;
+        // });
 
-            direct_products: direct_results,
-            auction_products: auction_results,
-            result_start: start,
-            searched_text: search_key
-        });
+        //var tags_string = "'" + tags.join("','") + "'";
+        // var tags_string = tags.join(" , ");
+        const tags_string = req.body.tags_string;
+        if(tags_string==""){
+            var tags = [];
+        }
+        else{
+            var tags = tags_string.split(" , ");
+        }
+        
+
+        console.log(tags);
+        console.log(tags_string);
+        const search_object = new Search(search_key);
+        search_object
+            .get_direct_search_results(tags)
+            .then(direct_results => {
 
 
+
+                search_object
+                    .get_auction_search_results(tags)
+                    .then(auction_results => {
+
+
+                        res.render('admin/search_screen', {
+                            pageTitle: 'Search Screen',
+                            path: '/search-screen',
+
+                            direct_products: direct_results,
+                            auction_products: auction_results,
+                            result_start: start,
+                            searched_text: search_key,
+                            tags_string: tags_string,
+                            type: 0
+                        });
+
+
+                    }).catch(err => console.log(err));
+
+
+            }).catch(err => console.log(err));
 
     }
 

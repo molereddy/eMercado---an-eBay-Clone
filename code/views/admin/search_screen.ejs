@@ -23,7 +23,7 @@
             <h1>Results</h1>
             <h2 class="lead">
                 <strong class="text-danger">
-                    <%= (direct_products) ?  ((auction_products) ?  auction_products.rows.length : 0)+direct_products.rows.length : ((auction_products) ?  auction_products.rows[i].quantity : 0) %>
+                    <%= (direct_products) ?  ((auction_products) ?  auction_products.rows.length : 0)+direct_products.rows.length : ((auction_products) ?  auction_products.rows.length : 0) %>
                 </strong> 
                 results were found for 
                 <strong class="text-danger">
@@ -31,19 +31,19 @@
                 </strong>
             </h2>
             <h2 class="lead">
-                <% if(((direct_products) ?  ((auction_products) ?  auction_products.rows.length : 0)+direct_products.rows.length : ((auction_products) ?  auction_products.rows[i].quantity : 0)) > result_start){ %>
+                <% if(((direct_products) ?  ((auction_products) ?  auction_products.rows.length : 0)+direct_products.rows.length : ((auction_products) ?  auction_products.rows.length : 0)) > result_start){ %>
                     Showing 
                     <strong class="text-danger">
                         <%= ((result_start) ? result_start : 0)+1 %>
                     </strong> 
                     to
-                    <% if(((direct_products) ?  ((auction_products) ?  auction_products.rows.length : 0)+direct_products.rows.length : ((auction_products) ?  auction_products.rows[i].quantity : 0)) >= (result_start+10)){ %>
+                    <% if(((direct_products) ?  ((auction_products) ?  auction_products.rows.length : 0)+direct_products.rows.length : ((auction_products) ?  auction_products.rows.length : 0)) >= (result_start+10)){ %>
                         <strong class="text-danger">
                             <%= ((result_start) ? result_start : 0)+10 %>
                         </strong>
                     <% } else{ %>
                         <strong class="text-danger">
-                            <%= ((direct_products) ?  ((auction_products) ?  auction_products.rows.length : 0)+direct_products.rows.length : ((auction_products) ?  auction_products.rows[i].quantity : 0)) %>
+                            <%= ((direct_products) ?  ((auction_products) ?  auction_products.rows.length : 0)+direct_products.rows.length : ((auction_products) ?  auction_products.rows.length : 0)) %>
                         </strong>
                     <% } %>
                     results for 
@@ -169,27 +169,63 @@
 
     </div>
 
-    <% if(((direct_products) ?  ((auction_products) ?  auction_products.rows.length : 0)+direct_products.rows.length : ((auction_products) ?  auction_products.rows[i].quantity : 0)) > (result_start+10)){ %>
-        <form action="http://localhost:3000/results-switch-page" method="post">
-            <button class="btn" type="submit">Next Page</button>
-            <input type="hidden" name="search" value=<%=searched_text %> >
-            <input type="hidden" name="result_start" value=<%=(result_start - 10) %> >
-            <input type="hidden" name="direct_results" value=<%=direct_products %> >
-            <input type="hidden" name="auction_results" value=<%=auction_products %> >
 
-        </form>
+    <% if(type == 0){ %>
+
+        <% if(((direct_products) ?  ((auction_products) ?  auction_products.rows.length : 0)+direct_products.rows.length : ((auction_products) ?  auction_products.rows.length : 0)) > (result_start+10)){ %>
+            <form action="http://localhost:3000/results-switch-page" method="post">
+                <button class="btn" type="submit">Next Page</button>
+                <input type="hidden" name="search" value=<%=searched_text %> >
+                <input type="hidden" name="result_start" value=<%= (result_start + 10) %> >
+                <input type="hidden" name="tags_string" value=<%=tags_string %> > 
+            </form>
+        <% } %>
+
+        <% if(result_start >= 10){ %>
+            <form action="http://localhost:3000/results-switch-page" method="post">
+                <button class="btn" type="submit">Prev Page</button>
+                <input type="hidden" name="search" value=<%= searched_text %> >
+                <input type="hidden" name="result_start" value=<%= (result_start - 10) %> >
+                <input type="hidden" name="tags_string" value=<%=tags_string %> > 
+            </form>
+        <% } %>
+    
     <% } %>
 
-    <% if(result_start >= 10){ %>
-        <form action="http://localhost:3000/results-switch-page" method="post">
-            <button class="btn" type="submit">Prev Page</button>
-            <input type="hidden" name="search" value=<%= searched_text %> >
-            <input type="hidden" name="result_start" value=<%= (result_start - 10) %> >
-            <input type="hidden" name="direct_results" value=<%= direct_products.rows %> >
-            <input type="hidden" name="auction_results" value=<%= auction_products %> >
+    <% if(type == 1){ %>
+        <% if(((direct_products) ?  ((auction_products) ?  auction_products.rows.length : 0)+direct_products.rows.length : ((auction_products) ?  auction_products.rows.length : 0)) > (result_start+10)){ %>
+            <form action="http://localhost:3000/view-mysales" method="GET">
+                <button class="btn" type="submit">Next Page</button>
+                <input type="hidden" name="result_start" value=<%= (result_start + 10) %> >
+            </form>
+        <% } %>
 
-        </form>
+        <% if(result_start >= 10){ %>
+            <form action="http://localhost:3000/view-mysales" method="GET">
+                <button class="btn" type="submit">Prev Page</button>
+                <input type="hidden" name="result_start" value=<%= (result_start - 10) %> >
+            </form>
+        <% } %>
+    
     <% } %>
+
+    <% if(type == 1){ %>
+        <% if(((direct_products) ?  ((auction_products) ?  auction_products.rows.length : 0)+direct_products.rows.length : ((auction_products) ?  auction_products.rows.length : 0)) > (result_start+10)){ %>
+            <form action="http://localhost:3000/view-mypurchases" method="GET">
+                <button class="btn" type="submit">Next Page</button>
+                <input type="hidden" name="result_start" value=<%= (result_start + 10) %> >
+            </form>
+        <% } %>
+
+        <% if(result_start >= 10){ %>
+            <form action="http://localhost:3000/view-mypurchases" method="GET">
+                <button class="btn" type="submit">Prev Page</button>
+                <input type="hidden" name="result_start" value=<%= (result_start - 10) %> >
+            </form>
+        <% } %>
+    
+    <% } %>
+    
 
     <script>
         var coll = document.getElementsByClassName("myBtn");
