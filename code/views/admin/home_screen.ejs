@@ -10,6 +10,10 @@
 
     <h1>Home Screen Page</h1>
 
+    <% if (message.length > 0 ) { %>
+        <div class="alert alert-danger" style="color: green;background-color: honeydew;"><%=message%></div>
+      <% } %>
+
     <form class="product-form" action="http://localhost:3000/home-screen" method="POST">
         <div class="form-control">
             <label for="search">Search for an item</label>
