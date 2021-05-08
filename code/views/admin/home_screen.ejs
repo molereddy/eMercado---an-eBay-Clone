@@ -16,11 +16,41 @@
             <input type="text" name="search" id="search" >
         </div>
        
-      
+        <div class="multiselect">
+            <div class="selectBox" onclick="showCheckboxes()">
+              <select>
+                <option>Select all tags</option>
+              </select>
+              <div class="overSelect"></div>
+            </div>
+            <div id="checkboxes">
+              <label for="women">
+                <input type="checkbox" name = "women" id="women" value="women" />Women</label>
+              <label for="clothes">
+                <input type="checkbox" name = "clothes" id="clothes" value="clothes" />Clothes</label>
+              <label for="kids">
+                <input type="checkbox" name = "id" id="kids" value="kids"/>Kids</label>
+            </div>
+        </div>
+        
 
         <button class="btn" type="submit">Search</button>
     </form>
+    <script>
+                var expanded = false;
 
+    function showCheckboxes() {
+        var checkboxes = document.getElementById("checkboxes");
+        if (!expanded) {
+          checkboxes.style.display = "block";
+          expanded = true;
+        } else {
+          checkboxes.style.display = "none";
+          expanded = false;
+        }
+      }
+      </script>
+      
     <form action="http://localhost:3000/add-product" method="GET">
         <button type="submit">Add product</button>
     </form>
@@ -68,6 +98,8 @@
         function closeForm() {
         document.getElementById("myForm").style.display = "none";
         }
+
+        
     </script>
     
       

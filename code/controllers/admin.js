@@ -179,8 +179,6 @@ exports.post_update_balance = (req, res, next) => {
         res.redirect('login-screen');
     } else {
         user.update_balance(req.body.balance);
-        var message = new Message(product_id,seller_id,"Balance updated","Your have added money "+req.body.balance+" at "+get_timestamp(),get_timestamp())
-        message.send_direct_message();
                     
         res.redirect('home-screen');
     }
@@ -194,6 +192,7 @@ exports.post_home_screen_search = (req, res, next) => { // when search button is
 
     // Get a cookie
     var currentID = cookies.get('CurrentID', { signed: true })
+    var tags = [req.body.women,req.body.clothes,req.body.kids];
 
     if (!currentID) {
         res.redirect('login-screen');
@@ -205,15 +204,23 @@ exports.post_home_screen_search = (req, res, next) => { // when search button is
         const search_key = req.body.search;
         const start = 0;
 
+        
+tags = tags.filter(function( element ) {
+    return element !== undefined;
+ });
+
+        var tags_string = tags.join();
+        console.log(tags);
+        console.log(tags_string)
         const search_object = new Search(search_key);
         search_object
-            .get_direct_search_results()
+            .get_direct_search_results(tags_string)
             .then(direct_results => {
 
 
 
                 search_object
-                    .get_auction_search_results()
+                    .get_auction_search_results(tags_string)
                     .then(auction_results => {
 
 
@@ -768,6 +775,10 @@ exports.post_add_product = (req,res,next) => {
         mode = req.body.item_type,
         close_date = req.body.close_date;
 
+    console.log(req.body.women);
+    console.log(req.body.clothes);
+    console.log(req.body.kids);
+    var tags = [req.body.women,req.body.clothes,req.body.kids];
 
 
     if (!currentID) {
@@ -783,6 +794,15 @@ exports.post_add_product = (req,res,next) => {
                     user.add_auction_product(results.rows[0].aitem_id+1,identifier,name,description,price,currentID,quantity,get_timestamp(),close_date+" 23:59:00");
                     var message = new Message(results.rows[0].aitem_id+1,currentID,"New Product Added","You have added a new direct sale product "+name+" at "+get_timestamp(),get_timestamp())
                     message.send_direct_message();
+
+                    var i;
+                    for(i=0;i<tags.length;i++)
+                    {
+                        if(tags[i]!=undefined)
+                        {
+                            user.add_auction_tag(results.rows[0].aitem_id+1,tags[i]);
+                        }
+                    }
                         
                     res.redirect('home-screen');    
 
@@ -798,6 +818,14 @@ exports.post_add_product = (req,res,next) => {
                     .catch(err=> console.log(err));
                     var message = new Message(results.rows[0].ditem_id+1,currentID,"New Product Added","You have added a new direct sale product "+name+" at "+get_timestamp(),get_timestamp())
                     message.send_direct_message();
+                    var i;
+                    for(i=0;i<tags.length;i++)
+                    {
+                        if(tags[i]!=undefined)
+                        {
+                            user.add_direct_tag(results.rows[0].ditem_id+1,tags[i]);
+                        }
+                    }
                     
                         res.redirect('home-screen');    
 

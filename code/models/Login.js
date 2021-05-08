@@ -35,13 +35,14 @@ module.exports = class Login{
     }
 
     add_direct_product(ditem_id,category,name,desc,price,seller_id,quantity)
-    {   console.log(ditem_id);
-        console.log(name);
-        console.log(seller_id);
-        console.log(desc);
-        console.log(quantity);
-        console.log(category);
-        console.log(price);
+    {   //console.log(ditem_id);
+        //console.log(name);
+        //console.log(seller_id);
+        //console.log(desc);
+        //console.log(quantity);
+        //console.log(category);
+        //console.log(price);
+
         return pool.query('INSERT INTO direct_sale_item(ditem_id,identifier,name,description,price,seller_id,status,physical_product,quantity,delivery_factor) values($1,$2,$3,$4,$5,$6,\'open\',true,$7,1.00) ',[ditem_id,category,name,desc,price,seller_id,quantity]);
 
     }
@@ -78,6 +79,16 @@ module.exports = class Login{
     {
         return pool.query('select * from auction_item where best_bidder = $1;',[id]);
     
+    }
+
+    add_direct_tag(ditem_id,tag)
+    {
+        return pool.query('INSERT into direct_sale_item_tags(identifier,tag) values($1,$2)',[ditem_id,tag]);
+    }
+
+    add_auction_tag(aitem_id,tag)
+    {
+        return pool.query('INSERT into auction_item_tags(identifier,tag) values($1,$2)',[aitem_id,tag]);
     }
 
 };
