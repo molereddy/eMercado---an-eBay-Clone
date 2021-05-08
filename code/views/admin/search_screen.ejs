@@ -12,11 +12,34 @@
         <button class="btn" type="submit">Search</button>
     </form> -->
     
-    <form class="example" action="http://localhost:3000/home-screen" method="POST" style="margin:auto;max-width:300px">
+    <!-- <form class="example" action="http://localhost:3000/home-screen" method="POST" style="margin:auto;max-width:300px">
         <input type="text" name="search" id="search" placeholder="Search.." name="search2" style="background-color: white;">
         <button type="submit"><i class="fa fa-search"></i></button>
+    </form> -->
+    <form class="example semicentered" action="http://localhost:3000/home-screen" method="POST" style="margin:auto;max-width: 400px;">
+        <input type="text" name="search" id="search" placeholder="Search.." name="search2" style="background-color: white;">
+        <button type="submit"><i class="fa fa-search"></i></button>
+        <br>
+        <div class="dropdown">
+            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="margin-top: 20px;height: min-content; width: 100px;"><i class="glyphicon glyphicon-list"></i> filters
+    </button>
+            <ul class="dropdown-menu checkbox-menu allow-focus" aria-labelledby="dropdownMenu1">
+                <li><label for="a"><input type="checkbox" name = "a" id="a" value="Clothing" />Clothing</label></li>
+                <li><label for="b"><input type="checkbox" name = "b" id="b" value="Women's Clothing" />Women's Clothing</label></li>
+                <li><label for="c"><input type="checkbox" name = "c" id="c" value="Jewellery" />Jewellery</label></li>
+                <li><label for="d"><input type="checkbox" name = "d" id="d" value="Footwear" />Footware</label></li>
+                <li><label for="e"><input type="checkbox" name = "e" id="e" value="Men's Clothing" />Men's Clothing</label></li>
+                <li><label for="f"><input type="checkbox" name = "f" id="f" value="Automotive"/>Automotive</label></li>
+                <li><label for="g"><input type="checkbox" name = "g" id="g" value="Necklaces" />Necklaces</label></li>
+                <li><label for="h"><input type="checkbox" name = "h" id="h" value="Western Wear" />Western Wear</label></li>
+                <li><label for="i"> <input type="checkbox" name = "i" id="i" value="Beauty and Personal Care"/>Beauty and Personal Care</label></li>
+                <li><label for="j"><input type="checkbox" name = "j" id="j" value="Rings" />Rings</label></li>
+                <li><label for="k"><input type="checkbox" name = "k" id="k" value="Accessories & Spare parts" />Accessories & Spare parts</label></li>
+                <li><label for="l"><input type="checkbox" name = "l" id="l" value="Home Decor & Festive Needs"/>Home Decor & Festive Needs</label></li>
+            </ul>
+        </div>
     </form>
-
+    
     <div class="container">
 
         <hgroup class="mb20">
@@ -103,7 +126,7 @@
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-2">
                         <form action="http://localhost:3000/product-details" method="post">
-                            <button class="btn" type="submit">View Product</button>
+                            <button class="btn btn-primary btn-block product-options" type="submit">View Product</button>
                             <input type="hidden" name="product_id" value=<%=direct_products.rows[i].ditem_id %> >
                             <input type="hidden" name="product_type" value="direct">
 
@@ -155,7 +178,7 @@
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-2">
                         <form action="http://localhost:3000/auction-product-details" method="post">
-                            <button class="btn" type="submit">View Product</button>
+                            <button class="btn btn-primary btn-block product-options" type="submit">View Product</button>
                             <input type="hidden" name="product_id" value=<%=auction_products.rows[i].aitem_id %> >
                             <input type="hidden" name="product_type" value="auction">
 

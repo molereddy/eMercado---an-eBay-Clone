@@ -25,7 +25,7 @@ module.exports = class Login{
 
     
     get_messages(id){
-        return pool.query('(SELECT * from direct_item_messages  where person_id = $1) union (SELECT * from auction_item_messages where person_id = $1)  ',[id]);
+        return pool.query('with message_table as ((SELECT * from direct_item_messages  where person_id = $1) union (SELECT * from auction_item_messages where person_id = $1)) Select * from message_table order by message_time desc',[id]);
     }
 
     add_auction_product(aitem_id,category,name,desc,price,seller_id,quantity,start_time,close_time)

@@ -329,8 +329,10 @@ exports.auction_place_bid = (req,res,next) => {// function to either place a bid
                                                                                         .then(() => {
                         
                                                                                     
-                                                                                    
-                                                                                                res.redirect(307,'/auction-product-details');
+                                                                                            var message = new Message(product_id, currentID, "Bid placed succesfully", "We are glad to inform you that you bid for" + product_name + "placed succesfully. Message sent at " + get_timestamp(), get_timestamp());
+                                                                                            message.send_auction_message();
+                                                                        
+                                                                                            res.redirect(307,'/auction-product-details');
                         
                         
                                                                                         }).catch(err => console.log(err));                                
@@ -361,7 +363,9 @@ exports.auction_place_bid = (req,res,next) => {// function to either place a bid
                                                                     product_object
                                                                         .update_bid(product_bid_limit,product_auto_mode,product_bid_limit)
                                                                         .then(() => {
-
+                                                                            var message = new Message(product_id, currentID, "Bid placed succesfully", "We are glad to inform you that you bid for" + product_name + "placed succesfully. Message sent at " + get_timestamp(), get_timestamp());
+                                                                            message.send_auction_message();
+                                                                        
                                                                             res.redirect(307,'/auction-product-details');
 
                                                                         }).catch(err => console.log(err));
@@ -416,7 +420,9 @@ exports.auction_place_bid = (req,res,next) => {// function to either place a bid
                                                                                                 
                             
                                                                                         
-                                                                                        
+                                                                                                var message = new Message(product_id, currentID, "Bid placed succesfully", "We are glad to inform you that you bid for" + product_name + "placed succesfully. Message sent at " + get_timestamp(), get_timestamp());
+                                                                                                message.send_auction_message();
+                                                                                            
                                                                                                     res.redirect(307,'/auction-product-details');
                             
                             
@@ -492,7 +498,9 @@ exports.auction_place_bid = (req,res,next) => {// function to either place a bid
                                                                                                 console.log("done3");
                         
                                                                                     
-                                                                                    
+                                                                                                var message = new Message(product_id, currentID, "Bid placed succesfully", "We are glad to inform you that you bid for" + product_name + "placed succesfully. Message sent at " + get_timestamp(), get_timestamp());
+                                                                                                message.send_auction_message();
+                                                                                            
                                                                                                 res.redirect(307,'/auction-product-details');
                         
                         
