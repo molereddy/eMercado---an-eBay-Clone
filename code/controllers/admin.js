@@ -203,10 +203,16 @@ exports.post_update_balance = (req, res, next) => {
     if (!currentID) {
         res.redirect('login-screen');
     } else {
+        if(req.body.balance >= 0)
+        {
         user.update_balance(req.body.balance);
 
         req.flash('error', 'Balance Updated successfully');
-
+        }
+        else
+        {
+        req.flash('error','Invalid Amount Entered')
+        }
 
 
 
