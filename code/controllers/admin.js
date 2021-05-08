@@ -239,8 +239,8 @@ exports.post_home_screen_search = (req, res, next) => { // when search button is
         const search_key = req.body.search;
         const start = 0;
 
-        
-        tags = tags.filter(function( element ) {
+
+        tags = tags.filter(function(element) {
             return element !== undefined;
         });
 
@@ -293,16 +293,15 @@ exports.get_view_my_sales = (req, res, next) => { // when search button is press
     if (!currentID) {
         res.redirect('login-screen');
     } else {
-        
+
         var resstart = req.body.result_start;
         var start = 0;
-        if(resstart !== undefined){
+        if (resstart !== undefined) {
             start = parseInt(req.body.result_start);
-        }
-        else{
+        } else {
             start = 0;
         }
-        
+
         const user = new Login(currentEmail);
         user
             .get_direct_search_results_sales(currentID)
@@ -310,28 +309,28 @@ exports.get_view_my_sales = (req, res, next) => { // when search button is press
 
 
 
-            user
-                .get_auction_search_results_sales(currentID)
-                .then(auction_results => {
-
-    
-                res.render('admin/search_screen', {
-                    pageTitle: 'Search Screen',
-                    path: '/search-screen',
-                  
-                    direct_products : direct_results,
-                    auction_products : auction_results,
-                    searched_text: 'My Sales',
-                    result_start: 0,
-                    tags_string: '',
-                    type: 1
-                });
+                user
+                    .get_auction_search_results_sales(currentID)
+                    .then(auction_results => {
 
 
-                        
+                        res.render('admin/search_screen', {
+                            pageTitle: 'Search Screen',
+                            path: '/search-screen',
+
+                            direct_products: direct_results,
+                            auction_products: auction_results,
+                            searched_text: 'My Sales',
+                            result_start: 0,
+                            tags_string: '',
+                            type: 1
+                        });
 
 
-                }).catch(err => console.log(err));
+
+
+
+                    }).catch(err => console.log(err));
 
 
             }).catch(err => console.log(err));
@@ -351,13 +350,12 @@ exports.get_view_my_purchases = (req, res, next) => { // when search button is p
     if (!currentID) {
         res.redirect('login-screen');
     } else {
-        
+
         var resstart = req.body.result_start;
         var start = 0;
-        if(resstart !== undefined){
+        if (resstart !== undefined) {
             start = parseInt(req.body.result_start);
-        }
-        else{
+        } else {
             start = 0;
         }
         const user = new Login(currentEmail);
@@ -367,28 +365,28 @@ exports.get_view_my_purchases = (req, res, next) => { // when search button is p
 
 
 
-            user
-                .get_auction_search_results_purchases(currentID)
-                .then(auction_results => {
-
-    
-                res.render('admin/search_screen', {
-                    pageTitle: 'Search Screen',
-                    path: '/search-screen',
-                  
-                    direct_products : direct_results,
-                    auction_products : auction_results,
-                    searched_text: 'My Purchases',
-                    result_start: start,
-                    tags_string: '',
-                    type: 2
-                });
+                user
+                    .get_auction_search_results_purchases(currentID)
+                    .then(auction_results => {
 
 
-                       
+                        res.render('admin/search_screen', {
+                            pageTitle: 'Search Screen',
+                            path: '/search-screen',
+
+                            direct_products: direct_results,
+                            auction_products: auction_results,
+                            searched_text: 'My Purchases',
+                            result_start: start,
+                            tags_string: '',
+                            type: 2
+                        });
 
 
-                }).catch(err => console.log(err));
+
+
+
+                    }).catch(err => console.log(err));
 
 
             }).catch(err => console.log(err));
@@ -404,7 +402,7 @@ exports.post_results_switch_page = (req, res, next) => { // when search button i
 
     // Get a cookie
     var currentID = cookies.get('CurrentID', { signed: true })
-    // var tags = [req.body.a,req.body.b,req.body.c,req.body.d,req.body.e,req.body.f,req.body.g,req.body.h,req.body.i,req.body.j,req.body.k,req.body.l];
+        // var tags = [req.body.a,req.body.b,req.body.c,req.body.d,req.body.e,req.body.f,req.body.g,req.body.h,req.body.i,req.body.j,req.body.k,req.body.l];
 
     if (!currentID) {
         res.redirect('login-screen');
@@ -424,13 +422,12 @@ exports.post_results_switch_page = (req, res, next) => { // when search button i
         //var tags_string = "'" + tags.join("','") + "'";
         // var tags_string = tags.join(" , ");
         const tags_string = req.body.tags_string;
-        if(tags_string==""){
+        if (tags_string == "") {
             var tags = [];
-        }
-        else{
+        } else {
             var tags = tags_string.split(" , ");
         }
-        
+
 
         console.log(tags);
         console.log(tags_string);
@@ -951,7 +948,7 @@ exports.post_add_product = (req, res, next) => {
                     user.add_auction_product(results.rows[0].aitem_id + 1, identifier, name, description, price, currentID, quantity, get_timestamp(), close_date + " 23:59:00");
                     console.log("added auction product")
                     var message = new Message(results.rows[0].aitem_id + 1, currentID, "New Product Added", "You have added a new direct sale product " + name + " at " + get_timestamp(), get_timestamp())
-                    message.send__message();
+                    message.send_auction_message();
 
                     var i;
                     for (i = 0; i < tags.length; i++) {

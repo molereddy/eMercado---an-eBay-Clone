@@ -13,7 +13,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="../../public/css/main.css">
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -54,22 +53,71 @@
             box-sizing: border-box;
         }
         
-        html {
-            font-family: sans-serif;
-            line-height: 1.15;
-            -webkit-text-size-adjust: 100%;
-            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        form.example input[type=text] {
+            padding: 10px;
+            font-size: 17px;
+            border: 1px solid grey;
+            float: left;
+            width: 80%;
+            background: #f1f1f1;
+        }
+        /* Style the submit button */
+        
+        form.example button {
+            float: left;
+            width: 20%;
+            padding: 10px;
+            background: #2196F3;
+            color: white;
+            font-size: 17px;
+            border: 1px solid grey;
+            border-left: none;
+            /* Prevent double borders */
+            cursor: pointer;
         }
         
-        body {
+        form.example button:hover {
+            background: #0b7dda;
+        }
+        /* Clear floats */
+        
+        form.example::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+        
+        .checkbox-menu li label {
+            display: block;
+            padding: 3px 10px;
+            clear: both;
+            font-weight: normal;
+            line-height: 1.42857143;
+            color: #333;
+            white-space: nowrap;
             margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-            font-size: 1rem;
-            font-weight: 400;
-            line-height: 1.5;
-            color: #212529;
-            text-align: left;
-            background-color: #fff;
+            transition: background-color .4s ease;
+        }
+        
+        .checkbox-menu li input {
+            margin: 0px 5px;
+            top: 2px;
+            position: relative;
+        }
+        
+        .checkbox-menu li.active label {
+            background-color: #cbcbff;
+            font-weight: bold;
+        }
+        
+        .checkbox-menu li label:hover,
+        .checkbox-menu li label:focus {
+            background-color: #f5f5f5;
+        }
+        
+        .checkbox-menu li.active label:hover,
+        .checkbox-menu li.active label:focus {
+            background-color: #b8b8ff;
         }
         
         #map {
@@ -79,8 +127,8 @@
         
         .product-options {
             padding: 1rem;
-            width: 20rem;
-            font-size: medium;
+            width: 25rem;
+            font-size: small;
             margin: auto;
         }
         
@@ -339,8 +387,9 @@
         .col-25 {
             float: left;
             width: 25%;
-            margin-top: 6px;
-            font-size: x-large;
+            margin-top: 1px;
+            font-size: large;
+            font-weight: lighter;
         }
         /* Floating column for inputs: 75% width */
         
@@ -355,37 +404,6 @@
             content: "";
             display: table;
             clear: both;
-        }
-        
-        form.example input[type=text] {
-            padding: 10px;
-            font-size: 17px;
-            border: 1px solid grey;
-            float: left;
-            width: 80%;
-            background: #f1f1f1;
-        }
-        
-        form.example button {
-            float: left;
-            width: 20%;
-            padding: 10px;
-            background: #086fe6;
-            color: white;
-            font-size: 17px;
-            border: 1px solid grey;
-            border-left: none;
-            cursor: pointer;
-        }
-        
-        form.example button:hover {
-            background: #0b7dda;
-        }
-        
-        form.example::after {
-            content: "";
-            clear: both;
-            display: table;
         }
         /* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other */
         
