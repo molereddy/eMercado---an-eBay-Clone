@@ -1,39 +1,14 @@
 <%- include('../includes/head.ejs') %>
-<link rel="stylesheet" href="/css/forms.css">
-<link rel="stylesheet" href="/css/product.css">
-</head>
 
-<body>
-
-
-<main>
-
-    <%var latitude = product_lat ;%>
-    <%var longitude = product_lng ;%>
-        <div id="map" m class="vertical-center"></div>
-        <script>
-            function initMap() {
-                var place = {
-                    lat: <%=latitude%>,
-                    lng: <%=longitude%>
-                };
-                var map = new google.maps.Map(document.getElementById('map'), {
-                    zoom: 7,
-                    center: place
-                });
-                var marker = new google.maps.Marker({
-                    position: place,
-                    map: map
-                });
-            }
-        </script>
-        <script async defer src="https://maps.googleapis.com/maps/api/js?key=
-AIzaSyB2bXKNDezDf6YNVc-SauobynNHPo4RJb8&callback=initMap">
-        </script>
+    <div id="root"></div>
+    <div style="width: 100%;">
+        <div style="float:left; width: 50%">
 
 
+            <h1> <b style="font-size: xx-large;">Product Description</b></h1>
+            <br>
 
-    <h1>Direct Sale Product Details Page</h1>
+
 
 
 
@@ -84,87 +59,85 @@ AIzaSyB2bXKNDezDf6YNVc-SauobynNHPo4RJb8&callback=initMap">
     <h3> <b>total cost:&nbsp;</b>
         <tt>&dollar;<%=product_amount_to_pay%></tt>
     </h3>
+           
 
 
+        </div>
+        <div style="float:right; width: 50%;">
+            <%var latitude = product_lat ;%>
+                <%var longitude = product_lng ;%>
+                    <div id="map" m class="vertical-center"></div>
+                    <script>
+                        function initMap() {
+                            var place = {
+                                lat: <%=latitude%>,
+                                lng: <%=longitude%>
+                            };
+                            var map = new google.maps.Map(document.getElementById('map'), {
+                                zoom: 7,
+                                center: place
+                            });
+                            var marker = new google.maps.Marker({
+                                position: place,
+                                map: map
+                            });
+                        }
+                    </script>
+                    <script async defer src="https://maps.googleapis.com/maps/api/js?key=
+            AIzaSyB2bXKNDezDf6YNVc-SauobynNHPo4RJb8&callback=initMap">
+                    </script>
+                    <br>
+                    <div class="row">
+                        <% if (product_viewer == "buyer")  {%>
+                            <% if (product_status == "open")  {%>
+                                <div class="semicentered">
+                                    <form action="http://localhost:3000/product-details-buy" method="post">
+                                        <div class="form-group">
+                                                                              
+                                            <input type="hidden" name="product_id" value=<%=product_id %>>
+                                            <input type="hidden" name="product_type" value=<%=product_type %>>
+                                            <button type="submit" class="btn btn-primary btn-block product-options">place order</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <br> <br>
+                                <% } %>
+                                    <% } %>
 
-    <% if (product_viewer == "buyer")  {%>
+                    </div>
+                    <br>
+                    <div class="row" style="margin-top: 50px;"></div>
+                    <% if (product_status == "out-for-delivery" && (product_viewer == "buyer"))  {%>
+                        <form action="http://localhost:3000/product-details-confirm-delivery" method="post">
+                            <button type="submit" class="btn btn-primary btn-block product-options">confirm delivery</button>
+                            <input type="hidden" name="product_id" value= <%=product_id %>>
+                            <input type="hidden" name="product_type" value= <%=product_type %>>
+                        </form>
+                        <br>
+                        <% } %>
 
-            <% if (product_status == "open")  {%>
-
-            <form action="http://localhost:3000/product-details-buy" method="post">
-                <button type="submit">Buy</button>
-                <input type="hidden" name="product_id" value= <%=product_id %>>
-                <input type="hidden" name="product_type" value= <%=product_type %>>
+                    <% if (product_viewer == "seller")  {%>
+                        <% if (product_status == "open")  {%>
+                            <form action="http://localhost:3000/product-details-delete-product" method="post">
+                                <button type="submit" class="btn btn-primary btn-block product-options">remove product from sale</button>
+                                <input type="hidden" name="product_id" value= <%=product_id %>>
+                                <input type="hidden" name="product_type" value= <%=product_type %>>
+                            </form>
                         
-            </form>
 
-            <% } %>
+                            <br>
+                        <% } %>
 
-
-            <% if (product_status == "out-for-delivery")  {%>
-
-                <form action="http://localhost:3000/product-details-confirm-delivery" method="post">
-                    <button type="submit">Confirm Delivery</button>
-                    <input type="hidden" name="product_id" value= <%=product_id %>>
-                    <input type="hidden" name="product_type" value= <%=product_type %>>
-                            
-                </form>
-            
-                <% } %>
-
-
-                
-
-    <% } %>
-
-
-
-
-
-
-    <% if (product_viewer == "seller")  {%>
-
-
-        <% if (product_status == "open")  {%>
-
-            <form action="http://localhost:3000/product-details-delete-product" method="post">
-                <button type="submit">Delete Product</button>
-                <input type="hidden" name="product_id" value= <%=product_id %>>
-                <input type="hidden" name="product_type" value= <%=product_type %>>
-                        
-            </form>
-
-            <% } %>
-
-            <% if (product_status != "open"  && product_status!= "delivered" &&  product_status!= "out-for-delivery" )  {%>
-
-            <form action="http://localhost:3000/product-details-update-status" method="post">
-                <button type="submit">Update Status to <%=product_new_status%> </button>
-                <input type="hidden" name="product_id" value= <%=product_id %>>
-                <input type="hidden" name="product_type" value= <%=product_type %>>
-                        
-            </form>
-
-            <% } %>
-
-
-
-
-       
-
-
-    <% } %>
-
-
-
-
-    
-
-
-    <form action="http://localhost:3000/logout" method="post">
-        <button type="submit">Logout</button>
-    </form>
-
-   
-</main>
-<%- include('../includes/end.ejs') %>
+                        <% if (product_status != "open" && product_status!= "delivered" && product_status!= "out-for-delivery")  {%>
+                            <form action="http://localhost:3000/product-details-update-status" method="post">
+                                <button type="submit" class="btn btn-primary btn-block product-options">update status to &nbsp;<u><i><%=product_new_status%></i></u> </button>
+                                <input type="hidden" name="product_id" value= <%=product_id %>>
+                                <input type="hidden" name="product_type" value= <%=product_type %>>
+                            </form>
+                            <br>
+                        <% } %>
+                    <% } %>
+        </div>
+    </div>
+    <div style="clear:both"></div>
+    <%- include('../includes/end.ejs') %>

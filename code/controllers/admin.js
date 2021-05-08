@@ -483,7 +483,8 @@ exports.get_product_details = (req, res, next) => { // when a direct sale produc
                                         product_description : direct_results.rows[0].description,
                                         product_name : direct_results.rows[0].name,
                                         product_amount_to_pay : product_amount_to_pay,
-                                        product_seller : product_seller
+                                        product_seller : product_seller,
+                                        current_id : currentID 
 
                                     });
 
