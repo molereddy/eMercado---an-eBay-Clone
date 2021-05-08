@@ -82,8 +82,8 @@
                     <% if (product_status == "out-for-delivery" && (product_viewer == "buyer"))  {%>
                         <form action="http://localhost:3000/product-details-confirm-delivery" method="post">
                             <button type="submit" class="btn btn-primary btn-block product-options">confirm delivery</button>
-                            <input type="hidden" name="product_id" value=< %=product_id %>>
-                            <input type="hidden" name="product_type" value=< %=product_type %>>
+                            <input type="hidden" name="product_id" value=<%=product_id %>>
+                            <input type="hidden" name="product_type" value=<%=product_type %>>
                         </form>
                         <br>
                         <% } %>
@@ -92,8 +92,8 @@
                                 <% if (product_status == "open")  {%>
                                     <form action="http://localhost:3000/product-details-delete-product" method="post">
                                         <button type="submit" class="btn btn-primary btn-block product-options">remove product from sale</button>
-                                        <input type="hidden" name="product_id" value=< %=product_id %>>
-                                        <input type="hidden" name="product_type" value=< %=product_type %>>
+                                        <input type="hidden" name="product_id" value=<%=product_id %>>
+                                        <input type="hidden" name="product_type" value=<%=product_type %>>
                                     </form>
 
 
@@ -103,8 +103,8 @@
                                         <% if (product_status != "open" && product_status!= "delivered" && product_status!= "out-for-delivery")  {%>
                                             <form action="http://localhost:3000/product-details-update-status" method="post">
                                                 <button type="submit" class="btn btn-primary btn-block product-options">update status to &nbsp;<u><i><%=product_new_status%></i></u> </button>
-                                                <input type="hidden" name="product_id" value=< %=product_id %>>
-                                                <input type="hidden" name="product_type" value=< %=product_type %>>
+                                                <input type="hidden" name="product_id" value=<%=product_id %>>
+                                                <input type="hidden" name="product_type" value=<%=product_type %>>
                                             </form>
                                             <br>
                                             <% } %>
