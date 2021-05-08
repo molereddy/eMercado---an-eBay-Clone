@@ -62,11 +62,13 @@ exports.auction_get_product_details = (req,res,next) => {// auction item product
                         product_auto_mode = 'false';
 
                         product_bid_limit = 0;
+                        product_bid_present = 0;
 
                         if(your_bid_results.rows.length!=0){// if a bid is present the details are fetched
                             product_your_bid = your_bid_results.rows[0].bid_value
                             product_auto_mode = your_bid_results.rows[0].auto_mode
                             product_bid_limit = your_bid_results.rows[0].bid_limit
+                            product_bid_present = 1;
     
                         }
 
@@ -97,6 +99,14 @@ exports.auction_get_product_details = (req,res,next) => {// auction item product
                                     product_delivery_cost = Math.round(product_distance*auction_results.rows[0].delivery_factor);//rounded off
 
 
+                                   
+                                    product_amount_to_pay = product_your_bid + product_delivery_cost;
+
+      
+                                   
+
+
+
         
 
                                     res.render('admin/auction_product_details', {
@@ -122,7 +132,12 @@ exports.auction_get_product_details = (req,res,next) => {// auction item product
                                         product_seller  : auction_results.rows[0].seller_id,
                                         product_new_status : product_new_status,
                                         product_distance  : product_distance,
-                                        product_delivery_cost : product_delivery_cost
+                                        product_delivery_cost : product_delivery_cost,
+                                        message : req.flash('error'),
+                                        product_description : auction_results.rows[0].description,
+                                        product_name : auction_results.rows[0].name,
+                                        product_amount_to_pay : product_amount_to_pay,
+                                        product_bid_present : product_bid_present
                                         
 
                                     });
@@ -509,21 +524,52 @@ exports.auction_place_bid = (req,res,next) => {// function to either place a bid
                                             }).catch(err => console.log(err));
 
                                         }   
-                                        else if( product_bid_limit<product_your_bid){
+                                        else if( product_bid_limit<product_your_bid && (product_auto_mode).toString().replace(/\s/g, '') == 'true'){
 
                                             console.log("bid limit cannot be less than than your bid");
+                                            req.flash('error', 'Bid limit cannot be less than than your bid');
+                                        
+                                            res.redirect(307,'/auction-product-details');
+
+
+                                        }
+                                        else if( new_on_hold<old_on_hold && (your_bid_results.rows[0].auto_mode).toString().replace(/\s/g, '') == 'true' && (product_auto_mode).toString().replace(/\s/g, '') == 'false'){
+
+                                            console.log("You cannot reduce the amount on hold when you change from auto mode to simple mode");
+                                            req.flash('error', 'You cannot reduce the amount on hold when you change from auto mode to simple mode');
+                                        
+                                            res.redirect(307,'/auction-product-details');
+
+
+                                        }
+                                        else if( new_on_hold<old_on_hold && product_bid_limit<your_bid_results.rows[0].bid_limit && (your_bid_results.rows[0].auto_mode).toString().replace(/\s/g, '') == 'true' && (product_auto_mode).toString().replace(/\s/g, '') == 'true'){
+
+                                            console.log("You cannot reduce your bid limit");
+                                            req.flash('error', 'You cannot reduce your bid limit');
+                                        
+                                            res.redirect(307,'/auction-product-details');
 
 
                                         }
                                         else if( new_on_hold<old_on_hold || product_your_bid<previous_bid_value){
 
+                                            // console.log(new_on_hold)
+                                            // console.log(old_on_hold)
+
+
                                             console.log("Cannot reduce your bid");
+                                            req.flash('error', 'Cannot reduce your bid');
+                                        
+                                            res.redirect(307,'/auction-product-details');
 
 
                                         }
                                         else if(product_your_bid < auction_results.rows[0].price){
 
                                             console.log("Bid cannot be less than the base price of the item");
+                                            req.flash('error', 'Bid cannot be less than the base price of the item');
+                                        
+                                            res.redirect(307,'/auction-product-details');
 
 
                                         }
@@ -531,8 +577,17 @@ exports.auction_place_bid = (req,res,next) => {// function to either place a bid
                                         
 
                                         else{
+
+                                            
                                             console.log("Insufficient funds");
                                             //print insufficient funds here
+
+                                            req.flash('error', 'Insufficient funds');
+                                        
+                                            res.redirect(307,'/auction-product-details');
+
+                                          
+
                                         }
         
                                     }).catch(err => console.log(err));
@@ -586,16 +641,9 @@ exports.auction_close_bidding = (req,res,next) => {
 
                 console.log(auction_results.rows[0].best_bid);
 
-                if(auction_results.rows[0].best_bid == 'NULL'){
+                if(auction_results.rows[0].best_bid){
 
 
-                    console.log('No bid is present');
-
-                }
-                else{
-
-
-                    
 
                     product_object
                         .update_status_to_sold()
@@ -651,6 +699,20 @@ exports.auction_close_bidding = (req,res,next) => {
 
 
                 }
+                else{
+
+                    console.log('No bid is present');
+
+
+                    req.flash('error', 'No bid is present');
+                                        
+                    res.redirect(307,'/auction-product-details');
+
+
+                    
+
+                 }
+            
 
 
                 product_object
@@ -689,6 +751,17 @@ exports.auction_delete_product = (req,res,next) => {
 
         console.log(product_id);
         console.log(product_type);
+        
+
+        delivery_factor = 0 //initialisation
+        seller_id = 0       //initialisation
+
+        if(auction_results.rows.length!=0){
+
+            delivery_factor = auction_results.rows[0].delivery_factor
+    
+            seller_id = auction_results.rows[0].seller_id
+        }
 
 
         const product_object = new Auction_Product( product_id , product_type, currentID );
@@ -701,11 +774,11 @@ exports.auction_delete_product = (req,res,next) => {
                     .then(() => {
 
                         product_object
-                            .update_on_hold_balance_for_rejected_buyers_auto(-1,auction_results.rows[0].delivery_factor,auction_results.rows[0].seller_id)// here -1 is placed since no bid is accepted
+                            .update_on_hold_balance_for_rejected_buyers_auto(-1,delivery_factor,seller_id)// here -1 is placed since no bid is accepted
                             .then(() => {//////////
 
                                 product_object
-                                .update_on_hold_balance_for_rejected_buyers_non_auto(-1,auction_results.rows[0].delivery_factor,auction_results.rows[0].seller_id)// here -1 is placed since no bid is accepted
+                                .update_on_hold_balance_for_rejected_buyers_non_auto(-1,delivery_factor,seller_id)// here -1 is placed since no bid is accepted
                                 .then(() => {//////////
     
     

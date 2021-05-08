@@ -11,6 +11,18 @@ module.exports = class Product{
     //add_direct_item(){
       //   return pool.query('INSERT INTO products(title, price, image, quantity) VALUES ($1, $2, $3, $4);', [this.title, this.price, this.image, this.quantity]);
     //}
+    
+    get_location(user_id) {
+        return pool.query('SELECT ST_X(location::geometry) as  X,ST_Y(location::geometry) as Y FROM person where person.person_id = $1', [user_id]);
+
+    }
+    
+    get_distance(buyer_id, seller_id) {
+        return pool.query('SELECT ST_DistanceSphere(geometry(a.location), geometry(b.location)) as distance FROM person a, person b where a.person_id = $1 and b.person_id = $2', [buyer_id, seller_id]);
+
+
+    }
+
 
     update_direct_buyer(id){
         return pool.query('update direct_sale_item set buyer_id = $1 where ditem_id = $2',[id,this.product_id]);
