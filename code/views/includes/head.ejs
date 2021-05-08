@@ -9,6 +9,7 @@
     <title style="font-family: 'Lucida Sans Typewriter', 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;">
         <%= pageTitle %>
     </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="../../public/css/main.css">
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
@@ -170,7 +171,7 @@
             transform: translate(-50%, 0%);
             text-align: center;
         }
-
+        
         .vertical-center {
             text-align: center;
             margin: auto;
@@ -232,6 +233,117 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
+        }
+        /* Style inputs, select elements and textareas */
+        
+        input[type=text],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            resize: vertical;
+        }
+        /* Style the label to display next to the inputs */
+        
+        label {
+            padding: 12px 12px 12px 0;
+            display: inline-block;
+        }
+        /* Style the submit button */
+        
+        input[type=submit] {
+            background-color: #04AA6D;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            float: right;
+        }
+        /* Style the container */
+        
+        .container {
+            border-radius: 5px;
+            background-color: #f2f2f2;
+            padding: 20px;
+        }
+        /* Floating column for labels: 25% width */
+        
+        .col-20 {
+            float: left;
+            width: 20%;
+            margin-top: 6px;
+        }
+        
+        .col-15 {
+            float: left;
+            width: 15%;
+            /* padding-top: 3px; */
+        }
+        
+        .col-25 {
+            float: left;
+            width: 25%;
+            margin-top: 6px;
+        }
+        /* Floating column for inputs: 75% width */
+        
+        .col-75 {
+            float: left;
+            width: 75%;
+            margin-top: 6px;
+        }
+        /* Clear floats after the columns */
+        
+        .row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        form.example input[type=text] {
+        padding: 10px;
+        font-size: 17px;
+        border: 1px solid grey;
+        float: left;
+        width: 80%;
+        background: #f1f1f1;
+        }
+
+        form.example button {
+        float: left;
+        width: 20%;
+        padding: 10px;
+        background: #086fe6;
+        color: white;
+        font-size: 17px;
+        border: 1px solid grey;
+        border-left: none;
+        cursor: pointer;
+        }
+
+        form.example button:hover {
+        background: #0b7dda;
+        }
+
+        form.example::after {
+        content: "";
+        clear: both;
+        display: table;
+        }
+
+        /* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other */
+        
+        @media screen and (max-width: 600px) {
+            .col-25,
+            .col-75,
+            input[type=submit] {
+                width: 100%;
+                margin-top: 0;
+            }
         }
     </style>
 </head>

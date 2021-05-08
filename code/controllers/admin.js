@@ -791,8 +791,11 @@ exports.post_add_product = (req,res,next) => {
             user
                 .get_new_aitem_id()
                 .then(results => {
+                    console.log("trying to add auction product")
                     user.add_auction_product(results.rows[0].aitem_id+1,identifier,name,description,price,currentID,quantity,get_timestamp(),close_date+" 23:59:00");
+                    console.log("added auction product")
                     var message = new Message(results.rows[0].aitem_id+1,currentID,"New Product Added","You have added a new direct sale product "+name+" at "+get_timestamp(),get_timestamp())
+<<<<<<< HEAD
                     message.send_direct_message();
 
                     var i;
@@ -804,6 +807,11 @@ exports.post_add_product = (req,res,next) => {
                         }
                     }
                         
+=======
+                    console.log("trying to send au msg")
+                    message.send_auction_message();
+                    console.log("sent au msg")
+>>>>>>> c32a401980e81cbfaebe172421b88717039c26cb
                     res.redirect('home-screen');    
 
                 }).catch(err => console.log(err));

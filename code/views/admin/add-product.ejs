@@ -4,6 +4,7 @@
         <div class="row">
             <div class="col-25"><label for="name">Name of your product</label></div>
             <div class="col-75"><input type="text" id="name" name="name" placeholder="product name.." required="required"></div>
+<<<<<<< HEAD
         </div>
         <div class="row">
             <div class="col-25"><label for="category">Add product tags here, separated by spaces</label></div>
@@ -76,4 +77,45 @@
     </script>
     
     
+=======
+        </div>
+        <div class="row">
+            <div class="col-25"><label for="category">Add product tags here, separated by spaces</label></div>
+            <div class="col-75"><input type="text" id="category" name="category" placeholder="item tags your product falls under.."></div>
+        </div>
+        <div class="row">
+            <div class="col-25"><label for="description">Add product description</label></div>
+            <div class="col-75">
+                <textarea type="text" id="description" name="description" style="height:200px"></textarea>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 20px;">
+            <div class="col-25"><label for="price">Add price, quantity and sale type</label></div>
+            <div class="col-20">
+                <input type="number" id="Price" name="price" required="required" style="height: 30px;" placeholder="in dollars">
+            </div>
+            &nbsp;
+            <div class="col-20">
+                <input type="quantity" name="quantity" id="quantity" required="required" style="height: 30px;">
+            </div>
+            &nbsp;
+            <div class="col-15">
+                <select name="item_type" id="item_type" style="height: 50px;">
+                    <option value="auction">auctioning</option>
+                    <option value="direct_sale" selected>simple sale</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-25"><label for="close_date">closing time</label></div>
+            <div class="col-75">
+                <input type="date" id="close_date" name="close_date">
+            </div>
+        </div>
+        <div class="row">
+            <button class="btn btn-primary btn-block product-options" type="submit">Upload</button>
+        </div>
+    </form>
+
+>>>>>>> c32a401980e81cbfaebe172421b88717039c26cb
     <%- include('../includes/end.ejs') %>
