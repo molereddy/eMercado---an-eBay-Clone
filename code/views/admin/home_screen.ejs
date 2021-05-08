@@ -10,7 +10,6 @@
 
     <h1>Home Screen Page</h1>
 
-<<<<<<< HEAD
     <form class="product-form" action="http://localhost:3000/home-screen" method="POST">
         <div class="form-control">
             <label for="search">Search for an item</label>
@@ -18,29 +17,43 @@
         </div>
        
         <div class="multiselect">
-            <div class="selectBox" onclick="showCheckboxes()">
-              <select>
-                <option>Select all tags</option>
-              </select>
-              <div class="overSelect"></div>
+          <div class="selectBox" onclick="showCheckboxes()">
+            <select>
+              <option>Select all tags</option>
+            </select>
+            <div class="overSelect"></div>
+          </div>
+          <div id="checkboxes">
+            <label for="a">
+              <input type="checkbox" name = "a" id="a" value="Clothing" />Clothing</label>
+            <label for="b">
+              <input type="checkbox" name = "b" id="b" value="Women's Clothing" />Women's Clothing</label>
+            <label for="c">
+              <input type="checkbox" name = "c" id="c" value="Jewellery"/>Jewellery</label>
+            <label for="d">
+              <input type="checkbox" name = "d" id="d" value="Footwear" />Footware</label>
+            <label for="e">
+              <input type="checkbox" name = "e" id="e" value="Men's Clothing" />Men's Clothing</label>
+            <label for="f">
+              <input type="checkbox" name = "f" id="f" value="Automotive"/>Automotive</label>
+            <label for="g">
+              <input type="checkbox" name = "g" id="g" value="Necklaces" />Necklaces</label>
+            <label for="h">
+              <input type="checkbox" name = "h" id="h" value="Western Wear" />Western Wear</label>
+            <label for="i">
+              <input type="checkbox" name = "i" id="i" value="Beauty and Personal Care"/>Beauty and Personal Care</label>
+            <label for="j">
+              <input type="checkbox" name = "j" id="j" value="Rings" />Rings</label>
+            <label for="k">
+              <input type="checkbox" name = "k" id="k" value="Accessories & Spare parts" />Accessories & Spare parts</label>
+            <label for="l">
+              <input type="checkbox" name = "l" id="l" value="Home Decor & Festive Needs"/>Home Decor & Festive Needs</label>
+              
+          
             </div>
-            <div id="checkboxes">
-              <label for="women">
-                <input type="checkbox" name = "women" id="women" value="women" />Women</label>
-              <label for="clothes">
-                <input type="checkbox" name = "clothes" id="clothes" value="clothes" />Clothes</label>
-              <label for="kids">
-                <input type="checkbox" name = "id" id="kids" value="kids"/>Kids</label>
-            </div>
-        </div>
-        
-
+      </div>
+      
         <button class="btn" type="submit">Search</button>
-=======
-    <form class="example" action="http://localhost:3000/home-screen" method="POST" style="margin:auto;max-width:300px">
-        <input type="text" name="search" id="search" placeholder="Search.." name="search2">
-        <button type="submit"><i class="fa fa-search"></i></button>
->>>>>>> c32a401980e81cbfaebe172421b88717039c26cb
     </form>
     <script>
                 var expanded = false;

@@ -30,7 +30,7 @@ module.exports = class Login{
 
     add_auction_product(aitem_id,category,name,desc,price,seller_id,quantity,start_time,close_time)
     {
-        return pool.query('Insert into auction_item(aitem_id,identifier,name,description,price,seller_id,status,physical_product,quantity,delivery_factor,start_time,close_time) values($1,$2,$3,$4,$5,$6,\'open\',true,$7,1,$8,$9);',[aitem_id,category,name,desc,price,seller_id,quantity,start_time,close_time]);
+        return pool.query('Insert into auction_item(aitem_id,name,description,price,seller_id,status,physical_product,quantity,delivery_factor,start_time,close_time) values($1,$2,$3,$4,$5,\'open\',true,$6,1,$7,$8);',[aitem_id,name,desc,price,seller_id,quantity,start_time,close_time]);
 
     }
 
@@ -43,7 +43,7 @@ module.exports = class Login{
         //console.log(category);
         //console.log(price);
 
-        return pool.query('INSERT INTO direct_sale_item(ditem_id,identifier,name,description,price,seller_id,status,physical_product,quantity,delivery_factor) values($1,$2,$3,$4,$5,$6,\'open\',true,$7,1.00) ',[ditem_id,category,name,desc,price,seller_id,quantity]);
+        return pool.query('INSERT INTO direct_sale_item(ditem_id,name,description,price,seller_id,status,physical_product,quantity,delivery_factor) values($1,$2,$3,$4,$5,\'open\',true,$6,1.00) ',[ditem_id,name,desc,price,seller_id,quantity]);
 
     }
 
