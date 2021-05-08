@@ -48,10 +48,10 @@
 
 
                             <h4> <b>sale started at:&nbsp;</b>
-                                <tt style="font-size:large;"><%=product_sale_start_time%></tt>
+                                <tt style="font-size:medium;"><%=product_sale_start_time%></tt>
                             </h4>
                             <h4> <b>sale ends at:&nbsp;</b>
-                                <tt style="font-size:large;"><%=product_sale_end_time%></tt>
+                                <tt style="font-size:medium;"><%=product_sale_end_time%></tt>
                             </h4>
                             <h4> <b>delivery distance:&nbsp;</b>
                                 <tt><%=product_distance%> km</tt>
@@ -59,7 +59,9 @@
                             <h4> <b>delivery charges:&nbsp;</b>
                                 <tt>&dollar;<%=product_delivery_cost%></tt>
                             </h4>
-
+                            <h4> <b>base price with delivery:&nbsp;</b>
+                                <tt>&dollar;<%=product_delivery_cost+product_base_price%></tt>
+                            </h4>
                             <% if (product_bid_present == 1) { %>
 
                                 <h4> <b>total cost:&nbsp;</b>
@@ -110,10 +112,7 @@
 
                                             <div style="display:flex; flex-direction: row">
                                                 <label for="auto_mode">Mode of bidding:&nbsp;  </label><br>
-
-                                                <select name="auto_mode" id="auto_mode">
-
-                                            
+                                                <select name="auto_mode" id="auto_mode" style="height: 60px;">
                                             <option value="false" > Simple bidding</option>
                                             <option value="true" >Auto bidding</option>
 
