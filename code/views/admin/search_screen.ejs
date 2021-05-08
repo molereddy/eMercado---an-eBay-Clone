@@ -11,7 +11,7 @@
 
         <button class="btn" type="submit">Search</button>
     </form> -->
-
+    
     <form class="example" action="http://localhost:3000/home-screen" method="POST" style="margin:auto;max-width:300px">
         <input type="text" name="search" id="search" placeholder="Search.." name="search2">
         <button type="submit"><i class="fa fa-search"></i></button>
@@ -24,35 +24,37 @@
             <h2 class="lead">
                 <strong class="text-danger">
                     <%= (direct_products) ?  ((auction_products) ?  auction_products.rows.length : 0)+direct_products.rows.length : ((auction_products) ?  auction_products.rows[i].quantity : 0) %>
-                </strong> results were found for
+                </strong> 
+                results were found for 
                 <strong class="text-danger">
                     <%= (searched_text) ?  searched_text : '' %>
                 </strong>
             </h2>
             <h2 class="lead">
                 <% if(((direct_products) ?  ((auction_products) ?  auction_products.rows.length : 0)+direct_products.rows.length : ((auction_products) ?  auction_products.rows[i].quantity : 0)) > result_start){ %>
-                    Showing
+                    Showing 
                     <strong class="text-danger">
                         <%= ((result_start) ? result_start : 0)+1 %>
-                    </strong> to
+                    </strong> 
+                    to
                     <% if(((direct_products) ?  ((auction_products) ?  auction_products.rows.length : 0)+direct_products.rows.length : ((auction_products) ?  auction_products.rows[i].quantity : 0)) >= (result_start+10)){ %>
                         <strong class="text-danger">
                             <%= ((result_start) ? result_start : 0)+10 %>
                         </strong>
-                        <% } else{ %>
-                            <strong class="text-danger">
+                    <% } else{ %>
+                        <strong class="text-danger">
                             <%= ((direct_products) ?  ((auction_products) ?  auction_products.rows.length : 0)+direct_products.rows.length : ((auction_products) ?  auction_products.rows[i].quantity : 0)) %>
                         </strong>
-                            <% } %>
-                                results for
-                                <strong class="text-danger">
+                    <% } %>
+                    results for 
+                    <strong class="text-danger">
                         <%= (searched_text) ?  searched_text : '' %>
                     </strong>
-                                <% } else{ %>
-                                    <strong class="text-danger">
+                <% } else{ %>
+                    <strong class="text-danger">
                         No results to display. Try something else.
                     </strong>
-                                    <% } %>
+                <% } %>
             </h2>
         </hgroup>
 
@@ -90,14 +92,14 @@
                                 </span>
                                 <span class="myBtn collapsible">... Read more</span>
                             </h3>
-                            <% } else{ %>
-                                <h3>
-                                    <%= (direct_products) ?  direct_products.rows[i].description.substring(0,200) : '' %>
-                                </h3>
-                                <% } %>
+                        <% } else{ %> 
+                            <h3>
+                                <%= (direct_products) ?  direct_products.rows[i].description.substring(0,200) : '' %>
+                            </h3>
+                        <% } %>
                     </header>
                     <div class="col-xs-12 col-sm-12 col-md-1">
-
+                        
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-2">
                         <form action="http://localhost:3000/product-details" method="post">
@@ -108,60 +110,60 @@
                         </form>
                     </div>
                 </article>
-                <% } %>
+            <% } %>
 
-                    <% for (var i = Math.max((result_start - direct_products.rows.length),0); (i < auction_products.rows.length) && (i < ((result_start - direct_products.rows.length)+10));  i++ ) { %>
+            <% for (var i = Math.max((result_start - direct_products.rows.length),0); (i < auction_products.rows.length) && (i < ((result_start - direct_products.rows.length)+10));  i++ ) { %>
 
-                        <article class="search-result row">
-                            <div class="col-xs-12 col-sm-12 col-md-2">
-                                <h3>
-                                    <i class="glyphicon glyphicon-usd"></i>
-                                    <span>
+                <article class="search-result row">
+                    <div class="col-xs-12 col-sm-12 col-md-2">
+                        <h3>
+                            <i class="glyphicon glyphicon-usd"></i>
+                            <span>
                                 <%= (auction_products) ?  auction_products.rows[i].price : '' %>
                             </span>
-                                </h3>
-                                <h3>
-                                    Quantity:
-                                    <%= (auction_products) ?  auction_products.rows[i].quantity : '' %>
-                                </h3>
-                            </div>
+                        </h3>
+                        <h3>
+                            Quantity:
+                            <%= (auction_products) ?  auction_products.rows[i].quantity : '' %>
+                        </h3>
+                    </div>
 
-                            <header class="col-xs-12 col-sm-12 col-md-7 excerpet">
-                                <h2>
-                                    <%= (auction_products) ?  auction_products.rows[i].name : '' %>
-                                </h2>
-                                <!-- <button type="button" class="collapsible">View description</button> -->
-                                <% if(((auction_products) ?  auction_products.rows[i].description.length : 0) > 200){ %>
-                                    <h3>
-                                        <!-- <%= (auction_products) ?  auction_products.rows[i].description.length : 0 %> -->
-                                        <span>
+                    <header class="col-xs-12 col-sm-12 col-md-7 excerpet">
+                        <h2>
+                            <%= (auction_products) ?  auction_products.rows[i].name : '' %>
+                        </h2>
+                        <!-- <button type="button" class="collapsible">View description</button> -->
+                        <% if(((auction_products) ?  auction_products.rows[i].description.length : 0) > 200){ %>
+                            <h3>
+                                <!-- <%= (auction_products) ?  auction_products.rows[i].description.length : 0 %> -->
+                                <span>
                                     <%= (auction_products) ?  auction_products.rows[i].description.substring(0,200) : '' %>
                                 </span>
-                                        <span class="content">
+                                <span class="content">
                                     <%= (auction_products) ?  auction_products.rows[i].description.substring(200) : '' %>
                                 </span>
-                                        <span class="myBtn collapsible">... Read more</span>
-                                    </h3>
-                                    <% } else{ %>
-                                        <h3>
-                                            <%= (auction_products) ?  auction_products.rows[i].description.substring(0,200) : '' %>
-                                        </h3>
-                                        <% } %>
-                            </header>
-                            <div class="col-xs-12 col-sm-12 col-md-1">
-
-                            </div>
-                            <div class="col-xs-12 col-sm-12 col-md-2">
-                                <form action="http://localhost:3000/auction-product-details" method="post">
-                                    <button class="btn" type="submit">View Product</button>
-                                    <input type="hidden" name="product_id" value=<%=auction_products.rows[i].aitem_id %> >
-                                    <input type="hidden" name="product_type" value="auction">
-
-                                </form>
-                            </div>
-                        </article>
+                                <span class="myBtn collapsible">... Read more</span>
+                            </h3>
+                        <% } else{ %> 
+                            <h3>
+                                <%= (auction_products) ?  auction_products.rows[i].description.substring(0,200) : '' %>
+                            </h3>
                         <% } %>
+                    </header>
+                    <div class="col-xs-12 col-sm-12 col-md-1">
+                        
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-2">
+                        <form action="http://localhost:3000/auction-product-details" method="post">
+                            <button class="btn" type="submit">View Product</button>
+                            <input type="hidden" name="product_id" value=<%=auction_products.rows[i].aitem_id %> >
+                            <input type="hidden" name="product_type" value="auction">
 
+                        </form>
+                    </div>
+                </article>
+            <% } %>
+            
 
         </section>
 
@@ -176,44 +178,44 @@
             <input type="hidden" name="auction_results" value=<%=auction_products %> >
 
         </form>
-        <% } %>
+    <% } %>
 
-            <% if(result_start >= 10){ %>
-                <form action="http://localhost:3000/results-switch-page" method="post">
-                    <button class="btn" type="submit">Prev Page</button>
-                    <input type="hidden" name="search" value=<%=s earched_text %> >
-                    <input type="hidden" name="result_start" value=<%=( result_start - 10) %> >
-                    <input type="hidden" name="direct_results" value=<%=d irect_products.rows %> >
-                    <input type="hidden" name="auction_results" value=<%=a uction_products %> >
+    <% if(result_start >= 10){ %>
+        <form action="http://localhost:3000/results-switch-page" method="post">
+            <button class="btn" type="submit">Prev Page</button>
+            <input type="hidden" name="search" value=<%= searched_text %> >
+            <input type="hidden" name="result_start" value=<%= (result_start - 10) %> >
+            <input type="hidden" name="direct_results" value=<%= direct_products.rows %> >
+            <input type="hidden" name="auction_results" value=<%= auction_products %> >
 
-                </form>
-                <% } %>
+        </form>
+    <% } %>
 
-                    <script>
-                        var coll = document.getElementsByClassName("myBtn");
-                        var i;
+    <script>
+        var coll = document.getElementsByClassName("myBtn");
+        var i;
+        
+        for (i = 0; i < coll.length; i++) {
+          coll[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var content = this.previousElementSibling;
+            // console.log('clicked on read more/read less');
+            // console.log(content.style.display);
+            if (this.innerHTML == "... Read more") {
+              content.style.display = "inline";
+              this.innerHTML = "Read less"; 
+            //   this.style.display = "block";
+            } else {
+              content.style.display = "none";
+              this.innerHTML = "... Read more";
+            //   this.style.display = "none";
+            }
+          });
+        }
+        </script>
 
-                        for (i = 0; i < coll.length; i++) {
-                            coll[i].addEventListener("click", function() {
-                                this.classList.toggle("active");
-                                var content = this.previousElementSibling;
-                                // console.log('clicked on read more/read less');
-                                // console.log(content.style.display);
-                                if (this.innerHTML == "... Read more") {
-                                    content.style.display = "inline";
-                                    this.innerHTML = "Read less";
-                                    //   this.style.display = "block";
-                                } else {
-                                    content.style.display = "none";
-                                    this.innerHTML = "... Read more";
-                                    //   this.style.display = "none";
-                                }
-                            });
-                        }
-                    </script>
-
-                    <!-- <form action="http://localhost:3000/logout" method="get">
+    <!-- <form action="http://localhost:3000/logout" method="get">
         <button type="submit">Logout</button>
     </form> -->
 
-                    <%- include('../includes/end.ejs') %>
+    <%- include('../includes/end.ejs') %>
