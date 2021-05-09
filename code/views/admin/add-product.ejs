@@ -110,6 +110,19 @@
     }
     </script>
 
+    <script>
+    function TDate() {
+      var UserDate = document.getElementById("close_date").value;
+      var ToDate = new Date();
+
+      if (new Date(UserDate).getTime() <= ToDate.getTime()) {
+            alert("The Date must be Bigger or Equal to today's date");
+            return false;
+      }
+      return true;
+    }
+
+    </script>
 
 
 
@@ -142,7 +155,7 @@
         <div class="row" id = "hide">
             <div class="col-25"><label for="close_date">closing time</label></div>
             <div class="col-75">
-                <input type="date" id="close_date" name="close_date" required="required">
+                <input type="date" id="close_date" name="close_date" required="required" onchange="TDate()">
             </div>
         </div>
         <div class="row">
