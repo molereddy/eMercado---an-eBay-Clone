@@ -256,14 +256,16 @@ exports.post_withdraw_balance = (req, res, next) => {
 
             if(results.rows[0].balance - results.rows[0].amount_on_hold < req.body.amount)
             {
-                req.flash('error-home','You cannot withdraw amount more than ' + results.rows[0].balance - results.rows[0].amount_on_hold)
+                req.flash('error-home','You cannot withdraw amount more than ' + results.rows[0].balance - results.rows[0].amount_on_hold);
             }
             else
             {
-                user.update_balance(-1*req.body.amount)
-                req.flash('error-home','Your withdrawl is succesfull')
+                user.update_balance(-1*req.body.amount);
+                req.flash('error-home','Your withdrawl is succesfull');
 
             }
+
+            res.redirect('home-screen');
 
         }).catch(err => console.log(err));
         
@@ -275,7 +277,7 @@ exports.post_withdraw_balance = (req, res, next) => {
 
 
 
-        res.redirect('home-screen');
+        
     }
 };
 
