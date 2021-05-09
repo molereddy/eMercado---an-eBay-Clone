@@ -254,9 +254,9 @@ exports.post_withdraw_balance = (req, res, next) => {
         user.get_balance()
         .then(results =>{
 
-            if(results.rows[0].balance - results.rows[0].amount_on_hold < req.body.amount)
+            if((results.rows[0].balance - results.rows[0].amount_on_hold < req.body.amount) || req.body.amount<0)
             {
-                req.flash('error-home','You cannot withdraw amount more than ' + results.rows[0].balance - results.rows[0].amount_on_hold);
+                req.flash('error-home1','Invalid withdraw amount entered' );
             }
             else
             {
