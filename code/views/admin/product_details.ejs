@@ -3,6 +3,20 @@
     <div id="root"></div>
     <div style="width: 100%;">
         <div style="float:left; width: 50%">
+
+
+            <% if (message.length > 0) { %>
+                <div class="alert alert-danger">
+                    <%=message%>
+                </div>
+                <% } %>
+
+
+            <h1> <b style="font-size: xx-large;">Product Description</b></h1>
+            <br>
+
+        
+
             <h4> <b>item ID:&nbsp;</b>
                 <tt id="product-id"><%=product_id%></tt>
                 <input id="product-id" onclick="CopyToClipboard('product-id')" type="button" value="Copy" />
@@ -16,24 +30,39 @@
             <h4 style="font-size:medium;"> <b style="font-size: larger;">Product Description:&nbsp;</b>
                 <%=product_description%>
             </h4>
+            <h4> <b>quantity:&nbsp;</b>
+                <%=product_quantity%>
+            </h4>
             <h4> <b>current status:&nbsp;</b>
                 <%=product_status%>
             </h4>
+
+            <h4> <b>Seller Name:&nbsp;</b>
+                <tt><%=product_seller_name%></tt>
+            </h4>
+            
             <h4> <b>seller ID:&nbsp;</b>
                 <tt><%=product_seller%></tt>
             </h4>
             <h4> <b>Price:&nbsp;</b>
                 <tt>&dollar;<%=product_price%></tt>
             </h4>
-            <h4> <b>delivery distance:&nbsp;</b>
-                <tt><%=product_distance%> km</tt>
-            </h4>
-            <h4> <b>delivery charges:&nbsp;</b>
-                <tt>&dollar;<%=product_delivery_cost%></tt>
-            </h4>
-            <h4> <b>total cost:&nbsp;</b>
-                <tt>&dollar;<%=product_amount_to_pay%></tt>
-            </h4>
+
+
+            <% if (product_viewer == "buyer")  {%>
+
+                <h4> <b>delivery distance:&nbsp;</b>
+                    <tt><%=product_distance%> km</tt>
+                </h4>
+                <h4> <b>delivery charges:&nbsp;</b>
+                    <tt>&dollar;<%=product_delivery_cost%></tt>
+                </h4>
+                <h4> <b>total cost:&nbsp;</b>
+                    <tt>&dollar;<%=product_amount_to_pay%></tt>
+                </h4>
+
+                <% } %>
+
         </div>
         <div style="float:right; width: 50%;">
             <%var latitude = product_lat ;%>

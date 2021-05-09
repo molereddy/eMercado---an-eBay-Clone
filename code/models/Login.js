@@ -28,9 +28,9 @@ module.exports = class Login{
         return pool.query('with message_table as ((SELECT * from direct_item_messages  where person_id = $1) union (SELECT * from auction_item_messages where person_id = $1)) Select * from message_table order by message_time desc',[id]);
     }
 
-    add_auction_product(aitem_id,category,name,desc,price,seller_id,quantity,start_time,close_time)
+    add_auction_product(aitem_id,category,name,desc,price,seller_id,quantity,delivery_factor,start_time,close_time)
     {
-        return pool.query('Insert into auction_item(aitem_id,name,description,price,seller_id,status,physical_product,quantity,delivery_factor,start_time,close_time) values($1,$2,$3,$4,$5,\'open\',true,$6,1,$7,$8);',[aitem_id,name,desc,price,seller_id,quantity,start_time,close_time]);
+        return pool.query('Insert into auction_item(aitem_id,name,description,price,seller_id,status,physical_product,quantity,delivery_factor,start_time,close_time) values($1,$2,$3,$4,$5,\'open\',true,$6,$9,$7,$8);',[aitem_id,name,desc,price,seller_id,quantity,start_time,close_time,delivery_factor]);
 
     }
 

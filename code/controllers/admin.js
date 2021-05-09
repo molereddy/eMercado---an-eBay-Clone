@@ -15,10 +15,24 @@ const alert = require('alert');
 exports.get_login = (req, res, next) => {
 
 
+    var cookies = new Cookies(req, res, { keys: keys })
+
+
+    // Get a cookie
+    var currentID = cookies.get('CurrentID', { signed: true })
+    var currentEmail = cookies.get('CurrentEmail', { signed: true })
+   
+
+    if (currentID) {
+        req.flash('error-home', 'Logout first to enter the login screen');
+        res.redirect('home-screen');
+    }
+
+
     res.render('admin/login_screen', {
         pageTitle: 'Login Screen',
         path: '/login-screen',
-        message: req.flash('error')
+        message: req.flash('error-login')
 
     });
 
@@ -30,7 +44,7 @@ exports.get_signup = (req, res, next) => {
     res.render('admin/signup_screen', {
         pageTitle: 'Signup Screen',
         path: '/signup-screen',
-        message: req.flash('error')
+        message: req.flash('error-signup')
 
     });
 
@@ -50,7 +64,7 @@ exports.post_signup = (req, res, next) => {
 
     if (p1 != p2) {
 
-        req.flash('error', 'Password and re-enter password do not match');
+        req.flash('error-signup', 'Password and re-enter password do not match');
 
         res.redirect('signup-screen');
 
@@ -102,7 +116,7 @@ exports.post_login = (req, res, next) => {
             if (results.rows.length == 0) {
 
 
-                req.flash('error', 'Invalid username or password');
+                req.flash('error-login', 'Invalid username or password');
 
                 res.redirect('login-screen');
 
@@ -183,7 +197,7 @@ exports.get_home_screen = (req, res, next) => {
                     path: '/home-screen',
                     balance: results.rows[0].balance,
                     amount_on_hold: results.rows[0].amount_on_hold,
-                    message: req.flash('error')
+                    message: req.flash('error-home')
 
                 });
 
@@ -207,11 +221,11 @@ exports.post_update_balance = (req, res, next) => {
         {
         user.update_balance(req.body.balance);
 
-        req.flash('error', 'Balance Updated successfully');
+        req.flash('error-home', 'Balance Updated successfully');
         }
         else
         {
-        req.flash('error','Invalid Amount Entered')
+        req.flash('error-home','Invalid Amount Entered')
         }
 
 
@@ -527,34 +541,47 @@ exports.get_product_details = (req, res, next) => { // when a direct sale produc
                             .get_distance(currentID, direct_results.rows[0].seller_id)
                             .then(distance_results => {
 
-                                product_distance = distance_results.rows[0].distance / 1000; //converted  to KM
+                                product_distance = Math.round(distance_results.rows[0].distance / 1000); //converted  to KM
                                 product_delivery_cost = Math.round(product_distance * direct_results.rows[0].delivery_factor); //rounded off
 
 
                                 product_amount_to_pay = product_price + product_delivery_cost;
 
-                                res.render('admin/product_details', {
-                                    pageTitle: 'Product Details',
-                                    path: '/product-details',
-                                    product_id: product_id,
-                                    product_type: product_type,
-                                    product_price: product_price,
-                                    product_status: product_status,
-                                    product_viewer: product_viewer,
-                                    product_new_status: product_new_status,
-                                    product_lat: location_results.rows[0].y,
-                                    product_lng: location_results.rows[0].x,
-                                    product_distance: product_distance,
-                                    product_delivery_cost: product_delivery_cost,
-                                    product_description: direct_results.rows[0].description,
-                                    product_name: direct_results.rows[0].name,
-                                    product_amount_to_pay: product_amount_to_pay,
-                                    product_seller: product_seller,
-                                    current_id: currentID
 
-                                });
+                                product_object
+                                        .get_seller_name(product_seller)
+                                        .then(name_results => {
 
 
+                                        product_seller_name = name_results.rows[0].name;
+
+
+
+                                    res.render('admin/product_details', {
+                                        pageTitle: 'Product Details',
+                                        path: '/product-details',
+                                        product_id: product_id,
+                                        product_type: product_type,
+                                        product_price: product_price,
+                                        product_status: product_status,
+                                        product_viewer: product_viewer,
+                                        product_new_status: product_new_status,
+                                        product_lat: location_results.rows[0].y,
+                                        product_lng: location_results.rows[0].x,
+                                        product_distance: product_distance,
+                                        product_delivery_cost: product_delivery_cost,
+                                        product_description: direct_results.rows[0].description,
+                                        product_name: direct_results.rows[0].name,
+                                        product_amount_to_pay: product_amount_to_pay,
+                                        product_seller: product_seller,
+                                        current_id: currentID,
+                                        message : req.flash('error-direct'),
+                                        product_quantity : direct_results.rows[0].quantity,
+                                        product_seller_name : product_seller_name
+
+                                    });
+
+                                }).catch(err => console.log(err));
 
                             }).catch(err => console.log(err));
 
@@ -590,10 +617,16 @@ exports.get_product_details_delete_product = (req, res, next) => { // when selle
 
         const product_object = new Product(product_id, product_type, currentID);
         product_object
-            .delete_product()
+            .get_direct_item()
             .then(() => {
 
-                res.redirect('/home-screen');
+                product_object
+                    .update_status('closed')
+                    .then(() => {
+
+                           res.redirect('/home-screen');
+                
+                    }).catch(err => console.log(err));
 
 
             }).catch(err => console.log(err));
@@ -648,7 +681,7 @@ exports.get_product_details_update_status = (req, res, next) => { //when seller 
 
                 if (product_status == 'sold') {
                     product_status = 'shipping';
-                    var message = new Message(product_id, currentID, "Status Updated", "Your have updated the status of " + product_name + " to shipping at " + get_timestamp(), get_timestamp())
+                    var message = new Message(product_id, currentID, "Status Updated", "You have updated the status of " + product_name + " to shipping at " + get_timestamp(), get_timestamp())
                     message.send_direct_message();
                     var message = new Message(product_id, buyer_id, "Product Shipping", "We are glad to inform you that your new purchase " + product_name + " status is shipping. Message sent at " + get_timestamp(), get_timestamp());
                     message.send_direct_message();
@@ -656,7 +689,7 @@ exports.get_product_details_update_status = (req, res, next) => { //when seller 
 
                 } else if (product_status == 'shipping') {
                     product_status = 'shipped';
-                    var message = new Message(product_id, currentID, "Status Updated", "Your have updated the status of " + product_name + " to shipped at " + get_timestamp(), get_timestamp())
+                    var message = new Message(product_id, currentID, "Status Updated", "You have updated the status of " + product_name + " to shipped at " + get_timestamp(), get_timestamp())
                     message.send_direct_message();
                     var message = new Message(product_id, buyer_id, "Product Shipping", "We are glad to inform you that your new purchase " + product_name + "got shipped at " + get_timestamp(), get_timestamp());
                     message.send_direct_message();
@@ -664,7 +697,7 @@ exports.get_product_details_update_status = (req, res, next) => { //when seller 
 
                 } else if (product_status == 'shipped') {
                     product_status = 'out-for-delivery';
-                    var message = new Message(product_id, currentID, "Status Updated", "Your have updated the status of " + product_name + " to out for delivary at " + get_timestamp(), get_timestamp())
+                    var message = new Message(product_id, currentID, "Status Updated", "You have updated the status of " + product_name + " to out for delivery at " + get_timestamp(), get_timestamp())
                     message.send_direct_message();
                     var message = new Message(product_id, buyer_id, "Product Shipping", "We are glad to inform you that your new purchase " + product_name + " is out for delivary now. Message sent at " + get_timestamp(), get_timestamp());
                     message.send_direct_message();
@@ -727,7 +760,7 @@ exports.get_product_details_buy = (req, res, next) => { // when the buyer clicks
                             .get_distance(currentID, direct_results.rows[0].seller_id)
                             .then(distance_results => {
 
-                                product_distance = distance_results.rows[0].distance / 1000; //converted  to KM
+                                product_distance = Math.round(distance_results.rows[0].distance / 1000); //converted  to KM
                                 product_delivery_cost = Math.round(product_distance * direct_results.rows[0].delivery_factor); //rounded off
 
 
@@ -744,7 +777,7 @@ exports.get_product_details_buy = (req, res, next) => { // when the buyer clicks
 
                                                     //var user = new Login(currentEmail);
                                                     product_object.update_direct_buyer(currentID);
-                                                    var message = new Message(product_id, currentID, "Order placed Succesful", "Your order for item " + product_name + " is placed success fully at " + get_timestamp(), get_timestamp())
+                                                    var message = new Message(product_id, currentID, "Order placed Succesful", "Your order for item " + product_name + " is placed successfully at " + get_timestamp(), get_timestamp())
                                                     message.send_direct_message();
                                                     var message = new Message(product_id, product_seller, "New order", "You got a new order for " + product_name + " at " + get_timestamp(), get_timestamp());
                                                     message.send_direct_message();
@@ -759,7 +792,14 @@ exports.get_product_details_buy = (req, res, next) => { // when the buyer clicks
                                     // res.json({success:false});
                                     //var string = encodeURIComponent('something that would break');
                                     // res.redirect(307,'/product-details?valid=' + string);
-                                    res.send("Insufficent Balance");
+                                   
+
+
+                                    req.flash('error-direct', 'Insufficient funds');
+
+                                    res.redirect(307, '/product-details');
+
+
                                 }
 
 
@@ -818,7 +858,7 @@ exports.get_product_details_confirm_delivery = (req, res, next) => { // when the
                             .get_distance(currentID, direct_results.rows[0].seller_id)
                             .then(distance_results => {
 
-                                product_distance = distance_results.rows[0].distance / 1000; //converted  to KM
+                                product_distance = Math.round(distance_results.rows[0].distance / 1000); //converted  to KM
                                 product_delivery_cost = Math.round(product_distance * direct_results.rows[0].delivery_factor); //rounded off
 
 
@@ -871,7 +911,7 @@ exports.get_product_details_confirm_delivery = (req, res, next) => { // when the
 };
 
 
-exports.viewMessages = (req, res, next) => { // when a direct sale product is selected
+exports.viewMessages = (req, res, next) => { 
 
     var cookies = new Cookies(req, res, { keys: keys })
 
@@ -940,6 +980,7 @@ exports.post_add_product = (req, res, next) => {
     console.log(req.body.kids);
     var tags = [req.body.a, req.body.b, req.body.c, req.body.d, req.body.e, req.body.f, req.body.g, req.body.h, req.body.i, req.body.j, req.body.k, req.body.l];
 
+    var delivery_factor_list = [req.body.del1, req.body.del2, req.body.del3]
 
     if (!currentID) {
         res.redirect('login-screen');
@@ -951,9 +992,24 @@ exports.post_add_product = (req, res, next) => {
                 .get_new_aitem_id()
                 .then(results => {
                     console.log("trying to add auction product")
-                    user.add_auction_product(results.rows[0].aitem_id + 1, identifier, name, description, price, currentID, quantity, get_timestamp(), close_date + " 23:59:00");
+
+                    delivery_factor = 1;//initalisation
+                    for (i = 0; i < delivery_factor_list.length; i++) {
+                        if (delivery_factor_list[i] != undefined) {
+                            console.log(delivery_factor_list[i])
+                            delivery_factor = parseFloat(delivery_factor_list[i]);
+                        }
+                    }
+                    console.log(delivery_factor)
+                    
+
+
+
+
+
+                    user.add_auction_product(results.rows[0].aitem_id + 1, identifier, name, description, price, currentID, quantity, delivery_factor,get_timestamp(), close_date + " 23:59:00");
                     console.log("added auction product")
-                    var message = new Message(results.rows[0].aitem_id + 1, currentID, "New Product Added", "You have added a new direct sale product " + name + " at " + get_timestamp(), get_timestamp())
+                    var message = new Message(results.rows[0].aitem_id + 1, currentID, "New Product Added", "You have added a new auction sale product " + name + " at " + get_timestamp(), get_timestamp())
                     message.send_auction_message();
 
                     var i;

@@ -23,8 +23,14 @@
                     <h4 style="font-size:medium;"> <b style="font-size: larger;">Product Description:&nbsp;</b>
                         <%=product_description%>
                     </h4>
+                    <h4> <b>quantity:&nbsp;</b>
+                        <%=product_quantity%>
+                    </h4>
                     <h4> <b>current status:&nbsp;</b>
                         <%=product_status%>
+                    </h4>
+                    <h4> <b>Seller Name:&nbsp;</b>
+                        <tt><%=product_seller_name%></tt>
                     </h4>
                     <h4> <b>seller ID:&nbsp;</b>
                         <tt><%=product_seller%></tt>
@@ -32,9 +38,23 @@
                     <h4> <b>base price:&nbsp;</b>
                         <tt>&dollar;<%=product_base_price%></tt>
                     </h4>
-                    <h4> <b>current best bid:&nbsp;</b>
-                        <tt>&dollar;<%=product_curent_best_bid%></tt>
-                    </h4>
+
+                    <% if (product_curent_best_bid) { %>
+
+                        <h4> <b>current best bid:&nbsp;</b>
+                            <tt>&dollar;<%=product_curent_best_bid%></tt>
+                        </h4>
+
+                   
+
+                    <% }else { %>
+
+                        <h4> <b>current best bid:&nbsp;</b>
+                            <tt>No bid is present</tt>
+                        </h4>
+
+                    <% } %>
+
 
                     <% if (product_curent_best_bidder == current_id) { %>
 
@@ -42,9 +62,25 @@
 
                         <% } %>
 
+
+
+                        <% if (product_curent_best_bidder) { %>
+
                             <h4> <b>current best bidder:&nbsp;</b>
                                 <tt><%=product_curent_best_bidder%></tt>
                             </h4>
+
+                      
+
+                        <% } else  { %>
+
+                            <h4> <b>current best bidder:&nbsp;</b>
+                                <tt>No bid is present</tt>
+                            </h4>
+    
+                        <% } %>
+    
+
 
 
                             <h4> <b>sale started at:&nbsp;</b>
@@ -53,6 +89,10 @@
                             <h4> <b>sale ends at:&nbsp;</b>
                                 <tt style="font-size:medium;"><%=product_sale_end_time%></tt>
                             </h4>
+
+                            <% if (product_viewer == "buyer")  {%>
+
+
                             <h4> <b>delivery distance:&nbsp;</b>
                                 <tt><%=product_distance%> km</tt>
                             </h4>
@@ -68,7 +108,11 @@
                                     <tt>&dollar;<%=product_amount_to_pay%></tt>
                                 </h4>
 
-                                <% } %>
+                             
+
+                                    <% } %>
+
+                             <% } %>
 
 
 
@@ -97,6 +141,15 @@
                     <script async defer src="https://maps.googleapis.com/maps/api/js?key=
             AIzaSyB2bXKNDezDf6YNVc-SauobynNHPo4RJb8&callback=initMap">
                     </script>
+                            <script>
+                                function selectOnlyThis(id) {
+                                  for (var i = 1;i <= 3; i++)
+                                  {
+                                      document.getElementById("del" + i).checked = false;
+                                  }
+                                  document.getElementById(id).checked = true;
+                              }
+                            </script>
                     <br>
                     <div class="row">
                         <% if (product_viewer == "buyer")  {%>
@@ -106,22 +159,46 @@
                                         <div class="form-group">
                                             <div style="display:flex; flex-direction: row">
                                                 <label for="your_bid">Your initial offering:</label>
-                                                <input type="text" class="form-control" name="your_bid" id="your_bid" value="<%= product_your_bid %>"><br>
+                                                <input type="number" class="form-control" name="your_bid" id="your_bid" value="<%= product_your_bid %>"><br>
                                             </div>
                                             <br>
 
                                             <div style="display:flex; flex-direction: row">
                                                 <label for="auto_mode">Mode of bidding:&nbsp;  </label><br>
-                                                <select name="auto_mode" id="auto_mode" style="height: 60px;">
-                                            <option value="false" > Simple bidding</option>
-                                            <option value="true" >Auto bidding</option>
 
-                                        </select><br>
+                                               
+
+                                                <% if (product_auto_mode.toString() == "true")  {%>
+
+
+                                                    <input type="checkbox" id="auto_mode" name="auto_mode" value="true" checked> 
+
+                                                    <% } else{%>
+
+                                                        <input type="checkbox" id="auto_mode" name="auto_mode" value="true"> 
+
+
+
+                                                 <% } %>
+
+                                                    
+                                                    <label for="auto_mode">Auto bidding</label>
+                                           
+                                                    <!-- <select name="auto_mode" id="auto_mode" style="height: 60px;">
+                                                 <input type="checkbox" id="del1" name="del1" value="false" onclick="selectOnlyThis(this.id)" >
+                                                    <label for="del1">Simple bidding</label> 
+                                            <option value="false" > Simple bidding</option>
+
+                                            <option value="true" >Auto bidding</option> -->
+
+
+
+                                        <br>
                                             </div>
                                             <br>
                                             <div style="display:flex; flex-direction: row">
                                                 <label for="bid_limit">Maximum offering:</label>
-                                                <input type="text" class="form-control" name="bid_limit" id="bid_limit" value="<%= product_bid_limit %>"><br>
+                                                <input type="number" class="form-control" name="bid_limit" id="bid_limit" value="<%= product_bid_limit %>"><br>
                                             </div>
                                             <br>
                                             <input type="hidden" name="product_id" value=<%=product_id %>>
