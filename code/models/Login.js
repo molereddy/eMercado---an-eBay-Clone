@@ -74,10 +74,19 @@ module.exports = class Login{
     {
         return pool.query('select * from direct_sale_item where buyer_id = $1;',[id]);
     }
+    get_direct_search_results_bids(id)
+    {
+        return pool.query('select * from direct_sale_item where buyer_id = -10;');
+    }
 
     get_auction_search_results_purchases(id)
     {
         return pool.query('select * from auction_item where best_bidder = $1;',[id]);
+    
+    }
+    get_auction_search_results_bids(id)
+    {
+        return pool.query('select * from auction_item inner join bid using(aitem_id) where person_id = $1;',[id]);
     
     }
 
