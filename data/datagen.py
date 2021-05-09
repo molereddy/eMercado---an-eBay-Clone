@@ -7,7 +7,8 @@ from hashlib import sha256
 seedphnomin=6000000000
 seedphnomax=9999999999
 seedbalance=1000.0
-seedlocation='SRID=4326;POINT(0 49)'
+seedloccount=5
+seedlocations=['SRID=4326;POINT(83.2185 17.6868)','SRID=4326;POINT(78.4867 17.3850)','SRID=4326;POINT(80.6480 16.5062)','SRID=4326;POINT(72.8777 19.0760)','SRID=4326;POINT(77.4977 27.2046)']
 seednumcust=10000 #updated during customer.csv construction
 seedqtymax=5
 seeddfmax=2
@@ -46,7 +47,8 @@ with open('Datagen/person.csv', 'w') as f:
     	header = next(csvreader)  
     	for row in csvreader:
     		phno = random.randint(seedphnomin,seedphnomax)
-    		csvwriter.writerow([row[0],row[1],row[1]+'@emercado.com',"298fc689",phno,seedlocation,seedbalance,0.0])
+            locidx = random.randint(0,seedloccount-1)
+    		csvwriter.writerow([row[0],row[1],row[1]+'@emercado.com',"298fc689",phno,seedlocations[locidx],seedbalance,0.0])
     		if(seednumcust<=int(row[0])):
     			break
 
