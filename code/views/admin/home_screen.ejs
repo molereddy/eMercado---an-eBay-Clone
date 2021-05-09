@@ -59,6 +59,11 @@
                                         <button type="submit" class="btn btn-primary btn-block product-options">View my purchases</button>
                                     </form>
                                     <br>
+                                    <br>
+                                    <form action="http://localhost:3000/view-mybids" method="GET">
+                                        <button type="submit" class="btn btn-primary btn-block product-options">View my bids</button>
+                                    </form>
+                                    <br>
                                     <form action="http://localhost:3000/messages" method="post">
                                         <button type="submit" class="btn btn-primary btn-block product-options">View Messages</button>
                                     </form>
@@ -72,6 +77,15 @@
                                             <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
                                         </form>
                                     </div>
+                                    <button class="open-button btn btn-primary btn-block product-options" onclick="openForm2()">Withdraw Money</button>
+                                    <div class="form-popup" id="myForm2">
+                                        <form action="http://localhost:3000/withdraw-money" class="form-container" method="POST">
+                                            <label for="amount"><b>Amount</b></label><br>
+                                            <input type="number" placeholder="Enter Amount to be Withdrawn" name="amount" id="amount" required>
+                                            <button type="submit" class="btn">Withdraw</button>
+                                            <button type="button" class="btn cancel" onclick="closeForm2()">Close</button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                             <script>
@@ -81,6 +95,13 @@
 
                                 function closeForm() {
                                     document.getElementById("myForm").style.display = "none";
+                                }
+                                function openForm2() {
+                                    document.getElementById("myForm2").style.display = "block";
+                                }
+
+                                function closeForm2() {
+                                    document.getElementById("myForm2").style.display = "none";
                                 }
                             </script>
 

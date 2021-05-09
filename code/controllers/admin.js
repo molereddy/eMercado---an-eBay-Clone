@@ -239,6 +239,46 @@ exports.post_update_balance = (req, res, next) => {
     }
 };
 
+exports.post_withdraw_balance = (req, res, next) => {
+
+    var cookies = new Cookies(req, res, { keys: keys })
+
+    // Get a cookie
+    var currentID = cookies.get('CurrentID', { signed: true })
+    var currentEmail = cookies.get('CurrentEmail', { signed: true })
+    user = new Login(currentEmail);
+    if (!currentID) {
+        res.redirect('login-screen');
+    } else {
+        user.get_balance()
+        .then(results =>{
+
+            if(results.rows[0].balance - results.rows[0].amount_on_hold < req.body.amount)
+            {
+                req.flash('error-home','You cannot withdraw amount more than ' + results.rows[0].balance - results.rows[0].amount_on_hold)
+            }
+            else
+            {
+                user.update_balance(-1*req.body.amount)
+                req.flash('error-home','Your withdrawl is succesfull')
+
+            }
+
+        }).catch(err => console.log(err));
+        
+
+
+
+        // var message = new Message(product_id,seller_id,"Balance updated","Your have added money "+req.body.balance+" at "+get_timestamp(),get_timestamp())
+        // message.send_direct_message();
+
+
+
+        res.redirect('home-screen');
+    }
+};
+
+
 
 
 exports.post_home_screen_search = (req, res, next) => { // when search button is pressed 
@@ -397,6 +437,62 @@ exports.get_view_my_purchases = (req, res, next) => { // when search button is p
                             direct_products: direct_results,
                             auction_products: auction_results,
                             searched_text: 'My Purchases',
+                            result_start: start,
+                            tags_string: '',
+                            type: 2
+                        });
+
+
+
+
+
+                    }).catch(err => console.log(err));
+
+
+            }).catch(err => console.log(err));
+
+    }
+
+};
+
+exports.get_view_my_bids = (req, res, next) => { // when search button is pressed 
+
+    var cookies = new Cookies(req, res, { keys: keys })
+
+    // Get a cookie
+    var currentID = cookies.get('CurrentID', { signed: true })
+    var currentEmail = cookies.get('CurrentEmail', { signed: true })
+
+    if (!currentID) {
+        res.redirect('login-screen');
+    } else {
+
+        var resstart = req.body.result_start;
+        var start = 0;
+        if (resstart !== undefined) {
+            start = parseInt(req.body.result_start);
+        } else {
+            start = 0;
+        }
+        const user = new Login(currentEmail);
+        user
+            .get_direct_search_results_bids(currentID)
+            .then(direct_results => {
+
+
+
+                user
+                    .get_auction_search_results_bids(currentID)
+                    .then(auction_results => {
+
+
+                        res.render('admin/search_screen', {
+                            pageTitle: 'Search Screen',
+                            path: '/search-screen',
+
+                            direct_products: direct_results,
+                            auction_products: auction_results,
+                            searched_text: 'My Bids',
                             result_start: start,
                             tags_string: '',
                             type: 2
