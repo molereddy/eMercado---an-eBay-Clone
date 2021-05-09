@@ -748,11 +748,27 @@ exports.get_product_details_delete_product = (req, res, next) => { // when selle
         const product_object = new Product(product_id, product_type, currentID);
         product_object
             .get_direct_item()
-            .then(() => {
+            .then(direct_results => {
+
+
+                product_name = 'dummy'//initialisation
+
+
+                if(direct_results.rows.length!=0){
+
+                    product_name = direct_results.rows[0].name;
+
+
+                }
+
 
                 product_object
                     .update_status('closed')
                     .then(() => {
+
+                        var message = new Message(product_id, currentID, "Product Deleted", "You have deleted the product: " + product_name + " at " + get_timestamp(), get_timestamp())
+                        message.send_auction_message();
+
 
                            res.redirect('/home-screen');
                 

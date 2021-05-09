@@ -809,6 +809,8 @@ exports.auction_delete_product = (req,res,next) => {
         delivery_factor = 0 //initialisation
         seller_id = 0       //initialisation
 
+        product_name = 'dummy'//initialisation
+
       
 
 
@@ -823,6 +825,10 @@ exports.auction_delete_product = (req,res,next) => {
                     delivery_factor = auction_results.rows[0].delivery_factor
             
                     seller_id = auction_results.rows[0].seller_id
+
+                    product_name = auction_results.rows[0].name;
+
+
                 }
 
 
