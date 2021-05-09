@@ -68,16 +68,49 @@
         </div>
           
         </div>
+        
 
         <script>
+         
         function selectOnlyThis(id) {
-          for (var i = 1;i <= 3; i++)
+          for (var i = 1;i <= 4; i++)
           {
               document.getElementById("del" + i).checked = false;
           }
           document.getElementById(id).checked = true;
+         
+
       }
     </script>
+
+    <script>
+
+      window.onload = select;
+
+    
+      
+      function select() {
+
+            if(document.getElementById("item_type").value == 'direct_sale'){
+
+              document.getElementById("hide").style.display = 'none';
+              document.getElementById("close_date").required = false;
+
+            }
+            else{
+
+              document.getElementById("hide").style.display = 'block';
+              document.getElementById("close_date").required = true;
+
+            }
+       
+            
+      
+       
+    }
+    </script>
+
+
 
 
 
@@ -98,17 +131,18 @@
                 <input type="quantity" name="quantity" id="quantity" required="required" style="height: 30px;">
             </div>
             &nbsp;
+            
             <div class="col-15">
-                <select name="item_type" id="item_type" style="height: 50px;">
-                    <option value="auction">auctioning</option>
-                    <option value="direct_sale" selected>simple sale</option>
+                <select name="item_type" id="item_type" onchange="select()"  style="height: 50px;">
+                    <option value="auction" id = "hide1" selected>auctioning</option>
+                    <option value="direct_sale" id = "hide2"  >simple sale</option>
                 </select>
             </div>
         </div>
-        <div class="row">
+        <div class="row" id = "hide">
             <div class="col-25"><label for="close_date">closing time</label></div>
             <div class="col-75">
-                <input type="date" id="close_date" name="close_date">
+                <input type="date" id="close_date" name="close_date" required="required">
             </div>
         </div>
         <div class="row">

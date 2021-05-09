@@ -151,16 +151,19 @@ exports.post_login = (req, res, next) => {
 
 
             }
-            req.currentUser = results.rows[0].person_id;
 
-            // Create a cookies object
-            var cookies = new Cookies(req, res, { keys: keys });
+            else{
+                req.currentUser = results.rows[0].person_id;
 
-            // Set the cookie to a value
-            cookies.set('CurrentID', results.rows[0].person_id, { signed: true });
-            cookies.set('CurrentEmail', results.rows[0].email, { signed: true });
+                // Create a cookies object
+                var cookies = new Cookies(req, res, { keys: keys });
 
-            res.redirect('home-screen');
+                // Set the cookie to a value
+                cookies.set('CurrentID', results.rows[0].person_id, { signed: true });
+                cookies.set('CurrentEmail', results.rows[0].email, { signed: true });
+
+                res.redirect('home-screen');
+            }
 
 
         })
