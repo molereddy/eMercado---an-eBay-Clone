@@ -90,8 +90,9 @@
                 <article class="search-result row">
                     <div class="col-xs-12 col-sm-12 col-md-2">
                         <h3>
-                            <i class="glyphicon glyphicon-usd"></i>
+                            <!-- <i class="glyphicon glyphicon-usd"></i> -->
                             <span>
+                                &dollar;
                                 <%= (direct_products) ?  direct_products.rows[i].price : '' %>
                             </span>
                         </h3>
@@ -123,10 +124,8 @@
                             </h3>
                         <% } %>
                     </header>
-                    <div class="col-xs-12 col-sm-12 col-md-1">
-                        
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-2">
+                    
+                    <div class="col-xs-12 col-sm-12 col-md-3">
                         <form action="http://localhost:3000/product-details" method="post">
                             <button class="btn btn-primary btn-block product-options" type="submit">View Product</button>
                             <input type="hidden" name="product_id" value=<%=direct_products.rows[i].ditem_id %> >
@@ -142,14 +141,21 @@
                 <article class="search-result row">
                     <div class="col-xs-12 col-sm-12 col-md-2">
                         <h3>
-                            <i class="glyphicon glyphicon-usd"></i>
+                            <!-- <i class="glyphicon glyphicon-usd"></i> -->
                             <span>
+                                &dollar;
                                 <%= (auction_products) ?  auction_products.rows[i].price : '' %>
                             </span>
                         </h3>
                         <h3>
                             Quantity:
                             <%= (auction_products) ?  auction_products.rows[i].quantity : '' %>
+                        </h3>
+                        <h3>
+                            <i class="glyphicon glyphicon-info-sign"></i>
+                            <span>
+                                This is an auction product
+                            </span>
                         </h3>
                     </div>
 
@@ -175,10 +181,8 @@
                             </h3>
                         <% } %>
                     </header>
-                    <div class="col-xs-12 col-sm-12 col-md-1">
-                        
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-2">
+                    
+                    <div class="col-xs-12 col-sm-12 col-md-3">
                         <form action="http://localhost:3000/auction-product-details" method="post">
                             <button class="btn btn-primary btn-block product-options" type="submit">View Product</button>
                             <input type="hidden" name="product_id" value=<%=auction_products.rows[i].aitem_id %> >
@@ -194,26 +198,31 @@
 
     </div>
 
-
+    <br><br>
     <% if(type == 0){ %>
 
-        <% if(((direct_products) ?  ((auction_products) ?  auction_products.rows.length : 0)+direct_products.rows.length : ((auction_products) ?  auction_products.rows.length : 0)) > (result_start+10)){ %>
-            <form action="http://localhost:3000/results-switch-page" method="post">
-                <button class="btn" type="submit">Next Page</button>
-                <input type="hidden" name="search" value=<%=searched_text %> >
-                <input type="hidden" name="result_start" value=<%= (result_start + 10) %> >
-                <input type="hidden" name="tags_string" value=<%=tags_string %> > 
-            </form>
+        <% if(result_start >= 10){ %>
+            <div style="float:left;width: 50%;">
+                <form action="http://localhost:3000/results-switch-page" method="post">
+                    <button class="btn btn-primary btn-block product-options" type="submit">Prev Page</button>
+                    <input type="hidden" name="search" value=<%= searched_text %> >
+                    <input type="hidden" name="result_start" value=<%= (result_start - 10) %> >
+                    <input type="hidden" name="tags_string" value=<%=tags_string %> > 
+                </form>
+            </div>
         <% } %>
 
-        <% if(result_start >= 10){ %>
-            <form action="http://localhost:3000/results-switch-page" method="post">
-                <button class="btn" type="submit">Prev Page</button>
-                <input type="hidden" name="search" value=<%= searched_text %> >
-                <input type="hidden" name="result_start" value=<%= (result_start - 10) %> >
-                <input type="hidden" name="tags_string" value=<%=tags_string %> > 
-            </form>
+        <% if(((direct_products) ?  ((auction_products) ?  auction_products.rows.length : 0)+direct_products.rows.length : ((auction_products) ?  auction_products.rows.length : 0)) > (result_start+10)){ %>
+            <div style="float:right;width: 50%;">
+                <form action="http://localhost:3000/results-switch-page" method="post">
+                    <button class="btn btn-primary btn-block product-options" type="submit">Next Page</button>
+                    <input type="hidden" name="search" value=<%=searched_text %> >
+                    <input type="hidden" name="result_start" value=<%= (result_start + 10) %> >
+                    <input type="hidden" name="tags_string" value=<%=tags_string %> > 
+                </form>
+            </div>
         <% } %>
+
     
     <% } %>
 
