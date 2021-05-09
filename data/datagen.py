@@ -11,7 +11,8 @@ seedloccount=5
 seedlocations=['SRID=4326;POINT(83.2185 17.6868)','SRID=4326;POINT(78.4867 17.3850)','SRID=4326;POINT(80.6480 16.5062)','SRID=4326;POINT(72.8777 19.0760)','SRID=4326;POINT(77.4977 27.2046)']
 seednumcust=10000 #updated during customer.csv construction
 seedqtymax=5
-seeddfmax=2
+seeddfmax=3
+seeddfvalues=[0,0.08,0.125,0.25]
 seedstarttime='2021-03-19 12:30:30'
 seedendtime='2021-05-19 12:30:30'
 
@@ -88,7 +89,7 @@ with open('Datagen/auction_item.csv', 'w') as f:
     		custid = random.randint(1,seednumcust)
     		qty = random.randint(1,seedqtymax)
     		df = random.randint(0,seeddfmax)
-    		csvwriter.writerow([idx,row[3],row[10].replace('\n', ' ').replace('"','').replace('\'',''),row[7],custid,'open','true',qty,df,'NULL','NULL',seedstarttime,seedendtime])
+    		csvwriter.writerow([idx,row[3],row[10].replace('\n', ' ').replace('"','').replace('\'',''),row[7],custid,'open','true',qty,seeddfvalues[df],'NULL','NULL',seedstarttime,seedendtime])
     		idx += 1
 
 with open('Datagen/direct_sale_item.csv', 'w') as f:
