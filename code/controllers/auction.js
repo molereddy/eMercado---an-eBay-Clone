@@ -717,9 +717,9 @@ exports.auction_close_bidding = (req,res,next) => {
                                                     .update_status_for_accepted_buyer(auction_results.rows[0].best_bidder)
                                                     .then(() => {
 
-                                                        var message = new Message(product_id, currentID, "Status Updated", "You have successfully closed the bidding of " + product_name + " at " + get_timestamp(), get_timestamp())
+                                                        var message = new Message(product_id, currentID, "Bidding Closed", "You have successfully closed the bidding of " + product_name + " at " + get_timestamp(), get_timestamp())
                                                         message.send_auction_message();
-                                                        var message = new Message(product_id, product_buyer, "Product Shipping", "We are glad to inform you that you are the best bidder and the product: " + product_name + " has been sold to you. Message sent at " + get_timestamp(), get_timestamp());
+                                                        var message = new Message(product_id, product_buyer, "Bidding Closed", "We are glad to inform you that you are the best bidder and the product: " + product_name + " has been sold to you. Message sent at " + get_timestamp(), get_timestamp());
                                                         message.send_auction_message();
                                     
 
@@ -922,7 +922,7 @@ exports.auction_update_status = (req,res,next) => {
                     product_status = 'shipped';
                     var message = new Message(product_id, currentID, "Status Updated", "You have updated the status of " + product_name + " to shipped at " + get_timestamp(), get_timestamp())
                     message.send_auction_message();
-                    var message = new Message(product_id, product_buyer, "Product Shipping", "We are glad to inform you that your new purchase " + product_name + "got shipped at " + get_timestamp(), get_timestamp());
+                    var message = new Message(product_id, product_buyer, "Product Shipped", "We are glad to inform you that your new purchase " + product_name + "got shipped at " + get_timestamp(), get_timestamp());
                     message.send_auction_message();
 
 
@@ -932,7 +932,7 @@ exports.auction_update_status = (req,res,next) => {
                     product_status = 'out-for-delivery';
                     var message = new Message(product_id, currentID, "Status Updated", "You have updated the status of " + product_name + " to out for delivery at " + get_timestamp(), get_timestamp())
                     message.send_auction_message();
-                    var message = new Message(product_id, product_buyer, "Product Shipping", "We are glad to inform you that your new purchase " + product_name + " is out for delivery now. Message sent at " + get_timestamp(), get_timestamp());
+                    var message = new Message(product_id, product_buyer, "Product Out For Delivery", "We are glad to inform you that your new purchase " + product_name + " is out for delivery now. Message sent at " + get_timestamp(), get_timestamp());
                     message.send_auction_message();
 
 

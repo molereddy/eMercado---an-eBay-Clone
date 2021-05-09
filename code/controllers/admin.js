@@ -197,7 +197,8 @@ exports.get_home_screen = (req, res, next) => {
                     path: '/home-screen',
                     balance: results.rows[0].balance,
                     amount_on_hold: results.rows[0].amount_on_hold,
-                    message: req.flash('error-home')
+                    message: req.flash('error-home'),
+                    message1: req.flash('error-home1')
 
                 });
 
@@ -225,7 +226,7 @@ exports.post_update_balance = (req, res, next) => {
         }
         else
         {
-        req.flash('error-home','Invalid Amount Entered')
+        req.flash('error-home1','Invalid Amount Entered')
         }
 
 
@@ -691,7 +692,7 @@ exports.get_product_details_update_status = (req, res, next) => { //when seller 
                     product_status = 'shipped';
                     var message = new Message(product_id, currentID, "Status Updated", "You have updated the status of " + product_name + " to shipped at " + get_timestamp(), get_timestamp())
                     message.send_direct_message();
-                    var message = new Message(product_id, buyer_id, "Product Shipping", "We are glad to inform you that your new purchase " + product_name + "got shipped at " + get_timestamp(), get_timestamp());
+                    var message = new Message(product_id, buyer_id, "Product Shipped", "We are glad to inform you that your new purchase " + product_name + "got shipped at " + get_timestamp(), get_timestamp());
                     message.send_direct_message();
 
 
@@ -699,7 +700,7 @@ exports.get_product_details_update_status = (req, res, next) => { //when seller 
                     product_status = 'out-for-delivery';
                     var message = new Message(product_id, currentID, "Status Updated", "You have updated the status of " + product_name + " to out for delivery at " + get_timestamp(), get_timestamp())
                     message.send_direct_message();
-                    var message = new Message(product_id, buyer_id, "Product Shipping", "We are glad to inform you that your new purchase " + product_name + " is out for delivary now. Message sent at " + get_timestamp(), get_timestamp());
+                    var message = new Message(product_id, buyer_id, "Product Out For Delivery", "We are glad to inform you that your new purchase " + product_name + " is out for delivery now. Message sent at " + get_timestamp(), get_timestamp());
                     message.send_direct_message();
 
 
@@ -980,7 +981,7 @@ exports.post_add_product = (req, res, next) => {
     console.log(req.body.kids);
     var tags = [req.body.a, req.body.b, req.body.c, req.body.d, req.body.e, req.body.f, req.body.g, req.body.h, req.body.i, req.body.j, req.body.k, req.body.l];
 
-    var delivery_factor_list = [req.body.del1, req.body.del2, req.body.del3]
+    var delivery_factor_list = [req.body.del1, req.body.del2, req.body.del3, req.body.del4]
 
     if (!currentID) {
         res.redirect('login-screen');
@@ -993,14 +994,14 @@ exports.post_add_product = (req, res, next) => {
                 .then(results => {
                     console.log("trying to add auction product")
 
-                    delivery_factor = 1;//initalisation
+                    delivery_factor = 0.125;//initalisation to medium transport
                     for (i = 0; i < delivery_factor_list.length; i++) {
                         if (delivery_factor_list[i] != undefined) {
-                            console.log(delivery_factor_list[i])
+                            // console.log(delivery_factor_list[i])
                             delivery_factor = parseFloat(delivery_factor_list[i]);
                         }
                     }
-                    console.log(delivery_factor)
+                    // console.log(delivery_factor)
                     
 
 

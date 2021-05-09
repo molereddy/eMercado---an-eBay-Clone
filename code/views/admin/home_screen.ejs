@@ -13,6 +13,14 @@
                             <%=message%>
                         </div>
                         <% } %>
+                        <% if (message1.length > 0 ) { %>
+                            <div class="alert alert-danger">
+                                <%=message1%>
+                            </div>
+                            <% } %>
+
+
+
                             <div style="width: 100%;">
                                 <div style="float:left; width: 50%">
                                     <form class="example semicentered" action="http://localhost:3000/home-screen" method="POST" style="margin:auto;max-width: 400px;">

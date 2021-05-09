@@ -40,7 +40,7 @@
             <h4> <b>Seller Name:&nbsp;</b>
                 <tt><%=product_seller_name%></tt>
             </h4>
-            
+
             <h4> <b>seller ID:&nbsp;</b>
                 <tt><%=product_seller%></tt>
             </h4>
@@ -129,7 +129,7 @@
                                     <br>
                                     <% } %>
 
-                                        <% if (product_status != "open" && product_status!= "delivered" && product_status!= "out-for-delivery")  {%>
+                                        <% if (product_status != "open" && product_status!= "delivered" && product_status!= "out-for-delivery" && product_status!= "closed")  {%>
                                             <form action="http://localhost:3000/product-details-update-status" method="post">
                                                 <button type="submit" class="btn btn-primary btn-block product-options">update status to &nbsp;<u><i><%=product_new_status%></i></u> </button>
                                                 <input type="hidden" name="product_id" value=<%=product_id %>>

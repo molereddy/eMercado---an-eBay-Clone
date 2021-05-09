@@ -86,7 +86,7 @@
                             <h4> <b>sale started at:&nbsp;</b>
                                 <tt style="font-size:medium;"><%=product_sale_start_time%></tt>
                             </h4>
-                            <h4> <b>sale ends at:&nbsp;</b>
+                            <h4> <b>tentative end time:&nbsp;</b>
                                 <tt style="font-size:medium;"><%=product_sale_end_time%></tt>
                             </h4>
 
@@ -240,7 +240,7 @@
                                     <br>
                                     <% } %>
 
-                                        <% if (product_status != "open" && product_status!= "delivered" && product_status!= "out-for-delivery")  {%>
+                                        <% if (product_status != "open" && product_status!= "delivered" && product_status!= "out-for-delivery" && product_status!= "closed")  {%>
                                             <form action="http://localhost:3000/auction-update-status" method="post">
                                                 <button type="submit" class="btn btn-primary btn-block product-options">update status to &nbsp;<u><i><%=product_new_status%></i></u> </button>
                                                 <input type="hidden" name="product_id" value=<%=product_id %>>
