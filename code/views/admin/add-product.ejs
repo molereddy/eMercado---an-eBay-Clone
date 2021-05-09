@@ -117,6 +117,12 @@
 
       if (new Date(UserDate).getTime() <= ToDate.getTime()) {
             alert("The Date must be Bigger or Equal to today's date");
+
+            document.getElementById("close_date").value = new Date();
+
+
+
+
             return false;
       }
       return true;
