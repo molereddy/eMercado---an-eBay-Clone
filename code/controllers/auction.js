@@ -2,6 +2,15 @@ const Login = require('../models/Login');
 const Search = require('../models/Search');
 const Product = require('../models/Product');
 const Auction_Product = require('../models/Auction_Product');
+const { encrypt, get_timestamp } = require('../utils/crypto');
+const { use } = require('../routes/admin');
+const { rawListeners } = require('../utils/database');
+const { Navigator } = require("node-navigator");
+const navigator = new Navigator();
+
+const alert = require('alert');
+
+const Message = require('../models/Message');
 
 var Cookies = require('cookies');
 
@@ -19,7 +28,7 @@ exports.auction_get_product_details = (req,res,next) => {// auction item product
     var currentID = cookies.get('CurrentID', { signed: true })
 
     if (!currentID) {
-        console.log('Get Lost');
+        res.redirect('login-screen');
     } else {
         
 
@@ -44,6 +53,7 @@ exports.auction_get_product_details = (req,res,next) => {// auction item product
                 product_curent_best_bidder = auction_results.rows[0].best_bidder 
                 product_sale_start_time = auction_results.rows[0].start_time
                 product_sale_end_time = auction_results.rows[0].close_time
+                product_quantity = auction_results.rows[0].quantity
 
                 // console.log(auction_results.rows[0]);
 
@@ -95,7 +105,7 @@ exports.auction_get_product_details = (req,res,next) => {// auction item product
                                   .get_distance(currentID,auction_results.rows[0].seller_id)
                                   .then(distance_results => {
                                       
-                                    product_distance = distance_results.rows[0].distance/1000;//converted  to KM
+                                    product_distance = Math.round(distance_results.rows[0].distance/1000);//converted  to KM
                                     product_delivery_cost = Math.round(product_distance*auction_results.rows[0].delivery_factor);//rounded off
 
 
@@ -104,43 +114,54 @@ exports.auction_get_product_details = (req,res,next) => {// auction item product
 
       
                                    
+                                    product_seller = auction_results.rows[0].seller_id
 
+                                    product_object
+                                        .get_seller_name(product_seller)
+                                        .then(name_results => {
+
+
+                                            product_seller_name = name_results.rows[0].name;
 
 
         
 
-                                    res.render('admin/auction_product_details', {
-                                        pageTitle: 'Product Details',
-                                        path: '/auction-product-details',
-                                        editing: false,
+                                        res.render('admin/auction_product_details', {
+                                            pageTitle: 'Product Details',
+                                            path: '/auction-product-details',
+                                            editing: false,
 
-                                        current_id : currentID,
-                                        product_id : product_id,
-                                        product_type : product_type,
-                                        product_base_price : product_base_price,
-                                        product_status : product_status,
-                                        product_viewer : product_viewer,
-                                        product_curent_best_bid : product_curent_best_bid,
-                                        product_curent_best_bidder : product_curent_best_bidder,
-                                        product_sale_start_time : product_sale_start_time,
-                                        product_sale_end_time : product_sale_end_time,
-                                        product_your_bid : product_your_bid,
-                                        product_auto_mode : product_auto_mode,
-                                        product_bid_limit : product_bid_limit,
-                                        product_lat : location_results.rows[0].y,
-                                        product_lng : location_results.rows[0].x,
-                                        product_seller  : auction_results.rows[0].seller_id,
-                                        product_new_status : product_new_status,
-                                        product_distance  : product_distance,
-                                        product_delivery_cost : product_delivery_cost,
-                                        message : req.flash('error'),
-                                        product_description : auction_results.rows[0].description,
-                                        product_name : auction_results.rows[0].name,
-                                        product_amount_to_pay : product_amount_to_pay,
-                                        product_bid_present : product_bid_present
-                                        
+                                            current_id : currentID,
+                                            product_id : product_id,
+                                            product_type : product_type,
+                                            product_base_price : product_base_price,
+                                            product_status : product_status,
+                                            product_viewer : product_viewer,
+                                            product_curent_best_bid : product_curent_best_bid,
+                                            product_curent_best_bidder : product_curent_best_bidder,
+                                            product_sale_start_time : product_sale_start_time,
+                                            product_sale_end_time : product_sale_end_time,
+                                            product_your_bid : product_your_bid,
+                                            product_auto_mode : product_auto_mode,
+                                            product_bid_limit : product_bid_limit,
+                                            product_lat : location_results.rows[0].y,
+                                            product_lng : location_results.rows[0].x,
+                                            product_seller  : product_seller,
+                                            product_new_status : product_new_status,
+                                            product_distance  : product_distance,
+                                            product_delivery_cost : product_delivery_cost,
+                                            message : req.flash('error'),
+                                            product_description : auction_results.rows[0].description,
+                                            product_name : auction_results.rows[0].name,
+                                            product_amount_to_pay : product_amount_to_pay,
+                                            product_bid_present : product_bid_present,
+                                            product_quantity : product_quantity,
+                                            product_seller_name : product_seller_name
+                                            
 
-                                    });
+                                        });
+
+                                    }).catch(err => console.log(err));
 
                                 }).catch(err => console.log(err));
 
@@ -167,8 +188,17 @@ exports.auction_place_bid = (req,res,next) => {// function to either place a bid
     const product_id = req.body.product_id;
     const product_type = req.body.product_type;
     const product_your_bid = parseFloat(req.body.your_bid);
-    const product_auto_mode = req.body.auto_mode;
+    var product_auto_mode = req.body.auto_mode;
     const product_bid_limit = parseFloat(req.body.bid_limit);
+
+    if (product_auto_mode != undefined) {
+
+        product_auto_mode = 'true';
+
+    }
+    else{
+        product_auto_mode = 'false';
+    }
 
     var cookies = new Cookies(req, res, {keys  : keys })
 
@@ -176,7 +206,7 @@ exports.auction_place_bid = (req,res,next) => {// function to either place a bid
     var currentID = cookies.get('CurrentID', { signed: true })
 
     if (!currentID) {
-        console.log('Get Lost');
+        res.redirect('login-screen');
     } else {
 
         console.log(product_id);
@@ -194,12 +224,14 @@ exports.auction_place_bid = (req,res,next) => {// function to either place a bid
 
                 }
 
+                product_name = auction_results.rows[0].name;
+
 
                 product_object
                 .get_distance(currentID,auction_results.rows[0].seller_id)
                 .then(distance_results => {
                     
-                  product_distance = distance_results.rows[0].distance/1000;//converted  to KM
+                  product_distance = Math.round(distance_results.rows[0].distance/1000);//converted  to KM
                   product_delivery_cost = Math.round(product_distance*auction_results.rows[0].delivery_factor);//rounded off
 
 
@@ -329,8 +361,10 @@ exports.auction_place_bid = (req,res,next) => {// function to either place a bid
                                                                                         .then(() => {
                         
                                                                                     
-                                                                                    
-                                                                                                res.redirect(307,'/auction-product-details');
+                                                                                            var message = new Message(product_id, currentID, "Bid placed succesfully", "We are glad to inform you that you bid for " + product_name + "placed succesfully. Message sent at " + get_timestamp(), get_timestamp());
+                                                                                            message.send_auction_message();
+                                                                        
+                                                                                            res.redirect(307,'/auction-product-details');
                         
                         
                                                                                         }).catch(err => console.log(err));                                
@@ -361,7 +395,9 @@ exports.auction_place_bid = (req,res,next) => {// function to either place a bid
                                                                     product_object
                                                                         .update_bid(product_bid_limit,product_auto_mode,product_bid_limit)
                                                                         .then(() => {
-
+                                                                            var message = new Message(product_id, currentID, "Bid placed succesfully", "We are glad to inform you that you bid for " + product_name + " has been placed succesfully. Message sent at " + get_timestamp(), get_timestamp());
+                                                                            message.send_auction_message();
+                                                                        
                                                                             res.redirect(307,'/auction-product-details');
 
                                                                         }).catch(err => console.log(err));
@@ -416,7 +452,9 @@ exports.auction_place_bid = (req,res,next) => {// function to either place a bid
                                                                                                 
                             
                                                                                         
-                                                                                        
+                                                                                                var message = new Message(product_id, currentID, "Bid placed succesfully", "We are glad to inform you that you bid for " + product_name + " has been placed succesfully. Message sent at " + get_timestamp(), get_timestamp());
+                                                                                                message.send_auction_message();
+                                                                                            
                                                                                                     res.redirect(307,'/auction-product-details');
                             
                             
@@ -492,7 +530,11 @@ exports.auction_place_bid = (req,res,next) => {// function to either place a bid
                                                                                                 console.log("done3");
                         
                                                                                     
-                                                                                    
+                                                                                                var message = new Message(product_id, currentID, "Bid placed succesfully", "We are glad to inform you that you bid for " + product_name + " has been placed succesfully. Message sent at " + get_timestamp(), get_timestamp());
+                                                                                                message.send_auction_message();
+
+                                                                                                // res.redirect('/auction-product-details',{product_id:product_id,product_type:product_type});
+                                                                                            
                                                                                                 res.redirect(307,'/auction-product-details');
                         
                         
@@ -622,7 +664,7 @@ exports.auction_close_bidding = (req,res,next) => {
     var currentID = cookies.get('CurrentID', { signed: true })
 
     if (!currentID) {
-        console.log('Get Lost');
+        res.redirect('login-screen');
     } else {
 
         console.log(product_id);
@@ -639,9 +681,14 @@ exports.auction_close_bidding = (req,res,next) => {
                     product_viewer = 'seller';
                 }
 
-                console.log(auction_results.rows[0].best_bid);
+                // product_buyer = auction_results.rows[0]
+
+                // console.log(auction_results.rows[0].best_bid);
 
                 if(auction_results.rows[0].best_bid){
+
+
+                    product_buyer = auction_results.rows[0].best_bidder
 
 
 
@@ -669,6 +716,12 @@ exports.auction_close_bidding = (req,res,next) => {
                                                     product_object
                                                     .update_status_for_accepted_buyer(auction_results.rows[0].best_bidder)
                                                     .then(() => {
+
+                                                        var message = new Message(product_id, currentID, "Status Updated", "You have successfully closed the bidding of " + product_name + " at " + get_timestamp(), get_timestamp())
+                                                        message.send_auction_message();
+                                                        var message = new Message(product_id, product_buyer, "Product Shipping", "We are glad to inform you that you are the best bidder and the product: " + product_name + " has been sold to you. Message sent at " + get_timestamp(), get_timestamp());
+                                                        message.send_auction_message();
+                                    
 
 
                                                         res.redirect(307,'/auction-product-details');
@@ -746,7 +799,7 @@ exports.auction_delete_product = (req,res,next) => {
     var currentID = cookies.get('CurrentID', { signed: true })
 
     if (!currentID) {
-        console.log('Get Lost');
+        res.redirect('login-screen');
     } else {
 
         console.log(product_id);
@@ -788,9 +841,12 @@ exports.auction_delete_product = (req,res,next) => {
                                     product_object
                                     .update_status('closed')// here -1 is placed since no bid is accepted
                                     .then(() => {//////////
+
+
     
-
-
+                                        var message = new Message(product_id, currentID, "Product Deleted", "You have deleted the product: " + product_name + " at " + get_timestamp(), get_timestamp())
+                                        message.send_auction_message();
+                                       
     
     
                                          res.redirect('/home-screen');
@@ -829,7 +885,7 @@ exports.auction_update_status = (req,res,next) => {
     var currentID = cookies.get('CurrentID', { signed: true })
 
     if (!currentID) {
-        console.log('Get Lost');
+        res.redirect('login-screen');
     } else {
 
 
@@ -848,19 +904,38 @@ exports.auction_update_status = (req,res,next) => {
                     
                 }
 
-                product_status = auction_results.rows[0].status
+                product_status = auction_results.rows[0].status;
+                product_buyer = auction_results.rows[0].best_bidder;
+                product_name = auction_results.rows[0].name;
            
 
                 if(product_status == 'auctioned'){
                     product_status = 'shipping';
+                    var message = new Message(product_id, currentID, "Status Updated", "You have updated the status of " + product_name + " to shipping at " + get_timestamp(), get_timestamp())
+                    message.send_auction_message();
+                    var message = new Message(product_id, product_buyer, "Product Shipping", "We are glad to inform you that your new purchase " + product_name + " status is shipping. Message sent at " + get_timestamp(), get_timestamp());
+                    message.send_auction_message();
+
 
                 }
                 else if(product_status == 'shipping'){
                     product_status = 'shipped';
+                    var message = new Message(product_id, currentID, "Status Updated", "You have updated the status of " + product_name + " to shipped at " + get_timestamp(), get_timestamp())
+                    message.send_auction_message();
+                    var message = new Message(product_id, product_buyer, "Product Shipping", "We are glad to inform you that your new purchase " + product_name + "got shipped at " + get_timestamp(), get_timestamp());
+                    message.send_auction_message();
+
+
                     
                 }
                 else if(product_status == 'shipped'){
                     product_status = 'out-for-delivery';
+                    var message = new Message(product_id, currentID, "Status Updated", "You have updated the status of " + product_name + " to out for delivery at " + get_timestamp(), get_timestamp())
+                    message.send_auction_message();
+                    var message = new Message(product_id, product_buyer, "Product Shipping", "We are glad to inform you that your new purchase " + product_name + " is out for delivery now. Message sent at " + get_timestamp(), get_timestamp());
+                    message.send_auction_message();
+
+
                     
                 }
 
@@ -895,7 +970,7 @@ exports.auction_confirm_delivery = (req,res,next) => {
     var currentID = cookies.get('CurrentID', { signed: true })
 
     if (!currentID) {
-        console.log('Get Lost');
+        res.redirect('login-screen');
     } else {
 
         console.log(product_id);
@@ -914,12 +989,15 @@ exports.auction_confirm_delivery = (req,res,next) => {
                 }
 
                 product_status = auction_results.rows[0].status
+                product_buyer = auction_results.rows[0].best_bidder
+                product_seller= auction_results.rows[0].seller_id
+                product_name = auction_results.rows[0].name
 
                 product_object
                     .get_distance(currentID,auction_results.rows[0].seller_id)
                     .then(distance_results => {
                     
-                         product_distance = distance_results.rows[0].distance/1000;//converted  to KM
+                         product_distance = Math.round(distance_results.rows[0].distance/1000);//converted  to KM
                          product_delivery_cost = Math.round(product_distance*auction_results.rows[0].delivery_factor);//rounded off
 
                 
@@ -959,6 +1037,14 @@ exports.auction_confirm_delivery = (req,res,next) => {
                                                 product_object
                                                     .increase_balance(auction_results.rows[0].best_bid,auction_results.rows[0].seller_id)
                                                     .then(() => {
+
+
+                                                        var message = new Message(product_id, product_seller, "Product Delivered", "Your product " + product_name + " got succesfully delivered to your customer at " + get_timestamp(), get_timestamp())
+                                                        message.send_auction_message();
+                                                        var message = new Message(product_id, product_buyer, "Product Delivered", "Your product " + product_name + " got delivered at" + get_timestamp() + ". Thanks for shopping with us.", get_timestamp());
+                                                        message.send_auction_message();
+
+
 
                                                 
                                                         res.redirect(307,'/auction-product-details');

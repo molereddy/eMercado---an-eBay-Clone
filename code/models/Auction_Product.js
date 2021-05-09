@@ -15,6 +15,12 @@ module.exports = class Product {
 
     }
 
+    get_seller_name(seller_id) {
+
+        return pool.query('SELECT name FROM person where person_id = $1', [seller_id]);
+
+    }
+
     get_location(user_id) {
         return pool.query('SELECT ST_X(location::geometry) as  X,ST_Y(location::geometry) as Y FROM person where person.person_id = $1', [user_id]);
 

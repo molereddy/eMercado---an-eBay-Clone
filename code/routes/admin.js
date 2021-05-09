@@ -41,6 +41,9 @@ router.post('/auction-confirm-delivery', auctionCon.auction_confirm_delivery);
 
 router.get('/logout', adminCon.get_logout);
 
+router.get('*', function(req,res){  res.redirect('/home-screen');} );
+
+// req.flash('error-home', 'Invalid URL, redirected to this page');
 // router.get('/prods',adminCon.get_products);
 
 

@@ -1,132 +1,88 @@
-<%- include('../includes/head.ejs') %>
-<link rel="stylesheet" href="/css/forms.css">
-<link rel="stylesheet" href="/css/product.css">
-</head>
+<%- include('../includes/home-head.ejs') %>
+    <link rel="stylesheet" href="/css/forms.css">
+    <link rel="stylesheet" href="/css/product.css">
+    </head>
 
-<body>
+    <body>
+        <%- include('../includes/navbar.ejs') %>
+            <main style="margin-top: 100px;">
+                <div class="container">
+                    <h1>User home</h1><br><br><br>
+                    <% if (message.length > 0 ) { %>
+                        <div class="alert alert-danger" style="color: green;background-color: honeydew;">
+                            <%=message%>
+                        </div>
+                        <% } %>
+                            <div style="width: 100%;">
+                                <div style="float:left; width: 50%">
+                                    <form class="example semicentered" action="http://localhost:3000/home-screen" method="POST" style="margin:auto;max-width: 400px;">
+                                        <input type="text" name="search" id="search" placeholder="Search.." name="search2" style="background-color: white;">
+                                        <button type="submit"><i class="fa fa-search"></i></button>
+                                        <br>
+                                        <div class="dropdown" style = "z-index : 100 ; position:relative;" >
+                                            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="margin-top: 20px;height: min-content; width: 100px;"><i class="glyphicon glyphicon-list"></i> filters
+                                    </button>
+                                            <ul class="dropdown-menu checkbox-menu allow-focus" aria-labelledby="dropdownMenu1" >
+                                                <li><label for="a"><input type="checkbox" name = "a" id="a" value="Clothing" />Clothing</label></li>
+                                                <li><label for="b"><input type="checkbox" name = "b" id="b" value="Women's Clothing" />Women's Clothing</label></li>
+                                                <li><label for="c"><input type="checkbox" name = "c" id="c" value="Jewellery" />Jewellery</label></li>
+                                                <li><label for="d"><input type="checkbox" name = "d" id="d" value="Footwear" />Footware</label></li>
+                                                <li><label for="e"><input type="checkbox" name = "e" id="e" value="Men's Clothing" />Men's Clothing</label></li>
+                                                <li><label for="f"><input type="checkbox" name = "f" id="f" value="Automotive"/>Automotive</label></li>
+                                                <li><label for="g"><input type="checkbox" name = "g" id="g" value="Necklaces" />Necklaces</label></li>
+                                                <li><label for="h"><input type="checkbox" name = "h" id="h" value="Western Wear" />Western Wear</label></li>
+                                                <li><label for="i"> <input type="checkbox" name = "i" id="i" value="Beauty and Personal Care"/>Beauty and Personal Care</label></li>
+                                                <li><label for="j"><input type="checkbox" name = "j" id="j" value="Rings" />Rings</label></li>
+                                                <li><label for="k"><input type="checkbox" name = "k" id="k" value="Accessories & Spare parts" />Accessories & Spare parts</label></li>
+                                                <li><label for="l"><input type="checkbox" name = "l" id="l" value="Home Decor & Festive Needs"/>Home Decor & Festive Needs</label></li>
+                                            </ul>
+                                        </div>
+                                    </form>
+                                    <br><br><br>
+                                    <h2> <b>balance:&nbsp;</b>
+                                        <tt>&dollar;<%= balance %></tt>
+                                        </h4>
+                                        <h2> <b>balance on hold:&nbsp;</b>
+                                            <tt>&dollar;<%= amount_on_hold %></tt>
+                                            </h4>
+                                </div>
+                                <div style="float:right; width: 50%;">
+                                    <form action="http://localhost:3000/add-product" method="GET">
+                                        <button type="submit" class="btn btn-primary btn-block product-options">Add product</button>
+                                    </form>
+                                    <br>
+                                    <form action="http://localhost:3000/view-mysales" method="GET">
+                                        <button type="submit" class="btn btn-primary btn-block product-options">View my sales</button>
+                                    </form>
+                                    <br>
+                                    <form action="http://localhost:3000/view-mypurchases" method="GET">
+                                        <button type="submit" class="btn btn-primary btn-block product-options">View my purchases</button>
+                                    </form>
+                                    <br>
+                                    <form action="http://localhost:3000/messages" method="post">
+                                        <button type="submit" class="btn btn-primary btn-block product-options">View Messages</button>
+                                    </form>
+                                    <br>
+                                    <button class="open-button btn btn-primary btn-block product-options" onclick="openForm()">Add Money</button>
+                                    <div class="form-popup" id="myForm">
+                                        <form action="http://localhost:3000/update-balance" class="form-container" method="POST">
+                                            <label for="balance"><b>Amount</b></label><br>
+                                            <input type="number" placeholder="Enter Amount to be added" name="balance" id="balance" required>
+                                            <button type="submit" class="btn">Update</button>
+                                            <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <script>
+                                function openForm() {
+                                    document.getElementById("myForm").style.display = "block";
+                                }
 
+                                function closeForm() {
+                                    document.getElementById("myForm").style.display = "none";
+                                }
+                            </script>
 
-<main>
-
-    <h1>Home Screen Page</h1>
-
-    <% if (message.length > 0 ) { %>
-        <div class="alert alert-danger" style="color: green;background-color: honeydew;"><%=message%></div>
-      <% } %>
-
-    <form class="product-form" action="http://localhost:3000/home-screen" method="POST">
-        <div class="form-control">
-            <label for="search">Search for an item</label>
-            <input type="text" name="search" id="search" >
-        </div>
-       
-        <div class="multiselect">
-          <div class="selectBox" onclick="showCheckboxes()">
-            <select>
-              <option>Select all tags</option>
-            </select>
-            <div class="overSelect"></div>
-          </div>
-          <div id="checkboxes">
-            <label for="a">
-              <input type="checkbox" name = "a" id="a" value="Clothing" />Clothing</label>
-            <label for="b">
-              <input type="checkbox" name = "b" id="b" value="Women's Clothing" />Women's Clothing</label>
-            <label for="c">
-              <input type="checkbox" name = "c" id="c" value="Jewellery"/>Jewellery</label>
-            <label for="d">
-              <input type="checkbox" name = "d" id="d" value="Footwear" />Footware</label>
-            <label for="e">
-              <input type="checkbox" name = "e" id="e" value="Men's Clothing" />Men's Clothing</label>
-            <label for="f">
-              <input type="checkbox" name = "f" id="f" value="Automotive"/>Automotive</label>
-            <label for="g">
-              <input type="checkbox" name = "g" id="g" value="Necklaces" />Necklaces</label>
-            <label for="h">
-              <input type="checkbox" name = "h" id="h" value="Western Wear" />Western Wear</label>
-            <label for="i">
-              <input type="checkbox" name = "i" id="i" value="Beauty and Personal Care"/>Beauty and Personal Care</label>
-            <label for="j">
-              <input type="checkbox" name = "j" id="j" value="Rings" />Rings</label>
-            <label for="k">
-              <input type="checkbox" name = "k" id="k" value="Accessories & Spare parts" />Accessories & Spare parts</label>
-            <label for="l">
-              <input type="checkbox" name = "l" id="l" value="Home Decor & Festive Needs"/>Home Decor & Festive Needs</label>
-              
-          
-            </div>
-      </div>
-      
-        <button class="btn" type="submit">Search</button>
-    </form>
-    <script>
-                var expanded = false;
-
-    function showCheckboxes() {
-        var checkboxes = document.getElementById("checkboxes");
-        if (!expanded) {
-          checkboxes.style.display = "block";
-          expanded = true;
-        } else {
-          checkboxes.style.display = "none";
-          expanded = false;
-        }
-      }
-      </script>
-      
-    <form action="http://localhost:3000/add-product" method="GET">
-        <button type="submit">Add product</button>
-    </form>
-    <form action="http://localhost:3000/view-mysales" method="GET">
-        <button type="submit">View my sales</button>
-    </form>
-
-    <form action="http://localhost:3000/view-mypurchases" method="GET">
-        <button type="submit">View my purchases</button>
-    </form>
-
-    <form action="http://localhost:3000/messages" method="post">
-        <button type="submit">View Messages</button>
-    </form>
-
-
-    <form action="http://localhost:3000/logout" method="get">
-        <button type="submit">Logout</button>
-    </form>
-
-    <h3>Your current balance : <%= balance %> </h3>
-    <h3>Your amount on hold : <%= amount_on_hold %> </h3>
-
-
-    <button class="open-button" onclick="openForm()">Add Money</button>
-
-    <div class="form-popup" id="myForm">
-    <form action="http://localhost:3000/update-balance" class="form-container" method="POST">
-        <h3>Add Money</h3>
-
-        
-        <label for="balance"><b>Amount</b></label>
-        <input type="number" placeholder="Enter Amount to be added" name="balance"  id = "balance" required>
-        
-
-        <button type="submit" class="btn">Update balance</button>
-        <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
-    </form>
-    </div>
-    <script>
-        function openForm() {
-        document.getElementById("myForm").style.display = "block";
-        }
-        
-        function closeForm() {
-        document.getElementById("myForm").style.display = "none";
-        }
-
-        
-    </script>
-    
-      
-
-
-</main>
-<%- include('../includes/end.ejs') %>
+            </main>
+            <%- include('../includes/home-end.ejs') %>
