@@ -688,7 +688,9 @@ exports.auction_close_bidding = (req,res,next) => {
                 if(auction_results.rows[0].best_bid){
 
 
-                    product_buyer = auction_results.rows[0].best_bidder
+                    product_buyer = auction_results.rows[0].best_bidder;
+                    product_name = auction_results.rows[0].name;
+                    
 
 
 
