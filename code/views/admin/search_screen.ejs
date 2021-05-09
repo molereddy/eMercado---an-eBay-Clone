@@ -18,7 +18,7 @@
     </form> -->
     
     <form class="example" action="http://localhost:3000/home-screen" method="POST" style="margin:auto;max-width: 400px;">
-        <input type="text" name="search" id="search" placeholder="Search.." name="search2" style="background-color: white;">
+        <input type="text" name="search" id="search" placeholder="Search.." value="<%= (searched_text) ?  searched_text : '' %>" name="search2" style="background-color: white;">
         <button type="submit"><i class="fa fa-search"></i></button>
         <br>
         <div class="dropdown" style = "z-index : 100 ; position:relative;" >
@@ -205,9 +205,9 @@
             <div style="float:left;width: 50%;">
                 <form action="http://localhost:3000/results-switch-page" method="post">
                     <button class="btn btn-primary btn-block product-options" type="submit">Prev Page</button>
-                    <input type="hidden" name="search" value=<%= searched_text %> >
+                    <input type="hidden" name="search" value="<%= searched_text %>" >
                     <input type="hidden" name="result_start" value=<%= (result_start - 10) %> >
-                    <input type="hidden" name="tags_string" value=<%=tags_string %> > 
+                    <input type="hidden" name="tags_string" value="<%=tags_string %>" > 
                 </form>
             </div>
         <% } %>
@@ -216,9 +216,9 @@
             <div style="float:right;width: 50%;">
                 <form action="http://localhost:3000/results-switch-page" method="post">
                     <button class="btn btn-primary btn-block product-options" type="submit">Next Page</button>
-                    <input type="hidden" name="search" value=<%=searched_text %> >
+                    <input type="hidden" name="search" value="<%=searched_text %>" >
                     <input type="hidden" name="result_start" value=<%= (result_start + 10) %> >
-                    <input type="hidden" name="tags_string" value=<%=tags_string %> > 
+                    <input type="hidden" name="tags_string" value="<%=tags_string %>" > 
                 </form>
             </div>
         <% } %>
@@ -243,7 +243,7 @@
     
     <% } %>
 
-    <% if(type == 1){ %>
+    <% if(type == 2){ %>
         <% if(((direct_products) ?  ((auction_products) ?  auction_products.rows.length : 0)+direct_products.rows.length : ((auction_products) ?  auction_products.rows.length : 0)) > (result_start+10)){ %>
             <form action="http://localhost:3000/view-mypurchases" method="GET">
                 <button class="btn" type="submit">Next Page</button>
