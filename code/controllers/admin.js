@@ -62,6 +62,7 @@ exports.post_signup = (req, res, next) => {
         p1 = req.body.password
     p2 = req.body.re_password;
 
+
     if (p1 != p2) {
 
         req.flash('error-signup', 'Password and re-enter password do not match');
@@ -74,28 +75,55 @@ exports.post_signup = (req, res, next) => {
     }
 
 
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                //latitude = position.coords.latitude;
-                //longitude = position.coords.longitude; 
 
-                var latitude = position.latitude;
-                var longitude = position.longitude;
-                user = new Signup();
-                user
-                    .get_personid()
-                    .then(results => {
-                        var user = new Signup(results.rows[0].person_id + 1, name, email, password, phone_no, latitude, longitude, 1000);
+        const user1 = new Login(email);
+        user1
+        .get_user2()
+        .then(duplicate_results => {
 
-                        user.insert_user().catch(err => console.log(err));
-                        res.redirect('login-screen');
+            if(duplicate_results.rows.length>0){
 
-                    }).catch(err => console.log(err));
+                req.flash('error-signup', 'User email already taken');
+
+                res.redirect('signup-screen');
+
+            }
+
+    
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        //latitude = position.coords.latitude;
+                        //longitude = position.coords.longitude; 
+
+                        var latitude = position.latitude;
+                        var longitude = position.longitude;
+                        user = new Signup();
+                        user
+                            .get_personid()
+                            .then(results => {
+                                var user = new Signup(results.rows[0].person_id + 1, name, email, password, phone_no, latitude, longitude, 1000);
+
+                                user.insert_user().catch(err => console.log(err));
+                                res.redirect('login-screen');
+
+                            }).catch(err => console.log(err));
 
 
-            });
-    }
+                    });
+            }
+
+
+
+
+        }).catch(err => console.log(err));
+
+
+
+
+
+
 
 
 };
