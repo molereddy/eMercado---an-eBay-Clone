@@ -7,6 +7,15 @@
         <%- include('../includes/navbar.ejs') %>
             <main style="margin-top: 100px;">
                 <div class="container">
+
+
+                    <h4> <b>Logged in as:&nbsp;</b>
+                        <%=user_name%>
+                    </h4>
+
+
+
+
                     <h1>User home</h1><br><br><br>
                     <% if (message.length > 0 ) { %>
                         <div class="alert alert-danger" style="color: green;background-color: honeydew;">
@@ -18,7 +27,6 @@
                                     <%=message1%>
                                 </div>
                                 <% } %>
-
 
 
                                     <div style="width: 100%;">

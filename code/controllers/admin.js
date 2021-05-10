@@ -229,7 +229,8 @@ exports.get_home_screen = (req, res, next) => {
                     balance: results.rows[0].balance,
                     amount_on_hold: results.rows[0].amount_on_hold,
                     message: req.flash('error-home'),
-                    message1: req.flash('error-home1')
+                    message1: req.flash('error-home1'),
+                    user_name: currentEmail
 
                 });
 
@@ -321,6 +322,7 @@ exports.post_home_screen_search = (req, res, next) => { // when search button is
 
     // Get a cookie
     var currentID = cookies.get('CurrentID', { signed: true })
+    var currentEmail = cookies.get('CurrentEmail', { signed: true })
     var tags = [req.body.a, req.body.b, req.body.c, req.body.d, req.body.e, req.body.f, req.body.g, req.body.h, req.body.i, req.body.j, req.body.k, req.body.l];
 
     if (!currentID) {
@@ -363,7 +365,8 @@ exports.post_home_screen_search = (req, res, next) => { // when search button is
                             result_start: start,
                             searched_text: search_key,
                             tags_string: tags_string,
-                            type: 0
+                            type: 0,
+                            user_name: currentEmail
                         });
 
 
@@ -417,7 +420,8 @@ exports.get_view_my_sales = (req, res, next) => { // when search button is press
                             searched_text: 'My Sales',
                             result_start: 0,
                             tags_string: '',
-                            type: 1
+                            type: 1,
+                            user_name: currentEmail
                         });
 
 
@@ -473,7 +477,8 @@ exports.get_view_my_purchases = (req, res, next) => { // when search button is p
                             searched_text: 'My Purchases',
                             result_start: start,
                             tags_string: '',
-                            type: 2
+                            type: 2,
+                            user_name: currentEmail
                         });
 
 
@@ -529,7 +534,8 @@ exports.get_view_my_bids = (req, res, next) => { // when search button is presse
                             searched_text: 'My Bids',
                             result_start: start,
                             tags_string: '',
-                            type: 2
+                            type: 3,
+                            user_name: currentEmail
                         });
 
 
@@ -549,6 +555,7 @@ exports.get_view_my_bids = (req, res, next) => { // when search button is presse
 exports.post_results_switch_page = (req, res, next) => { // when search button is pressed
 
     var cookies = new Cookies(req, res, { keys: keys })
+    var currentEmail = cookies.get('CurrentEmail', { signed: true })
 
     // Get a cookie
     var currentID = cookies.get('CurrentID', { signed: true })
@@ -602,7 +609,8 @@ exports.post_results_switch_page = (req, res, next) => { // when search button i
                             result_start: start,
                             searched_text: search_key,
                             tags_string: tags_string,
-                            type: 0
+                            type: 0,
+                            user_name: currentEmail
                         });
 
 
@@ -624,6 +632,7 @@ exports.get_product_details = (req, res, next) => { // when a direct sale produc
 
     // Get a cookie
     var currentID = cookies.get('CurrentID', { signed: true })
+    var currentEmail = cookies.get('CurrentEmail', { signed: true })
 
     if (!currentID) {
         res.redirect('login-screen');
@@ -707,7 +716,8 @@ exports.get_product_details = (req, res, next) => { // when a direct sale produc
                                         current_id: currentID,
                                         message : req.flash('error-direct'),
                                         product_quantity : direct_results.rows[0].quantity,
-                                        product_seller_name : product_seller_name
+                                        product_seller_name : product_seller_name,
+                                        user_name: currentEmail
 
                                     });
 

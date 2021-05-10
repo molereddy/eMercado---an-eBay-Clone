@@ -26,6 +26,7 @@ exports.auction_get_product_details = (req,res,next) => {// auction item product
 
     // Get a cookie
     var currentID = cookies.get('CurrentID', { signed: true })
+    var currentEmail = cookies.get('CurrentEmail', { signed: true })
 
     if (!currentID) {
         res.redirect('login-screen');
@@ -156,7 +157,8 @@ exports.auction_get_product_details = (req,res,next) => {// auction item product
                                             product_amount_to_pay : product_amount_to_pay,
                                             product_bid_present : product_bid_present,
                                             product_quantity : product_quantity,
-                                            product_seller_name : product_seller_name
+                                            product_seller_name : product_seller_name,
+                                            user_name: currentEmail
                                             
 
                                         });

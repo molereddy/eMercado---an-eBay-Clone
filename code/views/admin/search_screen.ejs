@@ -44,6 +44,13 @@
     
     <div class="container">
 
+
+        <h4> <b>Logged in as:&nbsp;</b>
+            <%=user_name%>
+        </h4>
+
+
+
         <hgroup class="mb20">
             <h1>Results</h1>
             <h2 class="lead">
@@ -260,6 +267,24 @@
     
     <% } %>
     
+    <% if(type == 3){ %>
+        <% if(((direct_products) ?  ((auction_products) ?  auction_products.rows.length : 0)+direct_products.rows.length : ((auction_products) ?  auction_products.rows.length : 0)) > (result_start+10)){ %>
+            <form action="http://localhost:3000/view-mybids" method="GET">
+                <button class="btn" type="submit">Next Page</button>
+                <input type="hidden" name="result_start" value=<%= (result_start + 10) %> >
+            </form>
+        <% } %>
+
+        <% if(result_start >= 10){ %>
+            <form action="http://localhost:3000/view-mybids" method="GET">
+                <button class="btn" type="submit">Prev Page</button>
+                <input type="hidden" name="result_start" value=<%= (result_start - 10) %> >
+            </form>
+        <% } %>
+    
+    <% } %>
+    
+
 
     <script>
         var coll = document.getElementsByClassName("myBtn");
